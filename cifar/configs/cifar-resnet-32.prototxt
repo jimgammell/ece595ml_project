@@ -20,7 +20,7 @@ resnet_module_config: {
     use_bottleneck: false
     build_classifier: true
     weight_decay: 2e-4
-    data_format: "NCHW"
+    data_format: "NHWC"
 }
 optimizer_config: {
     type: "momentum"
