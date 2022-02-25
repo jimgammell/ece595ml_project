@@ -12,6 +12,13 @@ def dataset_to_numpy(dataset):
     Y = np.array(Y)
     return (X, Y)
 
+def dataset_to_tensors(dataset):
+    (X, Y) = dataset
+    X = torch.from_numpy(X)
+    Y = torch.from_numpy(Y).to(torch.long)
+    dataset = torch.utils.data.TensorDataset(X, Y)
+    return dataset
+
 def load_mnist(to_numpy=False):
     train_dataset = datasets.MNIST('./data',
                                       train=True,
@@ -56,6 +63,7 @@ def extract_classes(dataset, classes):
 def generate_unbalanced_dataset(dataset, classes, props, output_size):
     if len(classes) != len(props):
         raise Exception('Classes {} and proportions {} must have same dimensions.'.format(classes, props))
+    dataset = dataset_to_numpy(dataset)
     class_datasets = extract_classes(dataset, classes)
     samples_per_class = [int(output_size*p) for p in props]
     output_X = []
@@ -70,4 +78,5 @@ def generate_unbalanced_dataset(dataset, classes, props, output_size):
             output_Y.append(class_datasets[class_key][1][indices])
     output_X = np.concatenate(output_X, axis=0)
     output_Y = np.concatenate(output_Y, axis=0)
-    return (output_X, output_Y)
+    dataset = dataset_to_tensors((output_X, output_Y))
+    return dataset
