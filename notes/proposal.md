@@ -1,0 +1,17 @@
+ - Hypothesis: Randomly re-weighting examples improves robustness (test error) in presence of label noise.
+   - Why think this? LTRWE paper did experiments in presence of label noise on CIFAR-10 and found that randomly reweighting examples performs significantly better than baselines and does nearly as well as their computationally-expensive method.
+   - Seems useful because appears to get near-SOTA results despite SOTA using ~3x as much time
+   - May make sense from standpoint that network is less-capable of precisely fitting to uncommon input-output relationships, because random reweighting may amplify small errors on other samples as well as negating errors on the specific samples
+ - Milestones
+   - (3/26) Implement a setup that works on MNIST, FMNIST, CIFAR-10, CIFAR-100
+   - (4/2)  Verify that results from paper can be reproduced -- rectified/normalized weights from N(0, 1) and 40% label-flipping
+   - (4/23) Various correlations to look for
+     - Error vs. variance of noise with fixed label flip ratio
+     - Error vs. flip ratio with fixed noise variance
+     - Effect of different types of noise -- Gaussian, uniform
+     - Effect of batch size
+     - Effect of using fixed reweighting (i.e. randomly assign a weight to each example at beginning of training) vs. re-generate weights at every iteration
+     - Different network architectures -- ResNet, multilayer perceptron, linear regression, etc. (i.e. what role does over-parameterization play?)
+   - (4/23) Look for a theoretical justification for results
+     - Maybe can consider small dataset and explicitly compute optimal guesses
+     - Maybe can think about what happens with linear model
