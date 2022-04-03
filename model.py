@@ -92,10 +92,9 @@ def get_resnet_feature_extractor(num_blocks=50, pretrained=False, freeze_weights
         raise ValueError('invalid num_blocks')
         
     model = num_blocks_to_constructor[num_blocks](pretrained=pretrained)
-    if freeze_weights:
-        for name, param in model.named_parameters():
-            param.requires_grad = False
-    
     feature_extractor = nn.Sequential(*list(model.children())[:-1])
     num_features = list(model.children())[-1].in_features
+    if freeze_weights:
+        feature_extractor.requires_grad_(False)
+    
     return (feature_extractor, num_features)
