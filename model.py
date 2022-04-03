@@ -61,6 +61,7 @@ class SelfTrainingModel(nn.Module):
         else:
             image = x
         features = self.feature_extractor(image)
+        features = features.squeeze()
         classification = self.classifier(features)
         if self.predict_quality:
             if self.consider_classification_for_quality:
