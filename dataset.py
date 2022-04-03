@@ -37,13 +37,13 @@ class LowQualityDataset(Dataset):
                 # Randomly choose an incorrect label with probability p=1-proportion_correct
                 if np.random.uniform(0, 1) > proportion_correct:
                     relevant_classes.remove(target)
-                    high_quality_dataset.targets[idx] = np.random.choice(relevant_classes)
+                    self.targets.append(np.array(np.random.choice(relevant_classes), dtype=int))
                     relevant_classes.append(target)
                     self.correctnesses.append(np.array(0, dtype=int))
                 else:
                     self.correctnesses.append(np.array(1, dtype=int))
+                    self.targets.append(np.array(high_quality_dataset.targets[idx], dtype=int))
                 self.data.append(np.array(high_quality_dataset.data[idx]))
-                self.targets.append(np.array(high_quality_dataset.targets[idx], dtype=int))
                 self.relevances.append(np.array(1, dtype=int))
             elif target in irrelevant_classes:
                 # Randomly choose a valid label for this irrelevant example
