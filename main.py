@@ -3,6 +3,7 @@ import pickle
 import copy
 import json
 from tqdm import tqdm
+import shutil
 import numpy as np
 import torch
 from torch import nn, optim
@@ -10,7 +11,7 @@ from torch.utils.data import DataLoader, Subset
 from torchvision import datasets, transforms
 from model import get_resnet_feature_extractor, SelfTrainingModel
 from dataset import LowQualityDataset, GrayscaleToRgb
-from train import naive_train_on_batch, naive_eval_on_batch
+from train import naive_train_on_batch, naive_eval_on_batch, eval_epoch, train_epoch, update_res, display_res
 
 def main():
     config_path = os.path.join('.', 'config')
@@ -26,7 +27,10 @@ def main():
         results_dir = config_params['results_dir']
         num_epochs = config_params['num_epochs']
         batch_size = config_params['batch_size']
-        technique = config_params['technique']
+        if not 'technique' in config_params:
+            technique = 'naive'
+        else:
+            technique = config_params['technique']
         if technique == 'ltrwe':
             num_validation_samples = config_params['num_validation_samples']
         
@@ -39,7 +43,10 @@ def main():
         print('Number of epochs:', num_epochs)
         print('Batch size:', batch_size)
         
-        (feature_extractor, num_features) = get_resnet_feature_extractor(num_blocks=18, pretrained=True, freeze_weights=True)
+        torch.manual_seed(0)
+        np.random.seed(0)
+        
+        (feature_extractor, num_features) = get_resnet_feature_extractor(num_blocks=18, pretrained=False, freeze_weights=False)
         model = SelfTrainingModel(feature_extractor, num_features,
                                   num_classes=5,
                                   predict_quality=False,
@@ -98,8 +105,8 @@ def main():
                                                      shuffle=True)
         low_quality_testing_dataset = LowQualityDataset(testing_dataset,
                                                         relevant_classes=relevant_classes,
-                                                        irrelevant_classes=[],
-                                                        proportion_correct=proportion_correct,
+                                                        irrelevant_classes=irrelevant_classes,
+                                                        proportion_correct=1.0,
                                                         data_transform=data_transform,
                                                         target_transform=target_transform,
                                                         relevance_transform=relevance_transform,
@@ -111,83 +118,58 @@ def main():
             validation_dataloader = DataLoader(validation_dataset,
                                                batch_size = batch_size,
                                                shuffle=True)
-        
-        loss_fn = nn.CrossEntropyLoss()
-        optimizer = optim.Adam(model.parameters())
+        loss_fn = nn.CrossEntropyLoss(reduction='none')
+        optimizer = optimizer = optim.Adam(model.parameters())
         device = 'cuda'
         model = model.to(device)
-        Results = {'train_loss': [],
-                   'test_loss': [],
-                   'train_acc': [],
-                   'test_acc': []}
+        training_results = {'relevant_loss': [],
+                            'irrelevant_loss': [],
+                            'relevant_acc': [],
+                            'irrelevant_acc': []}
+        testing_results = {'relevant_loss': [],
+                           'irrelevant_loss': [],
+                           'relevant_acc': [],
+                           'irrelevant_acc': []}
         print('Calculating initial model performance...')
-        train_loss_over_epoch = []
-        train_acc_over_epoch = []
-        for batch in tqdm(low_quality_training_dataloader):
-            loss, acc = naive_eval_on_batch(batch, model, loss_fn, device)
-            train_loss_over_epoch.append(loss)
-            train_acc_over_epoch.append(acc)
-        Results['train_loss'].append(np.mean(train_loss_over_epoch))
-        Results['train_acc'].append(np.mean(train_acc_over_epoch))
+        res = eval_epoch(low_quality_training_dataloader, model, loss_fn, device)
+        update_res(training_results, res)
+        print('Training results:')
+        display_res(res)
         # Evaluate over all batches in testing dataset and record performance
-        test_loss_over_epoch = []
-        test_acc_over_epoch = []
-        for batch in tqdm(low_quality_testing_dataloader):
-            loss, acc = naive_eval_on_batch(batch, model, loss_fn, device)
-            test_loss_over_epoch.append(loss)
-            test_acc_over_epoch.append(acc)
-        Results['test_loss'].append(np.mean(test_loss_over_epoch))
-        Results['test_acc'].append(np.mean(test_acc_over_epoch))
-        print('\tTraining loss: %e'%(Results['train_loss'][-1]))
-        print('\tTraining accuracy: %f'%(100*Results['train_acc'][-1]))
-        print('\tTesting loss: %e'%(Results['test_loss'][-1]))
-        print('\tTesting accuracy: %f'%(100*Results['test_acc'][-1]))
+        res = eval_epoch(low_quality_testing_dataloader, model, loss_fn, device)
+        update_res(testing_results, res)
+        print('Testing results:')
+        display_res(res)
+        print()
 
         for epoch in range(num_epochs):
             print('Beginning epoch %d...'%(epoch+1))
 
             # Train over all batches in training dataset and record performance
-            train_loss_over_epoch = []
-            train_acc_over_epoch = []
-            if technique == 'ltrwe':
-                for (training_batch, validation_batch) in tqdm(zip(low_quality_training_dataloader, validation_dataloader)):
-                    loss, acc = ltrwe_train_on_batch(training_batch, validation_batch, model, loss_fn, optimizer, device)
-                    train_loss_over_epoch.append(loss)
-                    train_acc_over_epoch.append(acc)
-            else:
-                for batch in tqdm(low_quality_training_dataloader):
-                    loss, acc = naive_train_on_batch(batch, model, loss_fn, optimizer, device)
-                    train_loss_over_epoch.append(loss)
-                    train_acc_over_epoch.append(acc)
-            Results['train_loss'].append(np.mean(train_loss_over_epoch))
-            Results['train_acc'].append(np.mean(train_acc_over_epoch))
+            res = train_epoch(low_quality_training_dataloader, model, loss_fn, optimizer, device)
+            update_res(training_results, res)
+            print('Training results:')
+            display_res(res)
 
             # Evaluate over all batches in testing dataset and record performance
-            test_loss_over_epoch = []
-            test_acc_over_epoch = []
-            for batch in tqdm(low_quality_testing_dataloader):
-                loss, acc = naive_eval_on_batch(batch, model, loss_fn, device)
-                test_loss_over_epoch.append(loss)
-                test_acc_over_epoch.append(acc)
-            Results['test_loss'].append(np.mean(test_loss_over_epoch))
-            Results['test_acc'].append(np.mean(test_acc_over_epoch))
-
-            # Report results
-            print('\tTraining loss: %e'%(Results['train_loss'][-1]))
-            print('\tTraining accuracy: %f'%(100*Results['train_acc'][-1]))
-            print('\tTesting loss: %e'%(Results['test_loss'][-1]))
-            print('\tTesting accuracy: %f'%(100*Results['test_acc'][-1]))
+            res = eval_epoch(low_quality_testing_dataloader, model, loss_fn, device)
+            update_res(testing_results, res)
+            print('Testing results:')
+            display_res(res)
+            print()
     
         results_dir = os.path.join('.', 'results', results_dir)
         if not(os.path.exists(results_dir)):
             os.mkdir(results_dir)
 
-        with open(os.path.join(results_dir, 'results.pickle'), 'wb') as F:
-            pickle.dump(Results, F)
+        with open(os.path.join(results_dir, 'training_results.pickle'), 'wb') as F:
+            pickle.dump(training_results, F)
+        with open(os.path.join(results_dir, 'testing_results.pickle'), 'wb') as F:
+            pickle.dump(testing_results, F)
 
         torch.save(model.state_dict(), os.path.join(results_dir, 'trained_model'))
 
-        os.rename(os.path.join(config_path, config_file), os.path.join(results_dir, config_file))
+        shutil.copy(os.path.join(config_path, config_file), os.path.join(results_dir, config_file))
         
 
 if __name__ == '__main__':

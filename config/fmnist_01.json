@@ -1,9 +1,0 @@
-{
-	"dataset": "fmnist",
-	"relevant_classes": [0, 1, 2, 3, 4],
-	"irrelevant_classes": [],
-	"proportion_correct": 0.5,
-	"results_dir": "fmnist_irrelev_0__incorrect_50",
-	"num_epochs": 25,
-	"batch_size": 32
-}
