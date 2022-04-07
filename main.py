@@ -106,7 +106,7 @@ def main():
         low_quality_testing_dataset = LowQualityDataset(testing_dataset,
                                                         relevant_classes=relevant_classes,
                                                         irrelevant_classes=irrelevant_classes,
-                                                        proportion_correct=1.0,
+                                                        proportion_correct=proportion_correct,
                                                         data_transform=data_transform,
                                                         target_transform=target_transform,
                                                         relevance_transform=relevance_transform,
@@ -122,40 +122,36 @@ def main():
         optimizer = optimizer = optim.Adam(model.parameters())
         device = 'cuda'
         model = model.to(device)
-        training_results = {'relevant_loss': [],
-                            'irrelevant_loss': [],
-                            'relevant_acc': [],
-                            'irrelevant_acc': []}
-        testing_results = {'relevant_loss': [],
-                           'irrelevant_loss': [],
-                           'relevant_acc': [],
-                           'irrelevant_acc': []}
+        training_results = {'loss_metrics': [[], [], [], []],
+                            'acc_metrics': [[], [], [], []]}
+        testing_results = {'loss_metrics': [[], [], [], []],
+                           'acc_metrics': [[], [], [], []]}
         print('Calculating initial model performance...')
-        res = eval_epoch(low_quality_training_dataloader, model, loss_fn, device)
-        update_res(training_results, res)
+        lm, am = eval_epoch(low_quality_training_dataloader, model, loss_fn, device)
+        update_res(training_results, lm, am)
         print('Training results:')
-        display_res(res)
+        display_res(lm, am)
         # Evaluate over all batches in testing dataset and record performance
-        res = eval_epoch(low_quality_testing_dataloader, model, loss_fn, device)
-        update_res(testing_results, res)
+        lm, am = eval_epoch(low_quality_testing_dataloader, model, loss_fn, device)
+        update_res(testing_results, lm, am)
         print('Testing results:')
-        display_res(res)
+        display_res(lm, am)
         print()
 
         for epoch in range(num_epochs):
             print('Beginning epoch %d...'%(epoch+1))
 
             # Train over all batches in training dataset and record performance
-            res = train_epoch(low_quality_training_dataloader, model, loss_fn, optimizer, device)
-            update_res(training_results, res)
+            lm, am = train_epoch(low_quality_training_dataloader, model, loss_fn, optimizer, device)
+            update_res(training_results, lm, am)
             print('Training results:')
-            display_res(res)
+            display_res(lm, am)
 
             # Evaluate over all batches in testing dataset and record performance
-            res = eval_epoch(low_quality_testing_dataloader, model, loss_fn, device)
-            update_res(testing_results, res)
+            lm, am = eval_epoch(low_quality_testing_dataloader, model, loss_fn, device)
+            update_res(testing_results, lm, am)
             print('Testing results:')
-            display_res(res)
+            display_res(lm, am)
             print()
     
         results_dir = os.path.join('.', 'results', results_dir)
@@ -167,7 +163,7 @@ def main():
         with open(os.path.join(results_dir, 'testing_results.pickle'), 'wb') as F:
             pickle.dump(testing_results, F)
 
-        torch.save(model.state_dict(), os.path.join(results_dir, 'trained_model'))
+        #torch.save(model.state_dict(), os.path.join(results_dir, 'trained_model'))
 
         shutil.copy(os.path.join(config_path, config_file), os.path.join(results_dir, config_file))
         

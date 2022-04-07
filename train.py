@@ -61,40 +61,51 @@ def ltrwe_train_on_batch(training_batch, validation_batch, model, loss_fn, optim
     
     return loss, accuracy
 
-def eval_epoch(dataloader, model, loss_fn, device, print_output=False):
-    rll, raa, ill, iaa = [], [], [], []
+def eval_epoch(dataloader, model, loss_fn, device):
+    loss_metrics, accuracy_metrics = [[] for _ in range(4)], [[] for _ in range(4)]
     for batch in tqdm(dataloader):
-        rl, ra, il, ia = naive_eval_on_batch(batch, model, loss_fn, device, print_output)
-        rll.append(rl)
-        raa.append(ra)
-        ill.append(il)
-        iaa.append(ia)
-    return {'relevant_loss': np.mean(rll),
-            'relevant_acc': np.mean(raa),
-            'irrelevant_loss': np.mean(ill),
-            'irrelevant_acc': np.mean(iaa)}
+        l, a = naive_eval_on_batch(batch, model, loss_fn, device)
+        for (idx, (ll, aa)) in enumerate(zip(l, a)):
+            loss_metrics[idx].append(ll)
+            accuracy_metrics[idx].append(aa)
+    for (idx, (l, a)) in enumerate(zip(loss_metrics, accuracy_metrics)):
+        loss_metrics[idx] = np.mean(l)
+        accuracy_metrics[idx] = np.mean(a)
+    return (loss_metrics, accuracy_metrics)
 
 def train_epoch(dataloader, model, loss_fn, optimizer, device):
-    rll, raa, ill, iaa = [], [], [], []
+    loss_metrics, accuracy_metrics = [[] for _ in range(4)], [[] for _ in range(4)]
     for batch in tqdm(dataloader):
-        rl, ra, il, ia = naive_train_on_batch(batch, model, loss_fn, optimizer, device)
-        rll.append(rl)
-        raa.append(ra)
-        ill.append(il)
-        iaa.append(ia)
-    return {'relevant_loss': np.mean(rll),
-            'relevant_acc': np.mean(raa),
-            'irrelevant_loss': np.mean(ill), 
-            'irrelevant_acc': np.mean(iaa)}
+        l, a = naive_train_on_batch(batch, model, loss_fn, optimizer, device)
+        for (idx, (ll, aa)) in enumerate(zip(l, a)):
+            loss_metrics[idx].append(ll)
+            accuracy_metrics[idx].append(aa)
+    for (idx, (l, a)) in enumerate(zip(loss_metrics, accuracy_metrics)):
+        loss_metrics[idx] = np.mean(l)
+        accuracy_metrics[idx] = np.mean(a)
+    return (loss_metrics, accuracy_metrics)
 
-def update_res(res_d, res):
-    for k in res_d.keys():
-        res_d[k].append(res[k])
+def update_res(res_dict, loss_res, acc_res):
+    for (l, idx) in zip(loss_res, range(len(res_dict['loss_metrics']))):
+        res_dict['loss_metrics'][idx].append(l)
+    for (a, idx) in zip(acc_res, range(len(res_dict['acc_metrics']))):
+        res_dict['acc_metrics'][idx].append(a)
 
-def display_res(res):
-    for k in res:
-        print(k, ':', res[k])
+def display_res(loss_res, acc_res):
+    for (res, s) in [(loss_res, 'Loss:'), (acc_res, 'Accuracy:')]:
+        print(s)
+        print('\trelevant/correct:', res[0])
+        print('\tirrelevant/correct:', res[1])
+        print('\trelevant/incorrect:', res[2])
+        print('\tirrelevant/incorrect:', res[3])
 
+def compute_metrics(m, relevance, correctness):
+    m11 = np.mean(m[relevance*correctness == 1])
+    m01 = np.mean(m[(1-relevance)*correctness == 1])
+    m10 = np.mean(m[relevance*(1-correctness) == 1])
+    m00 = np.mean(m[(1-relevance)*(1-correctness) == 1])
+    return (m11, m01, m10, m00)
+        
 def naive_train_on_batch(batch, model, loss_fn, optimizer, device):
     # Get input data ready for the model
     images, labels, relevance, correctness = batch
@@ -113,18 +124,17 @@ def naive_train_on_batch(batch, model, loss_fn, optimizer, device):
     optimizer.step()
     
     # Record how well the model performed
-    elementwise_loss = elementwise_loss.detach().cpu()
-    relevant_loss = torch.mean(elementwise_loss[relevance == 1])
-    irrelevant_loss = torch.mean(elementwise_loss[relevance == 0])
+    elementwise_loss = elementwise_loss.detach().cpu().numpy()
+    loss_metrics = compute_metrics(elementwise_loss, relevance, correctness)
+    
     predictions = np.array(np.argmax(predictions.detach().cpu(), axis=1))
     labels = np.array(labels.detach().cpu())
     correct = np.equal(predictions, labels)
-    relevant_accuracy = np.mean(correct[relevance == 1])
-    irrelevant_accuracy = np.mean(correct[relevance == 0])
+    accuracy_metrics = compute_metrics(correct, relevance, correctness)
     
-    return relevant_loss, relevant_accuracy, irrelevant_loss, irrelevant_accuracy
+    return (loss_metrics, accuracy_metrics)
 
-def naive_eval_on_batch(batch, model, loss_fn, device, print_output=False):
+def naive_eval_on_batch(batch, model, loss_fn, device):
     # Get input data ready for the model
     images, labels, relevance, correctness = batch
     batch_size = len(images)
@@ -140,14 +150,12 @@ def naive_eval_on_batch(batch, model, loss_fn, device, print_output=False):
         loss = torch.mean(elementwise_loss)
     
     # Record how well the model performed
-    elementwise_loss = elementwise_loss.detach().cpu()
-    relevant_loss = torch.mean(elementwise_loss[relevance == 1])
-    irrelevant_loss = torch.mean(elementwise_loss[relevance == 0])
+    elementwise_loss = elementwise_loss.detach().cpu().numpy()
+    loss_metrics = compute_metrics(elementwise_loss, relevance, correctness)
+    
     predictions = np.array(np.argmax(predictions.detach().cpu(), axis=1))
     labels = np.array(labels.detach().cpu())
     correct = np.equal(predictions, labels)
-    relevant_accuracy = np.mean(correct[relevance == 1])
-    irrelevant_accuracy = np.mean(correct[relevance == 0])
-    if print_output:
-        pass
-    return relevant_loss, relevant_accuracy, irrelevant_loss, irrelevant_accuracy
+    accuracy_metrics = compute_metrics(correct, relevance, correctness)
+    
+    return (loss_metrics, accuracy_metrics)
