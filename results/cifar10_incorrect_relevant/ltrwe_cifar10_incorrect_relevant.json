@@ -1,0 +1,11 @@
+{
+    "dataset": "cifar10",
+    "relevant_classes": [0, 1, 2, 3, 4],
+    "irrelevant_classes": [],
+    "proportion_correct": 0.5,
+    "results_dir": "cifar10_incorrect_relevant",
+    "num_epochs": 50,
+    "batch_size": 32,
+    "technique": "ltrwe",
+    "num_validation_samples": 100
+}

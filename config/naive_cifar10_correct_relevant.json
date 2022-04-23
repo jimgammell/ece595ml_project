@@ -1,0 +1,9 @@
+{
+    "dataset": "cifar10",
+    "relevant_classes": [0, 1, 2, 3, 4],
+    "irrelevant_classes": [],
+    "proportion_correct": 1.0,
+    "num_epochs": 50,
+    "batch_size": 100,
+    "technique": "naive"
+}

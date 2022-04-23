@@ -81,6 +81,24 @@ class SelfTrainingModel(nn.Module):
             correctness = None
         return (classification, quality, correctness)
 
+def get_lenet_feature_extractor(input_channels=3):
+    layers = [nn.Conv2d(input_channels, 6, kernel_size=5),
+              nn.BatchNorm2d(6),
+              nn.ReLU(),
+              nn.MaxPool2d(kernel_size=2, stride=2),
+              nn.Conv2d(6, 16, kernel_size=5),
+              nn.BatchNorm2d(16),
+              nn.ReLU(),
+              nn.MaxPool2d(kernel_size=2, stride=2),
+              nn.Flatten(),
+              nn.LazyLinear(120),
+              nn.ReLU(),
+              nn.Linear(120, 84),
+              nn.ReLU()]
+    model = nn.Sequential(*layers)
+    print(model)
+    return (model, 84)
+    
 def get_resnet_feature_extractor(num_blocks=50, pretrained=False, freeze_weights=False):
     num_blocks_to_constructor = {
         18:  models.resnet.resnet18,

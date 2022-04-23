@@ -1,6 +1,6 @@
 import numpy as np
 import torch
-from torch.utils.data import Dataset
+from torch.utils.data import Dataset, Subset
 from matplotlib import pyplot as plt
 
 class GrayscaleToRgb:
@@ -9,6 +9,87 @@ class GrayscaleToRgb:
     def __call__(self, x):
         x = x.repeat(3, 1, 1)
         return x
+
+def compute_minimal_perturbation(data, target, model, loss_fn, device, eps, max_steps=100):
+    data.requires_grad = True
+    data = data.to(device)
+    target = target.to(device)
+    model.eval()
+    logits = model(data)
+    loss = loss_fn(logits, target)
+    data_grad = torch.autograd.grad(loss, data)[0].detach()
+    perturbation = torch.sign(data_grad)
+    data.requires_grad = False
+    
+    a, b = 0, 1
+    while (b-a)/2 >= eps:
+        c = (a+b)/2
+        with torch.no_grad():
+            logits = model(data+c*perturbation)
+        logits = logits.cpu().numpy()
+        prediction = np.argmax(logits, axis=-1)
+        if prediction == target:
+            a = c
+        else:
+            b = c
+        max_steps -= 1
+        if max_steps < 0:
+            return np.nan
+    return c
+
+class ValidationDataset(Dataset):
+    def __init__(self,
+                 dataset,
+                 data_transform=None,
+                 target_transform=None):
+        super().__init__()
+        self.data = []
+        self.targets = []
+        self.data_transform = data_transform
+        self.target_transform = target_transform
+        for (image, target) in dataset:
+            self.data.append(np.array(image))
+            self.targets.append(np.array(target, dtype=int))
+        self.num_samples = len(self.data)
+        assert self.num_samples == len(self.targets)
+    def __len__(self):
+        return self.num_samples
+    def __getitem__(self, idx):
+        data = self.data[idx]
+        target = self.targets[idx]
+        if self.data_transform is not None:
+            data = self.data_transform(data)
+        if self.target_transform is not None:
+            target = self.target_transform(target)
+        return data, target
+
+class FewClassDataset(Dataset):
+    def __init__(self,
+                 dataset,
+                 classes,
+                 data_transform,
+                 target_transform):
+        self.data = []
+        self.targets = []
+        self.data_transform = data_transform
+        self.target_transform = target_transform
+        
+        for (idx, (data, target)) in enumerate(dataset):
+            if target in classes:
+                self.data.append(np.array(data))
+                self.targets.append(np.array(target, dtype=int))
+        self.num_samples = len(self.data)
+        assert self.num_samples == len(self.targets)
+    def __len__(self):
+        return self.num_samples
+    def __getitem__(self, idx):
+        data = self.data[idx]
+        target = self.targets[idx]
+        if self.data_transform is not None:
+            data = self.data_transform(data)
+        if self.target_transform is not None:
+            target = self.target_transform(target)
+        return data, target
 
 class LowQualityDataset(Dataset):
     def __init__(self,
@@ -32,7 +113,7 @@ class LowQualityDataset(Dataset):
         self.relevance_transform = relevance_transform
         self.correctness_transform = correctness_transform
         
-        for (idx, target) in enumerate(high_quality_dataset.targets):
+        for (idx, (data, target)) in enumerate(high_quality_dataset):
             if target in relevant_classes:
                 # Randomly choose an incorrect label with probability p=1-proportion_correct
                 if np.random.uniform(0, 1) > proportion_correct:
@@ -42,12 +123,12 @@ class LowQualityDataset(Dataset):
                     self.correctnesses.append(np.array(0, dtype=int))
                 else:
                     self.correctnesses.append(np.array(1, dtype=int))
-                    self.targets.append(np.array(high_quality_dataset.targets[idx], dtype=int))
-                self.data.append(np.array(high_quality_dataset.data[idx]))
+                    self.targets.append(np.array(target, dtype=int))
+                self.data.append(np.array(data))
                 self.relevances.append(np.array(1, dtype=int))
             elif target in irrelevant_classes:
                 # Randomly choose a valid label for this irrelevant example
-                self.data.append(np.array(high_quality_dataset.data[idx]))
+                self.data.append(np.array(data))
                 self.targets.append(np.array(np.random.choice(relevant_classes), dtype=int))
                 self.correctnesses.append(np.array(0, dtype=int))
                 self.relevances.append(np.array(0, dtype=int))
