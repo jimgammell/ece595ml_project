@@ -5,17 +5,18 @@ import higher
 import copy
 from tqdm import tqdm
 
-def compute_ltrwe_example_weights(training_batch, validation_batch, model, loss_fn, optimizer, device):
+def compute_ltrwe_example_weights(training_batch, validation_batch, model, loss_fn, device):
     training_images, training_labels = training_batch
     validation_images, validation_labels = validation_batch
     validation_images = validation_images.to(device, non_blocking=True)
     validation_labels = validation_labels.to(device, non_blocking=True)
     
-    #model_params_backup = copy.deepcopy(model.state_dict())
+    model_params_backup = copy.deepcopy(model.state_dict())
     #optimizer_params_backup = copy.deepcopy(optimizer.state_dict())
     
-    optimizer.zero_grad()
-    with higher.innerloop_ctx(model, optimizer) as (fmodel, diffopt):
+    #optimizer.zero_grad()
+    dummy_optimizer = optim.SGD(model.parameters(), lr=.01)
+    with higher.innerloop_ctx(model, dummy_optimizer) as (fmodel, diffopt):
         (training_logits, _, _) = fmodel(training_images)
         training_loss = loss_fn(training_logits, training_labels)
         eps = torch.zeros_like(training_loss, device=device, requires_grad=True)
@@ -31,7 +32,7 @@ def compute_ltrwe_example_weights(training_batch, validation_batch, model, loss_
     else:
         weights /= torch.sum(weights)
     
-    #model.load_state_dict(model_params_backup)
+    model.load_state_dict(model_params_backup)
     #optimizer.load_state_dict(optimizer_params_backup)
     
     return weights
@@ -45,7 +46,7 @@ def ltrwe_train_on_batch(training_batch, validation_batch, model, loss_fn, optim
     training_batch = (training_images, training_labels)
         
     model.train()
-    example_weights = compute_ltrwe_example_weights(training_batch, validation_batch, model, loss_fn, optimizer, device)
+    example_weights = compute_ltrwe_example_weights(training_batch, validation_batch, model, loss_fn, device)
 
     optimizer.zero_grad()
     (predictions, _, _) = model(training_images)
