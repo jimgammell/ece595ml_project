@@ -141,7 +141,7 @@ def main():
                                   predict_correctness=False)
             
         loss_fn = nn.CrossEntropyLoss(reduction='none')
-        #optimizer = optim.SGD(model.parameters(), momentum=.9, lr=.1)
+        #optimizer = optim.SGD(model.parameters(), momentum=.9, lr=.001)
         optimizer = optim.Adam(model.parameters())
         device = 'cuda'
         model = model.to(device)

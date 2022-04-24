@@ -15,7 +15,7 @@ def compute_ltrwe_example_weights(training_batch, validation_batch, model, loss_
     #optimizer_params_backup = copy.deepcopy(optimizer.state_dict())
     
     #optimizer.zero_grad()
-    dummy_optimizer = optim.SGD(model.parameters(), lr=.01)
+    dummy_optimizer = optim.SGD(model.parameters(), lr=.001)
     with higher.innerloop_ctx(model, dummy_optimizer) as (fmodel, diffopt):
         (training_logits, _, _) = fmodel(training_images)
         training_loss = loss_fn(training_logits, training_labels)
