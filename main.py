@@ -19,10 +19,10 @@ def get_json_file_arguments(config_dir, config_name):
     with open(os.path.join(config_dir, config_name), 'r') as F:
         config_params = json.load(F)
     if 'results_dir' in config_params:
-        results_dir = config_params['results_dir']
+        results_dir = os.path.join('.', 'results', config_params['results_dir'])
         del config_params['results_dir']
     else:
-        results_dir = config_name.split('.')[-1]
+        results_dir = os.path.join('.', 'results', config_name.split('.')[0])
     return results_dir, config_params
 
 def main():

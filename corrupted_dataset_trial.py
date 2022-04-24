@@ -1,7 +1,7 @@
 from tqdm import tqdm
 import numpy as np
 import torch
-from torch import optim
+from torch import nn, optim
 from torch.utils.data import Dataset
 from copy import deepcopy
 import higher
@@ -36,6 +36,7 @@ class CleanDatasetTrial:
                  optimizer,
                  device,
                  num_epochs,
+                 batch_size,
                  evaluate_initial_performance=True,
                  val_dataloader=None):
         self.results = Results()
@@ -47,6 +48,7 @@ class CleanDatasetTrial:
         self.optimizer = optimizer
         self.device = device
         self.num_epochs = num_epochs
+        self.batch_size = batch_size
         self.evaluate_initial_performance = evaluate_initial_performance
         self.val_dataloader = val_dataloader
     
@@ -67,14 +69,20 @@ class CleanDatasetTrial:
                                             'test_loss': test_loss,
                                             'test_acc': test_acc})
             elif self.method == 'ltrwe':
-                train_loss, train_acc, weights_hist = self.ltrwe_train_epoch(epoch)
+                res = self.ltrwe_train_epoch(epoch)
                 test_loss, test_acc = self.eval_epoch(epoch, self.test_dataloader)
-                self.results.update(epoch, {'train_loss': train_loss,
-                                            'train_acc': train_acc,
-                                            'weights_hist': weights_hist,
+                self.results.update(epoch, {'train_loss': res[0],
+                                            'train_acc': res[1],
+                                            'weights_hist': res[2],
+                                            'unused_samples': res[3],
+                                            'p25_weight': res[4],
+                                            'p50_weight': res[5],
+                                            'p75_weight': res[6],
+                                            'mn_weight': res[7],
+                                            'std_weight': res[8],
                                             'test_loss': test_loss,
                                             'test_acc': test_acc})
-        return results
+        return self.results
         
     def eval_epoch(self, epoch_num, dataloader):
         print('Beginning evaluating epoch {}...'.format(epoch_num))
@@ -121,16 +129,17 @@ class CleanDatasetTrial:
         batch_losses = []
         batch_accuracies = []
         batch_weights = []
-        for (training_batch, validation_batch) in tqdm(zip(self.train_dataloader, self.val_dataloader)):
+        for training_batch in tqdm(self.train_dataloader):
             training_images, training_labels = training_batch
             training_images = training_images.to(self.device)
             training_labels_d = training_labels.to(self.device)
             training_labels = training_labels.numpy()
+            validation_batch = next(iter(self.val_dataloader))
             validation_images, validation_labels = validation_batch
             validation_images = validation_images.to(self.device)
             validation_labels_d = validation_labels.to(self.device)
             validation_labels = validation_labels.numpy()
-            elementwise_loss, predictions, weights = ltrwe_train_on_batch(training_images, training_labels_d, validation_images, validation_labels_d, self.model, self.loss_fn, self.device)
+            elementwise_loss, predictions, weights = ltrwe_train_on_batch(training_images, training_labels_d, validation_images, validation_labels_d, self.model, self.loss_fn, self.optimizer, self.device)
             batch_loss = np.mean(elementwise_loss)
             batch_accuracy = np.mean(np.equal(predictions, training_labels))
             batch_weight = list(weights)
@@ -139,11 +148,20 @@ class CleanDatasetTrial:
             batch_weights.extend(batch_weight)
         loss = np.mean(batch_losses)
         accuracy = np.mean(batch_accuracies)
-        weight = np.histogram(batch_weights, bins=self.batch_size, range=(0.0, 1.0))
+        weight = np.histogram(batch_weights, bins=5*self.batch_size, range=(0.0, 1.0))
+        unused_samples = len([w for w in batch_weights if w == 0])
+        med_weight = np.percentile(weights, 50)
+        p25_weight = np.percentile(weights, 25)
+        p75_weight = np.percentile(weights, 75)
+        mn_weight = np.mean(weights)
+        std_weight = np.std(weights)
         print('\tLoss: {}'.format(loss))
         print('\tAccuracy: {}'.format(accuracy))
         print('\tWeight: {}'.format(weight))
-        return loss, accuracy, weight
+        print('\tUnused samples: {}'.format(unused_samples))
+        print('25/50/75 percentile weights: {} / {} / {}'.format(p25_weight, med_weight, p75_weight))
+        print('Mean/std weights: {} / {}'.format(mn_weight, std_weight))
+        return loss, accuracy, weight, unused_samples, p25_weight, med_weight, p75_weight, mn_weight, std_weight
 
 class CleanDataset(Dataset):
     def __init__(self, *args):
@@ -352,6 +370,7 @@ def ltrwe_train_on_batch(training_images,
                          validation_labels,
                          model,
                          loss_fn,
+                         optimizer,
                          device):
     model.train()
     
