@@ -1,0 +1,22 @@
+{
+    "seed": 0,
+    "dataset": "MNIST",
+    "trial_type": "CleanDataset",
+    "trial_kwargs": {},
+    "method": "ltrwe",
+    "num_validation_samples": 10,
+    "dataloader_kwargs":
+    {
+        "batch_size": 32,
+        "shuffle": true
+    },
+    "model": "LeNet5",
+    "model_kwargs": {},
+    "loss_fn": "CrossEntropyLoss",
+    "loss_fn_kwargs": {},
+    "optimizer": "Adam",
+    "optimizer_kwargs": {},
+    "device": "cpu",
+    "num_epochs": 100,
+    "evaluate_initial_performance": true
+}
