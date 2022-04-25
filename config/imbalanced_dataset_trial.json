@@ -32,7 +32,7 @@
         "num_majority_samples": 300,
         "num_minority_samples": 300
     },
-    "method": ["ltrwe"],
+    "method": ["smltrwe"],
     "num_validation_samples": 10,
     "dataloader_kwargs":
     {
@@ -41,6 +41,11 @@
     },
     "model": "LeNet5",
     "model_kwargs": 
+    {
+        "output_classes": 2
+    },
+    "random_model": "LeNet5",
+    "random_model_kwargs":
     {
         "output_classes": 2
     },

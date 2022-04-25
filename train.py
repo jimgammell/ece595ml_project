@@ -36,11 +36,11 @@ def run_trial(config_params, results_dir):
                     base_train_dataset, base_test_dataset = datasets.get_dataset(cp_dataset)
                     dataset_constructor = getattr(corrupted_dataset_trial, config_params['trial_type'])
                     train_dataset = dataset_constructor(base_train_dataset, **trial_kwargs)
-                    if cp_method == 'ltrwe':
+                    if 'ltrwe' in cp_method:
                         validation_dataset = train_dataset.get_validation_dataset(config_params['num_validation_samples'])
                     test_dataset = dataset_constructor(base_test_dataset, **config_params['test_dataset_kwargs'])
                     train_dataloader = DataLoader(train_dataset, **config_params['dataloader_kwargs'])
-                    if cp_method == 'ltrwe':
+                    if 'ltrwe' in cp_method:
                         val_dataloader = DataLoader(validation_dataset, **config_params['dataloader_kwargs'])
                     if 'shuffle' in config_params['dataloader_kwargs']:
                         config_params['dataloader_kwargs']['shuffle'] = False
@@ -69,8 +69,18 @@ def run_trial(config_params, results_dir):
                                     'num_epochs': config_params['num_epochs'],
                                     'batch_size': config_params['dataloader_kwargs']['batch_size'],
                                     'evaluate_initial_performance': config_params['evaluate_initial_performance']}
-                    if cp_method == 'ltrwe':
+                    if 'ltrwe' in cp_method:
                         trial_kwargs.update({'val_dataloader': val_dataloader})
+                    if cp_method == 'smltrwe':
+                        random_model_constructor = getattr(models, config_params['random_model_constructor'])
+                        trial_kwargs.update({'random_model_constructor': random_model_constructor})
+                        trial_kwargs.update({'random_model_kwargs': config_params['random_model_kwargs']})
+                    if 'exaustion_criteria' in config_params:
+                        trial_kwargs.update({'exaustion_criteria': config_params['exaustion_criteria']})
+                    if 'coarse_weights' in config_params:
+                        trial_kwargs.update({'coarse_weights': config_params['coarse_weights']})
+                    if 'weights_propto_samples' in config_params:
+                        trial_kwargs.update({'weights_propto_samples': config_params['weights_propto_samples']})
                     trial = trial_constructor(**trial_kwargs)
                     results = trial()
 

@@ -244,7 +244,12 @@ class ImbalancedDatasetTrial:
                  num_epochs,
                  batch_size,
                  evaluate_initial_performance=True,
-                 val_dataloader=None):
+                 val_dataloader=None,
+                 random_model_constructor=None,
+                 random_model_kwargs=None,
+                 exaustion_criteria = 0,
+                 coarse_weights=False,
+                 weights_propto_samples=False):
         self.results = Results()
         self.method = method
         self.train_dataloader = train_dataloader
@@ -257,6 +262,11 @@ class ImbalancedDatasetTrial:
         self.batch_size = batch_size
         self.evaluate_initial_performance = evaluate_initial_performance
         self.val_dataloader = val_dataloader
+        self.random_model_constructor = random_model_constructor
+        self.random_model_kwargs = random_model_kwargs
+        self.exaustion_criteria = exaustion_criteria
+        self.coarse_weights = coarse_weights
+        self.weights_propto_samples = weights_propto_samples
     
     def __call__(self):
         if self.evaluate_initial_performance:
@@ -266,7 +276,10 @@ class ImbalancedDatasetTrial:
             dict_key_prepend(test_results, 'test_')
             self.results.update(0, training_results)
             self.results.update(0, test_results)
-        for epoch in range(1, self.num_epochs+1):
+        best_test_accuracy = -np.inf
+        epoch = 1
+        epochs_without_improvement = 0
+        while (epoch <= num_epochs) or (epochs_without_improvement < self.exaustion_criteria):
             if self.method == 'naive':
                 training_results = self.naive_train_epoch(epoch)
                 test_results = self.eval_epoch(epoch, self.test_dataloader)
@@ -282,12 +295,20 @@ class ImbalancedDatasetTrial:
                 self.results.update(epoch, training_results)
                 self.results.update(epoch, test_results)
             elif self.method == 'smltrwe':
-                training_results = self.smltrwe_train_epoch(epoch)
+                random_model = self.random_model_constructor(**self.random_model_kwargs)
+                training_results = self.smltrwe_train_epoch(epoch, random_model)
                 test_results = self.eval_epoch(epoch, self.test_dataloader)
                 dict_key_prepend(training_results, 'train_')
                 dict_key_prepend(test_results, 'test_')
                 self.results.update(epoch, training_results)
                 self.results.update(epoch, test_results)
+            test_accuracy = np.mean((test_results['test_minority_accuracy'], test_results['test_majority_accuracy']))
+            if test_accuracy > best_test_accuracy:
+                best_test_accuracy = test_accuracy
+                epochs_without_improvement = 0
+            else:
+                epochs_without_improvement += 1
+            epoch += 1
         return self.results
         
     def evaluation_metrics_dict(self):
@@ -389,6 +410,30 @@ class ImbalancedDatasetTrial:
             print('\t{}: {}'.format(key, results[key]))
         return results
     
+    def smltrwe_train_epoch(self, random_model):
+        print('Beginning training epoch {}...'.format(epoch_num))
+        results = self.ltrwe_metrics_dict()
+        for training_batch in tqdm(self.train_dataloader):
+            training_images, training_labels = training_batch
+            training_images = training_images.to(self.device)
+            training_labels_d = training_labels.to(self.device)
+            training_labels = training_labels.numpy()
+            validation_batch = next(iter(self.val_dataloader))
+            validation_images, validation_labels = validation_batch
+            validation_images = validation_images.to(self.device)
+            validation_labels_d = validation_labels.to(self.device)
+            validation_labels = validation_labels.numpy()
+            values = smltrwe_train_on_batch(training_images, training_labels_d, validation_images, validation_labels_d, self.model, random_model, self.loss_fn, self.optimizer, self.device, self.weights_propto_samples, self.coarse_weights)
+            metrics = self.compute_ltrwe_metrics(*values)
+            self.append_ltrwe_metrics(results, metrics)
+        for key in results:
+            if key in ['majority_nonzero_samples', 'minority_nonzero_samples']:
+                results[key] = np.sum(results[key])
+            else:
+                results[key] = np.mean(results[key])
+            print('\t{}: {}'.format(key, results[key]))
+        return results
+    
     def ltrwe_train_epoch(self, epoch_num):
         print('Beginning training epoch {}...'.format(epoch_num))
         results = self.ltrwe_metrics_dict()
@@ -402,7 +447,7 @@ class ImbalancedDatasetTrial:
             validation_images = validation_images.to(self.device)
             validation_labels_d = validation_labels.to(self.device)
             validation_labels = validation_labels.numpy()
-            values = ltrwe_train_on_batch(training_images, training_labels_d, validation_images, validation_labels_d, self.model, self.loss_fn, self.optimizer, self.device)
+            values = ltrwe_train_on_batch(training_images, training_labels_d, validation_images, validation_labels_d, self.model, self.loss_fn, self.optimizer, self.device, self.weights_propto_samples, self.coarse_weights)
             metrics = self.compute_ltrwe_metrics(*values)
             self.append_ltrwe_metrics(results, metrics)
         for key in results:
@@ -611,7 +656,7 @@ def ltrwe_train_on_batch(training_images,
                          loss_fn,
                          optimizer,
                          device,
-                         reweight_by_nonzero_examples=False,
+                         reweight_by_nonzero_examples=True,
                          coarse_example_reweighting=False):
     model.train()
     
