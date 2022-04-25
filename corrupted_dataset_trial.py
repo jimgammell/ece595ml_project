@@ -283,45 +283,54 @@ class ImbalancedDatasetTrial:
                                             'test_acc': test_acc})
         return self.results
         
+    def evaluation_metrics_dict(self):
+        return {'majority_loss': [],
+                'minority_loss': [],
+                'majority_accuracy': [],
+                'minority_accuracy': []}
+        
+    def compute_evaluation_metrics(self, elementwise_loss, predictions, labels):
+        majority_loss = np.mean(elementwise_loss[labels==0])
+        minority_loss = np.mean(elementwise_loss[labels==1])
+        majority_accuracy = np.mean(np.equal(predictions, labels)[labels==0])
+        minority_accuracy = np.mean(np.equal(predictions, labels)[labels==1])
+        return majority_loss, minority_loss, majority_accuracy, minority_accuracy
+    
+    def append_evaluation_metrics(self, em_dict, metrics):
+        for (key, metric) in zip(em_dict.keys(), metrics):
+            em_dict[key].append(metric)
+    
     def eval_epoch(self, epoch_num, dataloader):
         print('Beginning evaluating epoch {}...'.format(epoch_num))
-        batch_losses = []
-        batch_accuracies = []
+        results = self.evaluation_metrics_dict()
         for batch in tqdm(dataloader):
             images, labels = batch
             images = images.to(self.device)
             labels_d = labels.to(self.device)
             labels = labels.numpy()
             elementwise_loss, predictions = eval_on_batch(images, labels_d, self.model, self.loss_fn, self.optimizer, self.device)
-            batch_loss = np.mean(elementwise_loss)
-            batch_accuracy = np.mean(np.equal(predictions, labels))
-            batch_losses.append(batch_loss)
-            batch_accuracies.append(batch_accuracy)
-        loss = np.mean(batch_losses)
-        accuracy = np.mean(batch_accuracies)
-        print('\tLoss: {}'.format(loss))
-        print('\tAccuracy: {}'.format(accuracy))
-        return loss, accuracy
+            metrics = self.compute_evaluation_metrics(elementwise_loss, predictions, labels)
+            self.append_evaluation_metrics(results, metrics)
+        for key in results.keys():
+            results[key] = np.mean(results[key])
+            print('\t{}: {}'.format(key, results[key]))
+        return results
         
     def naive_train_epoch(self, epoch_num):
         print('Beginning training epoch {}...'.format(epoch_num))
-        batch_losses = []
-        batch_accuracies = []
+        results = self.evaluation_metrics_dict()
         for batch in tqdm(self.train_dataloader):
             images, labels = batch
             images = images.to(self.device)
             labels_d = labels.to(self.device)
             labels = labels.numpy()
             elementwise_loss, predictions = naive_train_on_batch(images, labels_d, self.model, self.loss_fn, self.optimizer, self.device)
-            batch_loss = np.mean(elementwise_loss)
-            batch_accuracy = np.mean(np.equal(predictions, labels))
-            batch_losses.append(batch_loss)
-            batch_accuracies.append(batch_accuracy)
-        loss = np.mean(batch_losses)
-        accuracy = np.mean(batch_accuracies)
-        print('\tLoss: {}'.format(loss))
-        print('\tAccuracy: {}'.format(accuracy))
-        return loss, accuracy
+            metrics = self.compute_evaluation_metrics(elementwise_loss, predictions, labels)
+            self.append_evaluation_metrics(results, metrics)
+        for key in results.keys():
+            results[key] = np.mean(results[key])
+            print('\t{}: {}'.format(key, results[key]))
+        return results
     
     def ltrwe_train_epoch(self, epoch_num):
         print('Beginning training epoch {}...'.format(epoch_num))
@@ -383,11 +392,11 @@ class ImbalancedDataset(Dataset):
         for (image, target) in base_dataset:
             if (target==majority_class) and (majority_to_go>0):
                 self.data.append(image)
-                self.targets.append(target)
+                self.targets.append(0)
                 majority_to_go -= 1
             if (target==minority_class) and (minority_to_go>0):
                 self.data.append(image)
-                self.targets.append(target)
+                self.targets.append(1)
         self.number_of_samples = len(self.data)
         assert self.number_of_samples == len(self.targets)
         
@@ -508,7 +517,8 @@ def ltrwe_train_on_batch(training_images,
                          model,
                          loss_fn,
                          optimizer,
-                         device):
+                         device,
+                         reweight_by_nonzero_examples=False):
     model.train()
     
     model_params_backup = deepcopy(model.state_dict())
@@ -526,6 +536,8 @@ def ltrwe_train_on_batch(training_images,
     weights = nn.functional.relu(-eps_grad)
     if torch.norm(weights) != 0:
         weights /= torch.sum(weights)
+        if reweight_by_nonzero_examples:
+            weights *= torch.norm(weights, p=0)/len(training_images)
     model.load_state_dict(model_params_backup)
     
     optimizer.zero_grad()
