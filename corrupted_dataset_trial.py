@@ -27,7 +27,8 @@ class Results:
         return x, y
 
 def dict_key_prepend(d, pref):
-    for key in d.keys():
+    keys_list = [k for k in d.keys()]
+    for key in keys_list:
         d[pref+key] = d.pop(key)
 
 class CleanDatasetTrial:
@@ -289,15 +290,20 @@ class ImbalancedDatasetTrial:
                 'minority_accuracy': []}
         
     def compute_evaluation_metrics(self, elementwise_loss, predictions, labels):
-        majority_loss = np.mean(elementwise_loss[labels==0])
-        minority_loss = np.mean(elementwise_loss[labels==1])
-        majority_accuracy = np.mean(np.equal(predictions, labels)[labels==0])
-        minority_accuracy = np.mean(np.equal(predictions, labels)[labels==1])
+        def mean(x):
+            if len(x) == 0:
+                return 0
+            return np.mean(x)
+        majority_loss = mean(elementwise_loss[labels==0])
+        minority_loss = mean(elementwise_loss[labels==1])
+        majority_accuracy = mean(np.equal(predictions, labels)[labels==0])
+        minority_accuracy = mean(np.equal(predictions, labels)[labels==1])
         return majority_loss, minority_loss, majority_accuracy, minority_accuracy
     
     def append_evaluation_metrics(self, em_dict, metrics):
         for (key, metric) in zip(em_dict.keys(), metrics):
-            em_dict[key].append(metric)
+            if not(np.isnan(metric)):
+                em_dict[key].append(metric)
     
     def ltrwe_metrics_dict(self):
         return {'majority_loss': [],
@@ -305,8 +311,8 @@ class ImbalancedDatasetTrial:
                 'majority_accuracy': [],
                 'minority_accuracy': [],
                 'val_majority_loss': [],
-                'val_majority_accuracy': [],
                 'val_minority_loss': [],
+                'val_majority_accuracy': [],
                 'val_minority_accuracy': [],
                 'majority_weights_mean': [],
                 'minority_weights_mean': [],
@@ -318,26 +324,31 @@ class ImbalancedDatasetTrial:
                               predictions,
                               labels,
                               val_elementwise_loss,
-                              val_elementwise_predictions,
+                              val_predictions,
                               val_labels,
                               weights):
-        majority_loss = np.mean(elementwise_loss[labels==0])
-        minority_loss = np.mean(elementwise_loss[labels==1])
-        majority_accuracy = np.mean(np.equal(predictions, labels)[labels==0])
-        minority_accuracy = np.mean(np.equal(predictions, labels)[labels==1])
-        val_majority_loss = np.mean(val_elementwise_loss[val_labels==0])
-        val_minority_loss = np.mean(val_elementwise_loss[val_labels==1])
-        val_majority_accuracy = np.mean(np.equal(val_predictions, val_labels)[val_labels==0])
-        val_minority_accuracy = np.mean(np.equal(val_predictions, val_labels)[val_labels==1])
-        majority_weights_mean = np.mean(weights[val_labels==0])
-        minority_weights_mean = np.mean(weights[val_labels==1])
-        majority_nonzero_samples = np.count_nonzero(weights[val_labels==0])
-        minority_nonzero_samples = np.count_nonzero(weights[val_labels==1])
+        def mean(x):
+            if len(x) == 0:
+                return np.nan
+            return np.mean(x)
+        majority_loss = mean(elementwise_loss[labels==0])
+        minority_loss = mean(elementwise_loss[labels==1])
+        majority_accuracy = mean(np.equal(predictions, labels)[labels==0])
+        minority_accuracy = mean(np.equal(predictions, labels)[labels==1])
+        val_majority_loss = mean(val_elementwise_loss[val_labels==0])
+        val_minority_loss = mean(val_elementwise_loss[val_labels==1])
+        val_majority_accuracy = mean(np.equal(val_predictions, val_labels)[val_labels==0])
+        val_minority_accuracy = mean(np.equal(val_predictions, val_labels)[val_labels==1])
+        majority_weights_mean = mean(weights[labels==0])
+        minority_weights_mean = mean(weights[labels==1])
+        majority_nonzero_samples = np.count_nonzero(weights[labels==0])
+        minority_nonzero_samples = np.count_nonzero(weights[labels==1])
         return majority_loss, minority_loss, majority_accuracy, minority_accuracy, val_majority_loss, val_minority_loss, val_majority_accuracy, val_minority_accuracy, majority_weights_mean, minority_weights_mean, majority_nonzero_samples, minority_nonzero_samples
     
     def append_ltrwe_metrics(self, em_dict, metrics):
         for (key, metric) in zip(em_dict.keys(), metrics):
-            em_dict[key].append(metric)
+            if not(np.isnan(metric)):
+                em_dict[key].append(metric)
     
     def eval_epoch(self, epoch_num, dataloader):
         print('Beginning evaluating epoch {}...'.format(epoch_num))
@@ -385,10 +396,13 @@ class ImbalancedDatasetTrial:
             validation_labels_d = validation_labels.to(self.device)
             validation_labels = validation_labels.numpy()
             values = ltrwe_train_on_batch(training_images, training_labels_d, validation_images, validation_labels_d, self.model, self.loss_fn, self.optimizer, self.device)
-            metrics = self.compute_ltrwe_metrics(values)
+            metrics = self.compute_ltrwe_metrics(*values)
             self.append_ltrwe_metrics(results, metrics)
         for key in results:
-            results[key] = np.mean(results[key])
+            if key in ['majority_nonzero_samples', 'minority_nonzero_samples']:
+                results[key] = np.sum(results[key])
+            else:
+                results[key] = np.mean(results[key])
             print('\t{}: {}'.format(key, results[key]))
         return results
     
@@ -418,6 +432,7 @@ class ImbalancedDataset(Dataset):
             if (target==minority_class) and (minority_to_go>0):
                 self.data.append(image)
                 self.targets.append(1)
+                minority_to_go -= 1
         self.number_of_samples = len(self.data)
         assert self.number_of_samples == len(self.targets)
         
@@ -440,13 +455,13 @@ class ImbalancedDataset(Dataset):
         data = []
         targets = []
         for (image, target) in zip(self.data, self.targets):
-            if (target==self.majority_class) and (majority_to_go>0):
+            if (target==0) and (majority_to_go>0):
                 data.append(image)
-                targets.append(target)
+                targets.append(0)
                 majority_to_go -= 1
-            if (target==self.minority_class) and (minority_to_go>0):
+            if (target==1) and (minority_to_go>0):
                 data.append(image)
-                targets.append(target)
+                targets.append(1)
                 minority_to_go -= 1
         validation_dataset = CleanDataset(data,
                                           targets,
@@ -553,8 +568,8 @@ def ltrwe_train_on_batch(training_images,
         diffopt.step(reweighted_loss)
         validation_logits = fmodel(validation_images)
         validation_loss = loss_fn(validation_logits, validation_labels)
-        validation_loss = torch.mean(validation_loss)
-    eps_grad = torch.autograd.grad(validation_loss, eps)[0].detach()
+        reduced_validation_loss = torch.mean(validation_loss)
+    eps_grad = torch.autograd.grad(reduced_validation_loss, eps)[0].detach()
     weights = nn.functional.relu(-eps_grad)
     if torch.norm(weights) != 0:
         if coarse_example_reweighting:
@@ -575,7 +590,7 @@ def ltrwe_train_on_batch(training_images,
     predictions = np.argmax(logits.detach().cpu().numpy(), axis=1)
     labels = training_labels.detach().cpu().numpy()
     validation_loss = validation_loss.detach().cpu().numpy()
-    validation_predictions = np.argmax(validation_logits.detach().cpu().numpy())
+    validation_predictions = np.argmax(validation_logits.detach().cpu().numpy(), axis=1)
     validation_labels = validation_labels.detach().cpu().numpy()
     weights = weights.detach().cpu().numpy()
     return elementwise_loss, predictions, labels, validation_loss, validation_predictions, validation_labels, weights
