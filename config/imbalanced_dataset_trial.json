@@ -1,0 +1,49 @@
+{
+    "seed": 0,
+    "dataset": "MNIST",
+    "trial_type": "ImbalancedDataset",
+    "trial_kwargs": [
+        {
+            "num_majority_samples": 2500,
+            "num_minority_samples": 2500
+        },
+        {
+            "num_majority_samples": 4500,
+            "num_minority_samples": 500
+        },
+        {
+            "num_majority_samples": 4750,
+            "num_minority_samples": 250
+        },
+        {
+            "num_majority_samples": 4900,
+            "num_minority_samples": 100
+        },
+        {
+            "num_majority_samples": 4950,
+            "num_minority_samples": 50
+        },
+        {
+            "num_majority_samples": 4975,
+            "num_minority_samples": 25
+        }]
+    "method": ["naive", "ltrwe"],
+    "num_validation_examples": "10",
+    "dataloader_kwargs":
+    {
+        "batch_size": 100,
+        "shuffle": true
+    },
+    "model": "LeNet5",
+    "model_kwargs": {},
+    "loss_fn": "CrossEntropyLoss",
+    "loss_fn_kwargs": {},
+    "optimizer": "SGD",
+    "optimizer_kwargs":
+    {
+        "lr": 0.001
+    },
+    "device": "cuda",
+    "num_epochs": 160,
+    "evaluate_initial_performace": true
+}

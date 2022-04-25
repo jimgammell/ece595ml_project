@@ -22,9 +22,13 @@ class Results:
                 self.add_key(key)
             self.append_value(key, epoch, data[key])
     def get_traces(self, key):
-        x = self.data[key]['epochs']
-        y = self.data[key]['values']
+        x = np.array(self.data[key]['epochs'])
+        y = np.array(self.data[key]['values'])
         return x, y
+
+def dict_key_prepend(d, pref):
+    for key in d.keys():
+        d[pref+key] = d.pop(key)
 
 class CleanDatasetTrial:
     def __init__(self,
@@ -253,34 +257,27 @@ class ImbalancedDatasetTrial:
     
     def __call__(self):
         if self.evaluate_initial_performance:
-            train_loss, train_acc = self.eval_epoch(0, self.train_dataloader)
-            test_loss, test_acc = self.eval_epoch(0, self.test_dataloader)
-            self.results.update(0, {'train_loss': train_loss,
-                                    'train_acc': train_acc,
-                                    'test_loss': test_loss,
-                                    'test_acc': test_acc})
+            training_results = self.eval_epoch(0, self.train_dataloader)
+            test_results = self.eval_epoch(0, self.test_dataloader)
+            dict_key_prepend(training_results, 'train_')
+            dict_key_prepend(test_results, 'test_')
+            self.results.update(0, training_results)
+            self.results.update(0, test_results)
         for epoch in range(1, self.num_epochs+1):
             if self.method == 'naive':
-                train_loss, train_acc = self.naive_train_epoch(epoch)
-                test_loss, test_acc = self.eval_epoch(epoch, self.test_dataloader)
-                self.results.update(epoch, {'train_loss': train_loss,
-                                            'train_acc': train_acc,
-                                            'test_loss': test_loss,
-                                            'test_acc': test_acc})
+                training_results = self.naive_train_epoch(epoch)
+                test_results = self.eval_epoch(epoch, self.test_dataloader)
+                dict_key_prepend(training_results, 'train_')
+                dict_key_prepend(test_results, 'test_')
+                self.results.update(epoch, training_results)
+                self.results.update(epoch, test_results)
             elif self.method == 'ltrwe':
-                res = self.ltrwe_train_epoch(epoch)
-                test_loss, test_acc = self.eval_epoch(epoch, self.test_dataloader)
-                self.results.update(epoch, {'train_loss': res[0],
-                                            'train_acc': res[1],
-                                            'weights_hist': res[2],
-                                            'unused_samples': res[3],
-                                            'p25_weight': res[4],
-                                            'p50_weight': res[5],
-                                            'p75_weight': res[6],
-                                            'mn_weight': res[7],
-                                            'std_weight': res[8],
-                                            'test_loss': test_loss,
-                                            'test_acc': test_acc})
+                training_results = self.ltrwe_train_epoch(epoch)
+                test_results = self.eval_epoch(epoch, self.test_dataloader)
+                dict_key_prepend(training_results, 'train_')
+                dict_key_prepend(test_results, 'test_')
+                self.results.update(epoch, training_results)
+                self.results.update(epoch, test_results)
         return self.results
         
     def evaluation_metrics_dict(self):
@@ -297,6 +294,46 @@ class ImbalancedDatasetTrial:
         return majority_loss, minority_loss, majority_accuracy, minority_accuracy
     
     def append_evaluation_metrics(self, em_dict, metrics):
+        for (key, metric) in zip(em_dict.keys(), metrics):
+            em_dict[key].append(metric)
+    
+    def ltrwe_metrics_dict(self):
+        return {'majority_loss': [],
+                'minority_loss': [],
+                'majority_accuracy': [],
+                'minority_accuracy': [],
+                'val_majority_loss': [],
+                'val_majority_accuracy': [],
+                'val_minority_loss': [],
+                'val_minority_accuracy': [],
+                'majority_weights_mean': [],
+                'minority_weights_mean': [],
+                'majority_nonzero_samples': [],
+                'minority_nonzero_samples': []}
+    
+    def compute_ltrwe_metrics(self,
+                              elementwise_loss,
+                              predictions,
+                              labels,
+                              val_elementwise_loss,
+                              val_elementwise_predictions,
+                              val_labels,
+                              weights):
+        majority_loss = np.mean(elementwise_loss[labels==0])
+        minority_loss = np.mean(elementwise_loss[labels==1])
+        majority_accuracy = np.mean(np.equal(predictions, labels)[labels==0])
+        minority_accuracy = np.mean(np.equal(predictions, labels)[labels==1])
+        val_majority_loss = np.mean(val_elementwise_loss[val_labels==0])
+        val_minority_loss = np.mean(val_elementwise_loss[val_labels==1])
+        val_majority_accuracy = np.mean(np.equal(val_predictions, val_labels)[val_labels==0])
+        val_minority_accuracy = np.mean(np.equal(val_predictions, val_labels)[val_labels==1])
+        majority_weights_mean = np.mean(weights[val_labels==0])
+        minority_weights_mean = np.mean(weights[val_labels==1])
+        majority_nonzero_samples = np.count_nonzero(weights[val_labels==0])
+        minority_nonzero_samples = np.count_nonzero(weights[val_labels==1])
+        return majority_loss, minority_loss, majority_accuracy, minority_accuracy, val_majority_loss, val_minority_loss, val_majority_accuracy, val_minority_accuracy, majority_weights_mean, minority_weights_mean, majority_nonzero_samples, minority_nonzero_samples
+    
+    def append_ltrwe_metrics(self, em_dict, metrics):
         for (key, metric) in zip(em_dict.keys(), metrics):
             em_dict[key].append(metric)
     
@@ -334,9 +371,7 @@ class ImbalancedDatasetTrial:
     
     def ltrwe_train_epoch(self, epoch_num):
         print('Beginning training epoch {}...'.format(epoch_num))
-        batch_losses = []
-        batch_accuracies = []
-        batch_weights = []
+        results = self.ltrwe_metrics_dict()
         for training_batch in tqdm(self.train_dataloader):
             training_images, training_labels = training_batch
             training_images = training_images.to(self.device)
@@ -347,37 +382,21 @@ class ImbalancedDatasetTrial:
             validation_images = validation_images.to(self.device)
             validation_labels_d = validation_labels.to(self.device)
             validation_labels = validation_labels.numpy()
-            elementwise_loss, predictions, weights = ltrwe_train_on_batch(training_images, training_labels_d, validation_images, validation_labels_d, self.model, self.loss_fn, self.optimizer, self.device)
-            batch_loss = np.mean(elementwise_loss)
-            batch_accuracy = np.mean(np.equal(predictions, training_labels))
-            batch_weight = list(weights)
-            batch_losses.append(batch_loss)
-            batch_accuracies.append(batch_accuracy)
-            batch_weights.extend(batch_weight)
-        loss = np.mean(batch_losses)
-        accuracy = np.mean(batch_accuracies)
-        weight = np.histogram(batch_weights, bins=5*self.batch_size, range=(0.0, 1.0))
-        unused_samples = len([w for w in batch_weights if w == 0])
-        med_weight = np.percentile(weights, 50)
-        p25_weight = np.percentile(weights, 25)
-        p75_weight = np.percentile(weights, 75)
-        mn_weight = np.mean(weights)
-        std_weight = np.std(weights)
-        print('\tLoss: {}'.format(loss))
-        print('\tAccuracy: {}'.format(accuracy))
-        print('\tWeight: {}'.format(weight))
-        print('\tUnused samples: {}'.format(unused_samples))
-        print('25/50/75 percentile weights: {} / {} / {}'.format(p25_weight, med_weight, p75_weight))
-        print('Mean/std weights: {} / {}'.format(mn_weight, std_weight))
-        return loss, accuracy, weight, unused_samples, p25_weight, med_weight, p75_weight, mn_weight, std_weight
+            values = ltrwe_train_on_batch(training_images, training_labels_d, validation_images, validation_labels_d, self.model, self.loss_fn, self.optimizer, self.device)
+            metrics = self.compute_ltrwe_metrics(values)
+            self.append_ltrwe_metrics(results, metrics)
+        for key in results:
+            results[key] = np.mean(results[key])
+            print('\t{}: {}'.format(key, results[key]))
+        return results
     
 class ImbalancedDataset(Dataset):
     def __init__(self,
                  base_dataset,
-                 majority_class,
-                 minority_class,
-                 num_majority_samples,
-                 num_minority_samples):
+                 majority_class=9,
+                 minority_class=4,
+                 num_majority_samples=2500,
+                 num_minority_samples=2500):
         self.data = []
         self.targets = []
         self.transform = base_dataset.transform
@@ -549,8 +568,12 @@ def ltrwe_train_on_batch(training_images,
     
     elementwise_loss = elementwise_loss.detach().cpu().numpy()
     predictions = np.argmax(logits.detach().cpu().numpy(), axis=1)
+    labels = labels.detach().cpu().numpy()
+    validation_loss = validation_loss.detach().cpu().numpy()
+    validation_predictions = np.argmax(validation_logits.detach().cpu().numpy())
+    validation_labels = validation_labels.detach().cpu().numpy()
     weights = weights.detach().cpu().numpy()
-    return elementwise_loss, predictions, weights
+    return elementwise_loss, predictions, labels, validation_loss, validation_predictions, validation_labels, weights
 
 def naive_train_on_batch(images,
                          labels,
