@@ -539,7 +539,7 @@ def ltrwe_train_on_batch(training_images,
                          loss_fn,
                          optimizer,
                          device,
-                         reweight_by_nonzero_examples=False,
+                         reweight_by_nonzero_examples=True,
                          coarse_example_reweighting=True):
     model.train()
     
