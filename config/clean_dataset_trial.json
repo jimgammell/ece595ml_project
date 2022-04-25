@@ -17,6 +17,6 @@
     "optimizer": "Adam",
     "optimizer_kwargs": {},
     "device": "cuda",
-    "num_epochs": 5,
+    "num_epochs": 150,
     "evaluate_initial_performance": true
 }
