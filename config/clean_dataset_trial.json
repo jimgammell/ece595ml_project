@@ -3,7 +3,8 @@
     "dataset": "MNIST",
     "trial_type": "CleanDataset",
     "trial_kwargs": {},
-    "method": ["naive", "ltrwe"],
+    "test_dataset_kwargs": {},
+    "method": ["ltrwe", "naive"],
     "num_validation_samples": 100,
     "dataloader_kwargs":
     {

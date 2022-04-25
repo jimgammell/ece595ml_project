@@ -26,7 +26,12 @@
         {
             "num_majority_samples": 4975,
             "num_minority_samples": 25
-        }]
+        }],
+    "test_dataset_kwargs":
+    {
+        "num_majority_samples": 500,
+        "num_minority_samples": 500
+    },
     "method": ["naive", "ltrwe"],
     "num_validation_examples": "10",
     "dataloader_kwargs":

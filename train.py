@@ -34,7 +34,7 @@ def run_trial(config_params, results_dir):
                 train_dataset = dataset_constructor(base_train_dataset, **trial_kwargs)
                 if cp_method == 'ltrwe':
                     validation_dataset = train_dataset.get_validation_dataset(config_params['num_validation_samples'])
-                test_dataset = dataset_constructor(base_test_dataset, **config_params['trial_kwargs'])
+                test_dataset = dataset_constructor(base_test_dataset, **config_params['test_dataset_kwargs'])
                 train_dataloader = DataLoader(train_dataset, **config_params['dataloader_kwargs'])
                 if cp_method == 'ltrwe':
                     val_dataloader = DataLoader(validation_dataset, **config_params['dataloader_kwargs'])

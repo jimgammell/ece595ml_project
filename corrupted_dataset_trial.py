@@ -143,7 +143,7 @@ class CleanDatasetTrial:
             validation_images = validation_images.to(self.device)
             validation_labels_d = validation_labels.to(self.device)
             validation_labels = validation_labels.numpy()
-            elementwise_loss, predictions, weights = ltrwe_train_on_batch(training_images, training_labels_d, validation_images, validation_labels_d, self.model, self.loss_fn, self.optimizer, self.device)
+            elementwise_loss, predictions, _, _, _, _, weights = ltrwe_train_on_batch(training_images, training_labels_d, validation_images, validation_labels_d, self.model, self.loss_fn, self.optimizer, self.device)
             batch_loss = np.mean(elementwise_loss)
             batch_accuracy = np.mean(np.equal(predictions, training_labels))
             batch_weight = list(weights)
@@ -173,6 +173,8 @@ class CleanDataset(Dataset):
             self.init_from_base_dataset(*args)
         elif len(args) == 4:
             self.init_from_dataset_components(*args)
+        elif len(args) == 0:
+            self.init_for_test_set()
         else:
             assert False
     def init_from_base_dataset(self,
@@ -537,7 +539,8 @@ def ltrwe_train_on_batch(training_images,
                          loss_fn,
                          optimizer,
                          device,
-                         reweight_by_nonzero_examples=False):
+                         reweight_by_nonzero_examples=False,
+                         coarse_example_reweighting=True):
     model.train()
     
     model_params_backup = deepcopy(model.state_dict())
@@ -554,6 +557,8 @@ def ltrwe_train_on_batch(training_images,
     eps_grad = torch.autograd.grad(validation_loss, eps)[0].detach()
     weights = nn.functional.relu(-eps_grad)
     if torch.norm(weights) != 0:
+        if coarse_example_reweighting:
+            weights[torch.nonzero(weights)] = 1
         weights /= torch.sum(weights)
         if reweight_by_nonzero_examples:
             weights *= torch.norm(weights, p=0)/len(training_images)
@@ -568,7 +573,7 @@ def ltrwe_train_on_batch(training_images,
     
     elementwise_loss = elementwise_loss.detach().cpu().numpy()
     predictions = np.argmax(logits.detach().cpu().numpy(), axis=1)
-    labels = labels.detach().cpu().numpy()
+    labels = training_labels.detach().cpu().numpy()
     validation_loss = validation_loss.detach().cpu().numpy()
     validation_predictions = np.argmax(validation_logits.detach().cpu().numpy())
     validation_labels = validation_labels.detach().cpu().numpy()
