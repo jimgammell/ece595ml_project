@@ -32,7 +32,7 @@
         "num_majority_samples": 300,
         "num_minority_samples": 300
     },
-    "method": ["ltrwe", "naive"],
+    "method": ["ltrwe"],
     "num_validation_samples": 10,
     "dataloader_kwargs":
     {

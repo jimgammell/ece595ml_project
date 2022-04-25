@@ -281,6 +281,13 @@ class ImbalancedDatasetTrial:
                 dict_key_prepend(test_results, 'test_')
                 self.results.update(epoch, training_results)
                 self.results.update(epoch, test_results)
+            elif self.method == 'smltrwe':
+                training_results = self.smltrwe_train_epoch(epoch)
+                test_results = self.eval_epoch(epoch, self.test_dataloader)
+                dict_key_prepend(training_results, 'train_')
+                dict_key_prepend(test_results, 'test_')
+                self.results.update(epoch, training_results)
+                self.results.update(epoch, test_results)
         return self.results
         
     def evaluation_metrics_dict(self):
@@ -546,6 +553,56 @@ def eval_on_batch(images,
     predictions = np.argmax(logits.detach().cpu().numpy(), axis=1)
     return elementwise_loss, predictions
 
+def smltrwe_train_on_batch(training_images,
+                           training_labels,
+                           validation_images,
+                           validation_labels,
+                           target_model,
+                           random_model,
+                           loss_fn,
+                           optimizer,
+                           device,
+                           reweight_by_nonzero_examples=False,
+                           coarse_example_reweighting=False):
+    model.train()
+    
+    random_params_backup = deepcopy(model.state_dict())
+    dummy_optimizer = optim.SGD(random_model.parameters(), lr=.001)
+    with higher.innerloop_ctx(random_model, dummy_optimizer) as (fmodel, diffopt):
+        training_logits = fmodel(training_images)
+        training_loss = loss_fn(training_logits, training_labels)
+        eps = torch.zeros_like(training_loss, device=device, requires_grad=True)
+        reweighted_loss = torch.sum(training_loss*eps)
+        diffopt.step(reweighted_loss)
+        validation_logits = fmodel(validation_images)
+        validation_loss = loss_fn(validation_logits, validation_labels)
+        reduced_validation_loss = torch.mean(validation_loss)
+    eps_grad = torch.autograd.grad(reduced_validation_loss, eps)[0].detach()
+    weights = nn.functional.relu(-eps_grad)
+    if torch.norm(weights) != 0:
+        if coarse_example_reweighting:
+            weights[torch.nonzero(weights)] = 1
+        weights /= torch.sum(weights)
+        if reweight_by_nonzero_examples:
+            weights *= torch.norm(weights, p=0)/len(training_images)
+    random_model.load_state_dict(model_params_backup)
+    
+    optimizer.zero_grad()
+    logits = model(training_images)
+    elementwise_loss = loss_fn(logits, training_labels)
+    reweighted_loss = torch.sum(elementwise_loss*weights)
+    reweighted_loss.backward()
+    optimizer.step()
+    
+    elementwise_loss = elementwise_loss.detach().cpu().numpy()
+    predictions = np.argmax(logits.detach().cpu().numpy(), axis=1)
+    labels = training_labels.detach().cpu().numpy()
+    validation_loss = validation_loss.detach().cpu().numpy()
+    validation_predictions = np.argmax(validation_logits.detach().cpu().numpy(), axis=1)
+    validation_labels = validation_labels.detach().cpu().numpy()
+    weights = weights.detach().cpu().numpy()
+    return elementwise_loss, predictions, labels, validation_loss, validation_predictions, validation_labels, weights
+
 def ltrwe_train_on_batch(training_images,
                          training_labels, 
                          validation_images,
@@ -554,8 +611,8 @@ def ltrwe_train_on_batch(training_images,
                          loss_fn,
                          optimizer,
                          device,
-                         reweight_by_nonzero_examples=True,
-                         coarse_example_reweighting=True):
+                         reweight_by_nonzero_examples=False,
+                         coarse_example_reweighting=False):
     model.train()
     
     model_params_backup = deepcopy(model.state_dict())
