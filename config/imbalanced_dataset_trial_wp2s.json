@@ -60,6 +60,6 @@
     "num_epochs": 160,
     "evaluate_initial_performance": true,
     "coarse_weights": false,
-    "weights_propto_samples": false,
+    "weights_propto_samples": true,
     "exaustion_criteria": 2
 }

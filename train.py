@@ -68,7 +68,8 @@ def run_trial(config_params, results_dir):
                                     'device': config_params['device'],
                                     'num_epochs': config_params['num_epochs'],
                                     'batch_size': config_params['dataloader_kwargs']['batch_size'],
-                                    'evaluate_initial_performance': config_params['evaluate_initial_performance']}
+                                    'evaluate_initial_performance': config_params['evaluate_initial_performance'],
+                                    'input_shape': eg_input.shape}
                     if 'ltrwe' in cp_method:
                         trial_kwargs.update({'val_dataloader': val_dataloader})
                     if cp_method == 'smltrwe':

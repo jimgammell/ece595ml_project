@@ -243,6 +243,7 @@ class ImbalancedDatasetTrial:
                  device,
                  num_epochs,
                  batch_size,
+                 input_shape,
                  evaluate_initial_performance=True,
                  val_dataloader=None,
                  random_model_constructor=None,
@@ -267,6 +268,7 @@ class ImbalancedDatasetTrial:
         self.exaustion_criteria = exaustion_criteria
         self.coarse_weights = coarse_weights
         self.weights_propto_samples = weights_propto_samples
+        self.input_shape = input_shape
     
     def __call__(self):
         if self.evaluate_initial_performance:
@@ -279,7 +281,7 @@ class ImbalancedDatasetTrial:
         best_test_accuracy = -np.inf
         epoch = 1
         epochs_without_improvement = 0
-        while (epoch <= num_epochs) or (epochs_without_improvement < self.exaustion_criteria):
+        while (epoch <= self.num_epochs) or (epochs_without_improvement < self.exaustion_criteria):
             if self.method == 'naive':
                 training_results = self.naive_train_epoch(epoch)
                 test_results = self.eval_epoch(epoch, self.test_dataloader)
@@ -295,7 +297,8 @@ class ImbalancedDatasetTrial:
                 self.results.update(epoch, training_results)
                 self.results.update(epoch, test_results)
             elif self.method == 'smltrwe':
-                random_model = self.random_model_constructor(**self.random_model_kwargs)
+                random_model = self.random_model_constructor(self.input_shape, **self.random_model_kwargs)
+                random_model = random_model.to(self.device)
                 training_results = self.smltrwe_train_epoch(epoch, random_model)
                 test_results = self.eval_epoch(epoch, self.test_dataloader)
                 dict_key_prepend(training_results, 'train_')
@@ -410,7 +413,7 @@ class ImbalancedDatasetTrial:
             print('\t{}: {}'.format(key, results[key]))
         return results
     
-    def smltrwe_train_epoch(self, random_model):
+    def smltrwe_train_epoch(self, epoch_num, random_model):
         print('Beginning training epoch {}...'.format(epoch_num))
         results = self.ltrwe_metrics_dict()
         for training_batch in tqdm(self.train_dataloader):
@@ -602,7 +605,7 @@ def smltrwe_train_on_batch(training_images,
                            training_labels,
                            validation_images,
                            validation_labels,
-                           target_model,
+                           model,
                            random_model,
                            loss_fn,
                            optimizer,
@@ -611,8 +614,7 @@ def smltrwe_train_on_batch(training_images,
                            coarse_example_reweighting=False):
     model.train()
     
-    random_params_backup = deepcopy(model.state_dict())
-    dummy_optimizer = optim.SGD(random_model.parameters(), lr=.001)
+    dummy_optimizer = optim.SGD(random_model.parameters(), lr=.01)
     with higher.innerloop_ctx(random_model, dummy_optimizer) as (fmodel, diffopt):
         training_logits = fmodel(training_images)
         training_loss = loss_fn(training_logits, training_labels)
@@ -630,7 +632,6 @@ def smltrwe_train_on_batch(training_images,
         weights /= torch.sum(weights)
         if reweight_by_nonzero_examples:
             weights *= torch.norm(weights, p=0)/len(training_images)
-    random_model.load_state_dict(model_params_backup)
     
     optimizer.zero_grad()
     logits = model(training_images)
@@ -656,7 +657,7 @@ def ltrwe_train_on_batch(training_images,
                          loss_fn,
                          optimizer,
                          device,
-                         reweight_by_nonzero_examples=True,
+                         reweight_by_nonzero_examples=False,
                          coarse_example_reweighting=False):
     model.train()
     
