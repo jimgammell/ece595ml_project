@@ -44,11 +44,13 @@
     {
         "output_classes": 2
     },
-    "random_model_constructor": "LeNet5",
-    "random_model_kwargs":
+    "reweight_model_constructor": "LeNet5",
+    "reweight_model_kwargs":
     {
         "output_classes": 2
     },
+    "self_reweight_model": true,
+    "reweight_model_period": 1,
     "loss_fn": "CrossEntropyLoss",
     "loss_fn_kwargs": {},
     "optimizer": "SGD",
@@ -57,9 +59,9 @@
         "lr": 0.001
     },
     "device": "cuda",
-    "num_epochs": 500,
+    "num_epochs": 200,
     "evaluate_initial_performance": true,
     "coarse_weights": false,
     "weights_propto_samples": false,
-    "exaustion_criteria": 50
+    "exaustion_criteria": 0
 }

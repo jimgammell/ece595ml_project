@@ -73,9 +73,11 @@ def run_trial(config_params, results_dir):
                     if 'ltrwe' in cp_method:
                         trial_kwargs.update({'val_dataloader': val_dataloader})
                     if cp_method == 'smltrwe':
-                        random_model_constructor = getattr(models, config_params['random_model_constructor'])
-                        trial_kwargs.update({'random_model_constructor': random_model_constructor})
-                        trial_kwargs.update({'random_model_kwargs': config_params['random_model_kwargs']})
+                        reweight_model_constructor = getattr(models, config_params['reweight_model_constructor'])
+                        trial_kwargs.update({'reweight_model_constructor': reweight_model_constructor})
+                        trial_kwargs.update({'reweight_model_kwargs': config_params['reweight_model_kwargs']})
+                        trial_kwargs.update({'self_reweight_model': config_params['self_reweight_model']})
+                        trial_kwargs.update({'reweight_model_period': config_params['reweight_model_period']})
                     if 'exaustion_criteria' in config_params:
                         trial_kwargs.update({'exaustion_criteria': config_params['exaustion_criteria']})
                     if 'coarse_weights' in config_params:

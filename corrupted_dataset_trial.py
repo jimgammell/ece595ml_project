@@ -246,8 +246,10 @@ class ImbalancedDatasetTrial:
                  input_shape,
                  evaluate_initial_performance=True,
                  val_dataloader=None,
-                 random_model_constructor=None,
-                 random_model_kwargs=None,
+                 self_reweight_model=False,
+                 reweight_model_constructor=None,
+                 reweight_model_kwargs=None,
+                 reweight_model_period = 1,
                  exaustion_criteria = 0,
                  coarse_weights=False,
                  weights_propto_samples=False):
@@ -263,8 +265,10 @@ class ImbalancedDatasetTrial:
         self.batch_size = batch_size
         self.evaluate_initial_performance = evaluate_initial_performance
         self.val_dataloader = val_dataloader
-        self.random_model_constructor = random_model_constructor
-        self.random_model_kwargs = random_model_kwargs
+        self.self_reweight_model = self_reweight_model
+        self.reweight_model_constructor = reweight_model_constructor
+        self.reweight_model_kwargs = reweight_model_kwargs
+        self.reweight_model_period = reweight_model_period
         self.exaustion_criteria = exaustion_criteria
         self.coarse_weights = coarse_weights
         self.weights_propto_samples = weights_propto_samples
@@ -297,15 +301,18 @@ class ImbalancedDatasetTrial:
                 self.results.update(epoch, training_results)
                 self.results.update(epoch, test_results)
             elif self.method == 'smltrwe':
-                random_model = self.random_model_constructor(self.input_shape, **self.random_model_kwargs)
-                random_model = random_model.to(self.device)
-                training_results = self.smltrwe_train_epoch(epoch, random_model)
+                if (epoch % self.reweight_model_period) == 0:
+                    reweight_model = self.reweight_model_constructor(self.input_shape, **self.reweight_model_kwargs)
+                    if self.self_reweight_model:
+                        reweight_model.load_state_dict(self.model.state_dict())
+                    reweight_model = reweight_model.to(self.device)
+                training_results = self.smltrwe_train_epoch(epoch, reweight_model)
                 test_results = self.eval_epoch(epoch, self.test_dataloader)
                 dict_key_prepend(training_results, 'train_')
                 dict_key_prepend(test_results, 'test_')
                 self.results.update(epoch, training_results)
                 self.results.update(epoch, test_results)
-            test_accuracy = np.mean((test_results['test_minority_accuracy'], test_results['test_majority_accuracy']))
+            test_accuracy = test_results['test_minority_accuracy']
             if test_accuracy > best_test_accuracy:
                 best_test_accuracy = test_accuracy
                 epochs_without_improvement = 0
@@ -341,10 +348,6 @@ class ImbalancedDatasetTrial:
                 'minority_loss': [],
                 'majority_accuracy': [],
                 'minority_accuracy': [],
-                'val_majority_loss': [],
-                'val_minority_loss': [],
-                'val_majority_accuracy': [],
-                'val_minority_accuracy': [],
                 'majority_weights_mean': [],
                 'minority_weights_mean': [],
                 'majority_nonzero_samples': [],
@@ -354,9 +357,6 @@ class ImbalancedDatasetTrial:
                               elementwise_loss,
                               predictions,
                               labels,
-                              val_elementwise_loss,
-                              val_predictions,
-                              val_labels,
                               weights):
         def mean(x):
             if len(x) == 0:
@@ -366,15 +366,11 @@ class ImbalancedDatasetTrial:
         minority_loss = mean(elementwise_loss[labels==1])
         majority_accuracy = mean(np.equal(predictions, labels)[labels==0])
         minority_accuracy = mean(np.equal(predictions, labels)[labels==1])
-        val_majority_loss = mean(val_elementwise_loss[val_labels==0])
-        val_minority_loss = mean(val_elementwise_loss[val_labels==1])
-        val_majority_accuracy = mean(np.equal(val_predictions, val_labels)[val_labels==0])
-        val_minority_accuracy = mean(np.equal(val_predictions, val_labels)[val_labels==1])
         majority_weights_mean = mean(weights[labels==0])
         minority_weights_mean = mean(weights[labels==1])
         majority_nonzero_samples = np.count_nonzero(weights[labels==0])
         minority_nonzero_samples = np.count_nonzero(weights[labels==1])
-        return majority_loss, minority_loss, majority_accuracy, minority_accuracy, val_majority_loss, val_minority_loss, val_majority_accuracy, val_minority_accuracy, majority_weights_mean, minority_weights_mean, majority_nonzero_samples, minority_nonzero_samples
+        return majority_loss, minority_loss, majority_accuracy, minority_accuracy, majority_weights_mean, minority_weights_mean, majority_nonzero_samples, minority_nonzero_samples
     
     def append_ltrwe_metrics(self, em_dict, metrics):
         for (key, metric) in zip(em_dict.keys(), metrics):
@@ -413,7 +409,7 @@ class ImbalancedDatasetTrial:
             print('\t{}: {}'.format(key, results[key]))
         return results
     
-    def smltrwe_train_epoch(self, epoch_num, random_model):
+    def smltrwe_train_epoch(self, epoch_num, reweight_model):
         print('Beginning training epoch {}...'.format(epoch_num))
         results = self.ltrwe_metrics_dict()
         for training_batch in tqdm(self.train_dataloader):
@@ -426,7 +422,7 @@ class ImbalancedDatasetTrial:
             validation_images = validation_images.to(self.device)
             validation_labels_d = validation_labels.to(self.device)
             validation_labels = validation_labels.numpy()
-            values = smltrwe_train_on_batch(training_images, training_labels_d, validation_images, validation_labels_d, self.model, random_model, self.loss_fn, self.optimizer, self.device, self.weights_propto_samples, self.coarse_weights)
+            values = smltrwe_train_on_batch(training_images, training_labels_d, validation_images, validation_labels_d, self.model, reweight_model, self.loss_fn, self.optimizer, self.device, self.weights_propto_samples, self.coarse_weights)
             metrics = self.compute_ltrwe_metrics(*values)
             self.append_ltrwe_metrics(results, metrics)
         for key in results:
@@ -524,6 +520,249 @@ class ImbalancedDataset(Dataset):
                                           self.target_transform)
         return validation_dataset
 
+class NoisyLabelsDatasetTrial(Dataset):
+    def __init__(self,
+                 method,
+                 train_dataloader,
+                 test_dataloader,
+                 model,
+                 loss_fn,
+                 optimizer,
+                 device,
+                 num_epochs, 
+                 batch_size,
+                 input_shape,
+                 evaluate_initial_performance=True,
+                 val_dataloader=None,
+                 pretrain_dataloader=None,
+                 reweight_model_constructor=None,
+                 reweight_model_kwargs=None,
+                 reweight_model_period=1,
+                 self_reweight_model=False,
+                 exaustion_criteria=0):
+        self.method = method
+        self.train_dataloader = train_dataloader
+        self.test_dataloader = test_dataloader
+        self.model = model
+        self.loss_fn = loss_fn
+        self.optimizer = optimizer
+        self.device = device
+        self.num_epochs = num_epochs
+        self.batch_size = batch_size
+        self.input_shape = input_shape
+        self.evaluate_initial_performance = evaluate_initial_performance
+        self.val_dataloader = val_dataloader
+        self.pretrain_dataloader = pretrain_dataloader
+        self.reweight_model_constructor = reweight_model_constructor
+        self.reweight_model_kwargs = reweight_model_kwargs
+        self.reweight_model_period = reweight_model_period
+        self.self_reweight_model = self_reweight_model
+        self.exaustion_criteria = exaustion_criteria
+        self.results = Results()
+    
+    def __call__(self):
+        epoch = 0
+        epochs_without_improvement = 0
+        best_test_accuracy = -np.inf
+        
+        # Evaluate initial model performance
+        if self.evaluate_initial_performance:
+            train_results = self.eval_epoch(0, self.train_dataloader)
+            test_results = self.eval_epoch(0, self.test_dataloader)
+            dict_key_prepend(training_results, 'train_')
+            dict_key_prepend(test_results, 'test_')
+            self.results.update(0, training_results)
+            self.results.update(0, test_results)
+        epoch += 1
+        
+        if self.method == 'semi-self-supervised':
+            while epoch <= self.pretrain_epochs:
+                training_results = self.naive_train_epoch(0, self.pretrain_dataloader)
+                test_results = self.eval_epoch(0, self.test_dataloader)
+                dict_key_prepend(training_results, 'pretrain_')
+                dict_key_prepend(test_results, 'test_')
+                self.results.update(epoch, training_results)
+                self.results.update(epoch, test_results)
+                epoch += 1
+        
+        while (epoch <= self.pretrain_epochs+self.num_epochs) or (epochs_without_improvement < self.exaustion_criteria):
+            if self.method == 'naive':
+                training_results = self.naive_train_epoch(epoch)
+            elif self.method == 'ltrwe':
+                training_results = self.ltrwe_train_epoch(epoch)
+            elif self.method == 'smltrwe':
+                if epoch % self.reweight_model_period == 0:
+                    reweight_model = self.reweight_model_constructor(self.input_shape, **self.reweight_model_kwargs)
+                    if self.self_reweight_model:
+                        reweight_model.load_state_dict(model.state_dict())
+                    reweight_model = reweight_model.to(self.device)
+                training_results = self.smltrwe_train_epoch(epoch, reweight_model)
+            elif self.method == 'semi-self-supervised':
+                training_results = self.sss_train_epoch(epoch)
+            else:
+                assert False
+                
+            test_results = self.eval_epoch(epoch, self.test_dataloader)
+            dict_key_prepend(training_results, 'train_')
+            dict_key_prepend(test_results, 'test_')
+            self.results.update(epoch, training_results)
+            self.results.update(epoch, test_results)
+            
+            test_accuracy = test_results['test_accuracy']
+            if test_accuracy > best_test_accuracy:
+                best_test_accuracy = test_accuracy
+                epochs_without_improvement = 0
+            else:
+                epochs_without_improvement += 1
+            epoch += 1
+        return self.results
+    
+    def evaluation_metrics_dict(self):
+        return {'correct_loss': [],
+                'incorrect_loss': [],
+                'correct_accuracy': [],
+                'incorrect_accuracy': []}
+    
+    def compute_evaluation_metrics(self, noise_presence, elementwise_loss, predictions, labels):
+        def mean(x):
+            if len(x) == 0:
+                return np.nan
+            return np.mean(x)
+        correct_loss = np.mean(elementwise_loss[noise_presence==0])
+        incorrect_loss = np.mean(elementwise_loss[noise_presence==1])
+        correct_accuracy = np.mean(np.equal(predictions, labels)[noise_presence==0])
+        incorrect_accuracy = np.mean(np.equal(predictions, labels)[noise_presence==1])
+        return correct_loss, incorrect_loss, correct_accuracy, incorrect_accuracy
+    
+    def append_evaluation_metrics(self, em_dict, metrics):
+        for (key, metric) in zip(em_dict.keys(), metrics):
+            em_dict[key].append(metric)
+    
+    def ltrwe_metrics_dict(self):
+        return {'correct_loss': [],
+                'incorrect_loss': [],
+                'correct_accuracy': [],
+                'incorrect_accuracy': [],
+                'correct_weights_mean': [],
+                'incorrect_weights_mean': [],
+                'correct_nonzero_samples': [],
+                'incorrect_nonzero_samples': []}
+    
+    def compute_ltrwe_metrics(self, noise_presence, elementwise_loss, predictions, labels, weights):
+        def mean(x):
+            if len(x) == 0:
+                return np.nan
+            return np.mean(x)
+        correct_loss = mean(elementwise_loss[noise_presence==0])
+        incorrect_loss = mean(elementwise_loss[noise_presence==1])
+        correct_accuracy = mean(np.equal(predictions, labels)[noise_presence==0])
+        incorrect_accuracy = mean(np.equal(predictions, labels)[noise_presence==1])
+        correct_weights_mean = mean(weights[noise_presence==0])
+        incorrect_weights_mean = mean(weights[noise_presence==1])
+        correct_nonzero_samples = np.count_nonzero(weights[noise_presence==0])
+        incorrect_nonzero_samples = np.count_nonzero(weights[noise_presence==1])
+        return correct_loss, incorrect_loss, correct_accuracy, incorrect_accuracy, correct_weights_mean, incorrect_weights_mean, correct_nonzero_samples, incorrect_nonzero_samples
+    
+    def append_ltrwe_metrics(self, em_dict, metrics):
+        for (key, metric) in zip(em_dict.keys(), metrics):
+            em_dict[key].append(metric)
+    
+    def eval_epoch(self, epoch_num, dataloader):
+        print('Beginning evaluating epoch {}...'.format(epoch_num))
+        results = self.evaluation_metrics_dict()
+        for batch in tqdm(dataloader):
+            images, labels, noise_presence = batch
+            images = images.to(self.device)
+            labels = labels.to(self.device)
+            values = eval_on_batch(images, labels, self.model, self.loss_fn, self.optimizer, self.device)
+            metrics = self.compute_evaluation_metrics(noise_presence, *values)
+            self.append_evaluation_metrics(results, metrics)
+        for key in results.keys():
+            results[key] = np.mean(results[key])
+            print('\t{}: {}'.format(key, results[key]))
+        return results
+    
+    def naive_train_epoch(self, epoch_num):
+        print('Beginning training epoch {}...'.format(epoch_num))
+        results = self.evaluation_metrics_dict()
+        for batch in tqdm(self.train_dataloader):
+            images, labels, noise_presence = batch
+            images = images.to(self.device)
+            labels = labels.to(self.device)
+            values = naive_train_on_batch(images, labels, self.model, self.loss_fn, self.optimizer, self.device)
+            metrics = self.compute_evaluation_metrics(noise_presence, *values)
+            self.append_evaluation_metrics(results, metrics)
+        for key in results.keys():
+            results[key] = np.mean(results[key])
+            print('\t{}: {}'.format(key, results[key]))
+        return results
+    
+    def ltrwe_train_epoch(self, epoch_num):
+        print('Beginning training epoch {}...'.format(epoch_num))
+        results = self.ltrwe_metrics_dict()
+        for training_batch in tqdm(self.training_dataloader):
+            training_images, training_labels, noise_presence = training_batch
+            training_images = training_images.to(self.device)
+            training_labels = training_labels.to(self.device)
+            validation_batch = next(iter(self.val_dataloader))
+            validation_images, validation_labels = validation_batch
+            validation_images = validation_images.to(self.device)
+            validation_labels = validation_labels.to(self.device)
+            values = ltrwe_train_on_batch(train_images, train_labels, validation_images, validation_labels, self.model, self.loss_fn, self.optimizer, self.device, self.weights_propto_samples, self.coarse_weights)
+            metrics = self.compute_ltrwe_metrics(noise_presence, *values)
+            self.append_ltrwe_metrics(results, metrics)
+        for key in results:
+            if key in ['clean_nonzero_samples', 'noisy_nonzero_samples']:
+                results[key] = np.sum(results[key])
+            else:
+                results[key] = np.mean(results[key])
+            print('\t{}: {}'.format(key, results[key]))
+        return results
+    
+    def smltrwe_train_epoch(self, epoch_num, reweight_model):
+        print('Beginning training epoch {}...'.format(epoch_num))
+        results = self.ltrwe_metrics_dict()
+        for training_batch in tqdm(self.training_dataloader):
+            training_images, training_labels, noise_presence = training_batch
+            training_images = training_images.to(self.device)
+            training_labels = training_labels.to(self.device)
+            validation_batch = next(iter(self.val_dataloader))
+            validation_images, validation_labels = validation_batch
+            validation_images = validation_images.to(self.device)
+            validation_labels = validation_labels.to(self.device)
+            values = ltrwe_train_on_batch(train_images, train_labels, validation_images, validation_labels, self.model, reweight_model, self.loss_fn, self.optimizer, self.device, self.weights_propto_samples, self.coarse_weights)
+            metrics = self.compute_ltrwe_metrics(noise_presence, *values)
+            self.append_ltrwe_metrics(results, metrics)
+        for key in results:
+            if key in ['clean_nonzero_samples', 'noisy_nonzero_samples']:
+                results[key] = np.sum(results[key])
+            else:
+                results[key] = np.mean(results[key])
+            print('\t{}: {}'.format(key, results[key]))
+        return results
+    
+    def sss_train_epoch(self, epoch_num):
+        print('Beginning training epoch {}...'.format(epoch_num))
+        results = self.ltrwe_metrics_dict()
+        for training_batch in tqdm(self.training_dataloader):
+            training_images, training_labels, noise_presence = training_batch
+            training_images = training_images.to(self.device)
+            training_labels = training_labels.to(self.device)
+            validation_batch = next(iter(self.val_dataloader))
+            validation_images, validation_labels = validation_batch
+            validation_images = validation_images.to(self.device)
+            validation_labels = validation_labels.to(self.device)
+            values = sss_train_on_batch(train_images, train_labels, validation_images, validation_labels, self.model, self.loss_fn, self.optimizer, self.device, self.weights_propto_samples, self.coarse_weights)
+            metrics = self.compute_ltrwe_metrics(noise_presence, *values)
+            self.append_ltrwe_metrics(results, metrics)
+        for key in results:
+            if key in ['clean_nonzero_samples', 'noisy_nonzero_samples']:
+                results[key] = np.sum(results[key])
+            else:
+                results[key] = np.mean(results[key])
+            print('\t{}: {}'.format(key, results[key]))
+        return results
+    
 class NoisyLabelsDataset(Dataset):
     def __init__(self,
                  base_dataset,
@@ -550,8 +789,7 @@ class NoisyLabelsDataset(Dataset):
                     clean_samples_to_go[target] -= 1
                 elif noisy_samples_to_go[target] > 0:
                     self.data.append(data)
-                    possible_targets = [c for c in self.relevant_classes if c!=target]
-                    self.targets.append(random.choice(possible_targets))
+                    self.targets.append(random.choice(self.relevant_classes))
                     self.noise_presence.append(1)
                     noisy_samples_to_go[target] -= 1
         self.number_of_samples = len(self.data)
@@ -606,7 +844,7 @@ def smltrwe_train_on_batch(training_images,
                            validation_images,
                            validation_labels,
                            model,
-                           random_model,
+                           reweight_model,
                            loss_fn,
                            optimizer,
                            device,
@@ -614,8 +852,9 @@ def smltrwe_train_on_batch(training_images,
                            coarse_example_reweighting=False):
     model.train()
     
-    dummy_optimizer = optim.SGD(random_model.parameters(), lr=.01)
-    with higher.innerloop_ctx(random_model, dummy_optimizer) as (fmodel, diffopt):
+    reweight_state = deepcopy(reweight_model.state_dict())
+    dummy_optimizer = optim.SGD(reweight_model.parameters(), lr=.001)
+    with higher.innerloop_ctx(reweight_model, dummy_optimizer) as (fmodel, diffopt):
         training_logits = fmodel(training_images)
         training_loss = loss_fn(training_logits, training_labels)
         eps = torch.zeros_like(training_loss, device=device, requires_grad=True)
@@ -632,6 +871,7 @@ def smltrwe_train_on_batch(training_images,
         weights /= torch.sum(weights)
         if reweight_by_nonzero_examples:
             weights *= torch.norm(weights, p=0)/len(training_images)
+    reweight_model.load_state_dict(reweight_state)
     
     optimizer.zero_grad()
     logits = model(training_images)
@@ -647,7 +887,7 @@ def smltrwe_train_on_batch(training_images,
     validation_predictions = np.argmax(validation_logits.detach().cpu().numpy(), axis=1)
     validation_labels = validation_labels.detach().cpu().numpy()
     weights = weights.detach().cpu().numpy()
-    return elementwise_loss, predictions, labels, validation_loss, validation_predictions, validation_labels, weights
+    return elementwise_loss, predictions, labels, weights
 
 def ltrwe_train_on_batch(training_images,
                          training_labels, 
@@ -696,7 +936,76 @@ def ltrwe_train_on_batch(training_images,
     validation_predictions = np.argmax(validation_logits.detach().cpu().numpy(), axis=1)
     validation_labels = validation_labels.detach().cpu().numpy()
     weights = weights.detach().cpu().numpy()
-    return elementwise_loss, predictions, labels, validation_loss, validation_predictions, validation_labels, weights
+    return elementwise_loss, predictions, labels, weights
+
+def sss_train_on_batch(training_images,
+                       training_labels,
+                       validation_images,
+                       validation_labels,
+                       model,
+                       loss_fn,
+                       optimizer,
+                       device):
+    model.train()
+    
+    ## TODO: Can these two computations be done in parallel?
+    
+    # Compute epsilon gradients on labels in dataset
+    model_params_backup = deepcopy(model.state_dict())
+    dummy_optimizer = optim.SGD(model.parameters(), lr=.001)
+    with higher.innerloop_ctx(model, dummy_optimizer) as (fmodel, diffopt):
+        training_logits = fmodel(training_images)
+        training_loss = loss_fn(training_logits, training_labels)
+        eps = torch.zeros_like(training_loss, device=device, requires_grad=True)
+        reweighted_loss = torch.sum(training_loss*eps)
+        diffopt.step(reweighted_loss)
+        validation_logits = fmodel(validation_images)
+        validation_loss = loss_fn(validation_logits, validation_labels)
+        reduced_validation_loss = torch.mean(validation_loss)
+    dataset_labels_eps_grad = torch.autograd.grad(reduced_validation_loss, eps)[0].detach()
+    model.load_state_dict(model_params_backup)
+    
+    # Compute epsilon gradients on self-generated labels
+    self_labels = torch.argmax(training_logits.detach(), dim=-1)
+    dummy_optimizer = optim.SGD(model.parameters(), lr=.001)
+    with higher.innerloop_ctx(model, dummy_optimizer) as (fmodel, diffopt):
+        training_logits = fmodel(training_images)
+        training_loss = loss_fn(training_logits, self_labels)
+        eps = torch.zeros_like(training_loss, device=device, requires_grad=True)
+        reweighted_loss = torch.sum(training_loss*eps)
+        diffopt.step(reweighted_loss)
+        validation_logits = fmodel(validation_images)
+        validation_loss = loss_fn(validation_logits, validation_labels)
+        reduced_validation_loss = torch.mean(validation_loss)
+    self_labels_eps_grad = torch.autograd.grad(reduced_validation_loss, eps)[0].detach()
+    model.load_state_dict(model_params_backup)
+    
+    # Choose labels which maximize epsilon grads
+    label_options = torch.stack((training_labels, self_labels))
+    eg_options = torch.stack((dataset_labels_eps_grad, self_labels_eps_grad))
+    max_eg_idx = torch.argmax(-eg_options, dim=0).unsqueeze(0)
+    labels = torch.gather(label_options, 0, max_eg_idx)
+    eps_grad = torch.gather(eg_options, 0, max_eg_idx)
+    
+    # Compute example weights
+    weights = nn.functional.relu(-eps_grad)
+    if torch.norm(weights) != 0:
+        weights /= torch.sum(weights)
+    
+    # Train model using computed labels and example weights
+    optimizer.zero_grad()
+    logits = model(training_images)
+    elementwise_loss = loss_fn(logits, labels)
+    reweighted_loss = torch.sum(elementwise_loss*weights)
+    reweighted_loss.backward()
+    optimizer.step()
+    
+    # Detach results and convert to numpy
+    elementwise_loss = elementwise_loss.detach().cpu().numpy()
+    predictions = np.argmax(logits.detach().cpu().numpy())
+    labels = labels.detach().cpu().numpy()
+    weights = weights.detach().cpu().numpy()
+    return elementwise_loss, predictions, labels, weights
 
 def naive_train_on_batch(images,
                          labels,
