@@ -301,7 +301,7 @@ class ImbalancedDatasetTrial:
                 self.results.update(epoch, training_results)
                 self.results.update(epoch, test_results)
             elif self.method == 'smltrwe':
-                if (epoch % self.reweight_model_period) == 0:
+                if ((epoch-1) % self.reweight_model_period) == 0:
                     reweight_model = self.reweight_model_constructor(self.input_shape, **self.reweight_model_kwargs)
                     if self.self_reweight_model:
                         reweight_model.load_state_dict(self.model.state_dict())
