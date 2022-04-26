@@ -8,6 +8,7 @@ import os
 import datasets
 import models
 import corrupted_dataset_trial
+import time
 
 def run_trial(config_params, results_dir):
     
@@ -28,6 +29,7 @@ def run_trial(config_params, results_dir):
                     print('\tMethod: {}'.format(cp_method))
                     print('\tDataset: {}'.format(cp_dataset))
                     print('\tTrial kwargs {}: {}'.format(tk_idx, trial_kwargs))
+                    t0 = time.time()
                     
                     random.seed(seed)
                     np.random.seed(seed)
@@ -92,5 +94,8 @@ def run_trial(config_params, results_dir):
                     results_to_save = {}
                     for key in results.keys():
                         results_to_save.update({key: results.get_traces(key)})
+                    results_to_save.update({'time_taken': time.time()-t0})
                     with open(os.path.join(results_dir, 'results_{}_{}_{}.pickle'.format(cp_dataset, cp_method, tk_idx)), 'wb') as F:
                         pickle.dump(results_to_save, F)
+                    
+                    print('\tDone. Time taken: {} seconds.'.format(time.time()-t0))

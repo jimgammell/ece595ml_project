@@ -1,0 +1,56 @@
+{
+    "seed": 0,
+    "dataset": "MNIST",
+    "trial_type": "NoisyLabelsDataset",
+    "trial_kwargs": [
+        {
+            "num_clean_samples": 50000,
+            "num_noisy_samples": 0
+        },
+        {
+            "num_clean_samples": 45000,
+            "num_noisy_samples": 5000
+        },
+        {
+            "num_clean_samples": 25000,
+            "num_noisy_samples": 25000
+        },
+        {
+            "num_clean_samples": 5000,
+            "num_noisy_samples": 45000
+        },
+        {
+            "num_clean_samples": 0,
+            "num_noisy_samples": 50000
+        }},
+    "test_dataset_kwargs":
+    {
+        "num_clean_samples": 5000,
+        "num_noisy_samples": 5000
+    },
+    "method": ["naive", "ltrwe", "semi-self-supervised"],
+    "num_validation_samples": 500,
+    "dataloader_kwargs":
+    {
+        "batch_size": 100,
+        "shuffle": true
+    },
+    "model": "LeNet5",
+    "model_kwargs": 
+    {
+        "output_classes": 10
+    },
+    "loss_fn": "CrossEntropyLoss",
+    "loss_fn_kwargs": {},
+    "optimizer": "SGD",
+    "optimizer_kwargs":
+    {
+        "lr": 0.001
+    },
+    "device": "cuda",
+    "num_epochs": 1,
+    "evaluate_initial_performance": true,
+    "coarse_weights": false,
+    "weights_propto_samples": false,
+    "exaustion_criteria": 0
+}

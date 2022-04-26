@@ -306,7 +306,9 @@ class ImbalancedDatasetTrial:
                     if self.self_reweight_model:
                         reweight_model.load_state_dict(self.model.state_dict())
                     reweight_model = reweight_model.to(self.device)
-                training_results = self.smltrwe_train_epoch(epoch, reweight_model)
+                    training_results, computed_weights = self.smltrwe_train_epoch(epoch, reweight_model=reweight_model)
+                else:
+                    training_results = self.smltrwe_train_epoch(epoch, weights=computed_weights)
                 test_results = self.eval_epoch(epoch, self.test_dataloader)
                 dict_key_prepend(training_results, 'train_')
                 dict_key_prepend(test_results, 'test_')
@@ -409,10 +411,11 @@ class ImbalancedDatasetTrial:
             print('\t{}: {}'.format(key, results[key]))
         return results
     
-    def smltrwe_train_epoch(self, epoch_num, reweight_model):
+    def smltrwe_train_epoch(self, epoch_num, weights=None, reweight_model=None):
         print('Beginning training epoch {}...'.format(epoch_num))
         results = self.ltrwe_metrics_dict()
-        for training_batch in tqdm(self.train_dataloader):
+        computed_weights = []
+        for (idx, training_batch) in tqdm(enumerate(self.train_dataloader)):
             training_images, training_labels = training_batch
             training_images = training_images.to(self.device)
             training_labels_d = training_labels.to(self.device)
@@ -422,7 +425,13 @@ class ImbalancedDatasetTrial:
             validation_images = validation_images.to(self.device)
             validation_labels_d = validation_labels.to(self.device)
             validation_labels = validation_labels.numpy()
-            values = smltrwe_train_on_batch(training_images, training_labels_d, validation_images, validation_labels_d, self.model, reweight_model, self.loss_fn, self.optimizer, self.device, self.weights_propto_samples, self.coarse_weights)
+            if weights != None:
+                batch_weights = torch.tensor(weights[idx]).to(self.device)
+            else:
+                batch_weights = None
+            values = smltrwe_train_on_batch(training_images, training_labels_d, validation_images, validation_labels_d, self.model, self.loss_fn, self.optimizer, self.device, reweight_by_nonzero_examples=self.weights_propto_samples, coarse_example_reweighting=self.coarse_weights, reweight_model=reweight_model, weights=batch_weights)
+            if weights == None:
+                computed_weights.append(values[-1])
             metrics = self.compute_ltrwe_metrics(*values)
             self.append_ltrwe_metrics(results, metrics)
         for key in results:
@@ -431,7 +440,10 @@ class ImbalancedDatasetTrial:
             else:
                 results[key] = np.mean(results[key])
             print('\t{}: {}'.format(key, results[key]))
-        return results
+        if reweight_model != None:
+            return results, computed_weights
+        else:
+            return results
     
     def ltrwe_train_epoch(self, epoch_num):
         print('Beginning training epoch {}...'.format(epoch_num))
@@ -608,7 +620,7 @@ class NoisyLabelsDatasetTrial(Dataset):
             self.results.update(epoch, training_results)
             self.results.update(epoch, test_results)
             
-            test_accuracy = test_results['test_accuracy']
+            test_accuracy = test_results['test_correct_accuracy']
             if test_accuracy > best_test_accuracy:
                 best_test_accuracy = test_accuracy
                 epochs_without_improvement = 0
@@ -768,7 +780,7 @@ class NoisyLabelsDataset(Dataset):
                  base_dataset,
                  num_clean_samples,
                  num_noisy_samples,
-                 relevant_classes):
+                 relevant_classes=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]):
         self.data = []
         self.targets = []
         self.noise_presence = []
@@ -844,34 +856,36 @@ def smltrwe_train_on_batch(training_images,
                            validation_images,
                            validation_labels,
                            model,
-                           reweight_model,
                            loss_fn,
                            optimizer,
                            device,
+                           weights=None,
+                           reweight_model=None,
                            reweight_by_nonzero_examples=False,
                            coarse_example_reweighting=False):
     model.train()
     
-    reweight_state = deepcopy(reweight_model.state_dict())
-    dummy_optimizer = optim.SGD(reweight_model.parameters(), lr=.001)
-    with higher.innerloop_ctx(reweight_model, dummy_optimizer) as (fmodel, diffopt):
-        training_logits = fmodel(training_images)
-        training_loss = loss_fn(training_logits, training_labels)
-        eps = torch.zeros_like(training_loss, device=device, requires_grad=True)
-        reweighted_loss = torch.sum(training_loss*eps)
-        diffopt.step(reweighted_loss)
-        validation_logits = fmodel(validation_images)
-        validation_loss = loss_fn(validation_logits, validation_labels)
-        reduced_validation_loss = torch.mean(validation_loss)
-    eps_grad = torch.autograd.grad(reduced_validation_loss, eps)[0].detach()
-    weights = nn.functional.relu(-eps_grad)
-    if torch.norm(weights) != 0:
-        if coarse_example_reweighting:
-            weights[torch.nonzero(weights)] = 1
-        weights /= torch.sum(weights)
-        if reweight_by_nonzero_examples:
-            weights *= torch.norm(weights, p=0)/len(training_images)
-    reweight_model.load_state_dict(reweight_state)
+    if reweight_model != None:
+        reweight_state = deepcopy(reweight_model.state_dict())
+        dummy_optimizer = optim.SGD(reweight_model.parameters(), lr=.001)
+        with higher.innerloop_ctx(reweight_model, dummy_optimizer) as (fmodel, diffopt):
+            training_logits = fmodel(training_images)
+            training_loss = loss_fn(training_logits, training_labels)
+            eps = torch.zeros_like(training_loss, device=device, requires_grad=True)
+            reweighted_loss = torch.sum(training_loss*eps)
+            diffopt.step(reweighted_loss)
+            validation_logits = fmodel(validation_images)
+            validation_loss = loss_fn(validation_logits, validation_labels)
+            reduced_validation_loss = torch.mean(validation_loss)
+        eps_grad = torch.autograd.grad(reduced_validation_loss, eps)[0].detach()
+        weights = nn.functional.relu(-eps_grad)
+        if torch.norm(weights) != 0:
+            if coarse_example_reweighting:
+                weights[torch.nonzero(weights)] = 1
+            weights /= torch.sum(weights)
+            if reweight_by_nonzero_examples:
+                weights *= torch.norm(weights, p=0)/len(training_images)
+        reweight_model.load_state_dict(reweight_state)
     
     optimizer.zero_grad()
     logits = model(training_images)
@@ -883,9 +897,6 @@ def smltrwe_train_on_batch(training_images,
     elementwise_loss = elementwise_loss.detach().cpu().numpy()
     predictions = np.argmax(logits.detach().cpu().numpy(), axis=1)
     labels = training_labels.detach().cpu().numpy()
-    validation_loss = validation_loss.detach().cpu().numpy()
-    validation_predictions = np.argmax(validation_logits.detach().cpu().numpy(), axis=1)
-    validation_labels = validation_labels.detach().cpu().numpy()
     weights = weights.detach().cpu().numpy()
     return elementwise_loss, predictions, labels, weights
 
@@ -948,41 +959,27 @@ def sss_train_on_batch(training_images,
                        device):
     model.train()
     
-    ## TODO: Can these two computations be done in parallel?
-    
-    # Compute epsilon gradients on labels in dataset
+    ## Compute weight gradients on dataset and self-generated labels in parallel
     model_params_backup = deepcopy(model.state_dict())
     dummy_optimizer = optim.SGD(model.parameters(), lr=.001)
     with higher.innerloop_ctx(model, dummy_optimizer) as (fmodel, diffopt):
         training_logits = fmodel(training_images)
-        training_loss = loss_fn(training_logits, training_labels)
+        self_generated_labels = torch.argmax(training_logits.detach(), dim=-1)
+        labels = torch.cat((self_generated_labels, training_labels))
+        training_loss = loss_fn(torch.cat((training_logits, training_logits)), labels)
         eps = torch.zeros_like(training_loss, device=device, requires_grad=True)
         reweighted_loss = torch.sum(training_loss*eps)
         diffopt.step(reweighted_loss)
         validation_logits = fmodel(validation_images)
         validation_loss = loss_fn(validation_logits, validation_labels)
         reduced_validation_loss = torch.mean(validation_loss)
-    dataset_labels_eps_grad = torch.autograd.grad(reduced_validation_loss, eps)[0].detach()
+    eps_grad = torch.autograd.grad(reduced_validation_loss, eps)[0].detach()
     model.load_state_dict(model_params_backup)
     
-    # Compute epsilon gradients on self-generated labels
-    self_labels = torch.argmax(training_logits.detach(), dim=-1)
-    dummy_optimizer = optim.SGD(model.parameters(), lr=.001)
-    with higher.innerloop_ctx(model, dummy_optimizer) as (fmodel, diffopt):
-        training_logits = fmodel(training_images)
-        training_loss = loss_fn(training_logits, self_labels)
-        eps = torch.zeros_like(training_loss, device=device, requires_grad=True)
-        reweighted_loss = torch.sum(training_loss*eps)
-        diffopt.step(reweighted_loss)
-        validation_logits = fmodel(validation_images)
-        validation_loss = loss_fn(validation_logits, validation_labels)
-        reduced_validation_loss = torch.mean(validation_loss)
-    self_labels_eps_grad = torch.autograd.grad(reduced_validation_loss, eps)[0].detach()
-    model.load_state_dict(model_params_backup)
-    
-    # Choose labels which maximize epsilon grads
-    label_options = torch.stack((training_labels, self_labels))
-    eg_options = torch.stack((dataset_labels_eps_grad, self_labels_eps_grad))
+    # Choose the label/eps grad pairs which maximize the eps grads
+    self_generated_labels_eg, dataset_labels_eg = torch.tensor_split(eps_grad, 2)
+    label_options = torch.stack((self_generated_labels, training_labels))
+    eg_options = torch.stack((self_generated_labels_eg, dataset_labels_eg))
     max_eg_idx = torch.argmax(-eg_options, dim=0).unsqueeze(0)
     labels = torch.gather(label_options, 0, max_eg_idx)
     eps_grad = torch.gather(eg_options, 0, max_eg_idx)
