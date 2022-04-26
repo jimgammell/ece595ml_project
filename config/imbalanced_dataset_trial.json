@@ -32,7 +32,7 @@
         "num_majority_samples": 300,
         "num_minority_samples": 300
     },
-    "method": ["ltrwe", "smltrwe"],
+    "method": ["ltrwe", "smltrwe", "naive"],
     "num_validation_samples": 10,
     "dataloader_kwargs":
     {
@@ -57,9 +57,9 @@
         "lr": 0.001
     },
     "device": "cuda",
-    "num_epochs": 160,
+    "num_epochs": 500,
     "evaluate_initial_performance": true,
     "coarse_weights": false,
     "weights_propto_samples": false,
-    "exaustion_criteria": 2
+    "exaustion_criteria": 50
 }

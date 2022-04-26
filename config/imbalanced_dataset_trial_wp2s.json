@@ -57,9 +57,9 @@
         "lr": 0.001
     },
     "device": "cuda",
-    "num_epochs": 160,
+    "num_epochs": 500,
     "evaluate_initial_performance": true,
     "coarse_weights": false,
     "weights_propto_samples": true,
-    "exaustion_criteria": 2
+    "exaustion_criteria": 50
 }
