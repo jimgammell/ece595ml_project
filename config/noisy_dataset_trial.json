@@ -4,32 +4,32 @@
     "trial_type": "NoisyLabelsDataset",
     "trial_kwargs": [
         {
-            "num_clean_samples": 50000,
+            "num_clean_samples": 5000,
             "num_noisy_samples": 0
         },
         {
-            "num_clean_samples": 45000,
-            "num_noisy_samples": 5000
+            "num_clean_samples": 4500,
+            "num_noisy_samples": 500
         },
         {
-            "num_clean_samples": 25000,
-            "num_noisy_samples": 25000
+            "num_clean_samples": 2500,
+            "num_noisy_samples": 2500
         },
         {
-            "num_clean_samples": 5000,
-            "num_noisy_samples": 45000
+            "num_clean_samples": 500,
+            "num_noisy_samples": 4500
         },
         {
             "num_clean_samples": 0,
-            "num_noisy_samples": 50000
-        }},
+            "num_noisy_samples": 5000
+        }],
     "test_dataset_kwargs":
     {
-        "num_clean_samples": 5000,
-        "num_noisy_samples": 5000
+        "num_clean_samples": 400,
+        "num_noisy_samples": 400
     },
-    "method": ["naive", "ltrwe", "semi-self-supervised"],
-    "num_validation_samples": 500,
+    "method": ["semi-self-supervised", "naive", "ltrwe"],
+    "num_validation_samples": 50,
     "dataloader_kwargs":
     {
         "batch_size": 100,
@@ -48,7 +48,8 @@
         "lr": 0.001
     },
     "device": "cuda",
-    "num_epochs": 1,
+    "num_epochs": 5,
+    "pretrain_epochs": 0,
     "evaluate_initial_performance": true,
     "coarse_weights": false,
     "weights_propto_samples": false,

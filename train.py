@@ -2,7 +2,7 @@ import random
 import numpy as np
 import torch
 from torch import nn, optim
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, random_split
 import pickle
 import os
 import datasets
@@ -40,10 +40,16 @@ def run_trial(config_params, results_dir):
                     train_dataset = dataset_constructor(base_train_dataset, **trial_kwargs)
                     if 'ltrwe' in cp_method:
                         validation_dataset = train_dataset.get_validation_dataset(config_params['num_validation_samples'])
+                    elif cp_method == 'semi-self-supervised':
+                        validation_base_dataset = train_dataset.get_validation_dataset(2*config_params['num_validation_samples'])
+                        validation_dataset, pretrain_dataset = random_split(validation_base_dataset, 2*[10*config_params['num_validation_samples']])
                     test_dataset = dataset_constructor(base_test_dataset, **config_params['test_dataset_kwargs'])
                     train_dataloader = DataLoader(train_dataset, **config_params['dataloader_kwargs'])
                     if 'ltrwe' in cp_method:
                         val_dataloader = DataLoader(validation_dataset, **config_params['dataloader_kwargs'])
+                    elif cp_method == 'semi-self-supervised':
+                        val_dataloader = DataLoader(validation_dataset, **config_params['dataloader_kwargs'])
+                        pretrain_dataloader = DataLoader(pretrain_dataset, **config_params['dataloader_kwargs'])
                     if 'shuffle' in config_params['dataloader_kwargs']:
                         config_params['dataloader_kwargs']['shuffle'] = False
                     test_dataloader = DataLoader(test_dataset, **config_params['dataloader_kwargs'])
@@ -74,6 +80,10 @@ def run_trial(config_params, results_dir):
                                     'input_shape': eg_input.shape}
                     if 'ltrwe' in cp_method:
                         trial_kwargs.update({'val_dataloader': val_dataloader})
+                    if 'semi-self-supervised' in cp_method:
+                        trial_kwargs.update({'val_dataloader': val_dataloader,
+                                             'pretrain_dataloader': pretrain_dataloader,
+                                             'pretrain_epochs': config_params['pretrain_epochs']})
                     if cp_method == 'smltrwe':
                         reweight_model_constructor = getattr(models, config_params['reweight_model_constructor'])
                         trial_kwargs.update({'reweight_model_constructor': reweight_model_constructor})

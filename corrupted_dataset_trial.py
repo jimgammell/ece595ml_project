@@ -1,10 +1,14 @@
-from tqdm import tqdm
+from tqdm import tqdm as _tqdm
 import numpy as np
 import torch
 from torch import nn, optim
 from torch.utils.data import Dataset
 from copy import deepcopy
 import higher
+import random
+
+def tqdm(x):
+    return _tqdm(x, ncols=50)
 
 class Results:
     def __init__(self):
@@ -547,11 +551,14 @@ class NoisyLabelsDatasetTrial(Dataset):
                  evaluate_initial_performance=True,
                  val_dataloader=None,
                  pretrain_dataloader=None,
+                 pretrain_epochs=0,
                  reweight_model_constructor=None,
                  reweight_model_kwargs=None,
                  reweight_model_period=1,
                  self_reweight_model=False,
-                 exaustion_criteria=0):
+                 exaustion_criteria=0,
+                 coarse_weights=False,
+                 weights_propto_samples=False):
         self.method = method
         self.train_dataloader = train_dataloader
         self.test_dataloader = test_dataloader
@@ -565,12 +572,18 @@ class NoisyLabelsDatasetTrial(Dataset):
         self.evaluate_initial_performance = evaluate_initial_performance
         self.val_dataloader = val_dataloader
         self.pretrain_dataloader = pretrain_dataloader
+        self.pretrain_epochs = pretrain_epochs
         self.reweight_model_constructor = reweight_model_constructor
         self.reweight_model_kwargs = reweight_model_kwargs
         self.reweight_model_period = reweight_model_period
         self.self_reweight_model = self_reweight_model
         self.exaustion_criteria = exaustion_criteria
         self.results = Results()
+        self.coarse_weights = coarse_weights
+        self.weights_propto_samples = weights_propto_samples
+        
+        if coarse_weights or weights_propto_samples:
+            raise NotImplementedError
     
     def __call__(self):
         epoch = 0
@@ -579,7 +592,7 @@ class NoisyLabelsDatasetTrial(Dataset):
         
         # Evaluate initial model performance
         if self.evaluate_initial_performance:
-            train_results = self.eval_epoch(0, self.train_dataloader)
+            training_results = self.eval_epoch(0, self.train_dataloader)
             test_results = self.eval_epoch(0, self.test_dataloader)
             dict_key_prepend(training_results, 'train_')
             dict_key_prepend(test_results, 'test_')
@@ -587,17 +600,15 @@ class NoisyLabelsDatasetTrial(Dataset):
             self.results.update(0, test_results)
         epoch += 1
         
-        if self.method == 'semi-self-supervised':
-            while epoch <= self.pretrain_epochs:
-                training_results = self.naive_train_epoch(0, self.pretrain_dataloader)
-                test_results = self.eval_epoch(0, self.test_dataloader)
-                dict_key_prepend(training_results, 'pretrain_')
-                dict_key_prepend(test_results, 'test_')
-                self.results.update(epoch, training_results)
-                self.results.update(epoch, test_results)
-                epoch += 1
+        if (self.method == 'semi-self-supervised') and (self.pretrain_epochs > 0):
+            training_results = self.pretrain(self.pretrain_epochs, self.pretrain_dataloader)
+            test_results = self.eval_epoch(0, self.test_dataloader)
+            dict_key_prepend(training_results, 'pretrain_')
+            dict_key_prepend(test_results, 'test_')
+            self.results.update(epoch, training_results)
+            self.results.update(epoch, test_results)
         
-        while (epoch <= self.pretrain_epochs+self.num_epochs) or (epochs_without_improvement < self.exaustion_criteria):
+        while (epoch <= self.num_epochs) or (epochs_without_improvement < self.exaustion_criteria):
             if self.method == 'naive':
                 training_results = self.naive_train_epoch(epoch)
             elif self.method == 'ltrwe':
@@ -657,8 +668,8 @@ class NoisyLabelsDatasetTrial(Dataset):
                 'incorrect_accuracy': [],
                 'correct_weights_mean': [],
                 'incorrect_weights_mean': [],
-                'correct_nonzero_samples': [],
-                'incorrect_nonzero_samples': []}
+                'clean_nonzero_samples': [],
+                'noisy_nonzero_samples': []}
     
     def compute_ltrwe_metrics(self, noise_presence, elementwise_loss, predictions, labels, weights):
         def mean(x):
@@ -673,6 +684,7 @@ class NoisyLabelsDatasetTrial(Dataset):
         incorrect_weights_mean = mean(weights[noise_presence==1])
         correct_nonzero_samples = np.count_nonzero(weights[noise_presence==0])
         incorrect_nonzero_samples = np.count_nonzero(weights[noise_presence==1])
+        
         return correct_loss, incorrect_loss, correct_accuracy, incorrect_accuracy, correct_weights_mean, incorrect_weights_mean, correct_nonzero_samples, incorrect_nonzero_samples
     
     def append_ltrwe_metrics(self, em_dict, metrics):
@@ -687,14 +699,43 @@ class NoisyLabelsDatasetTrial(Dataset):
             images = images.to(self.device)
             labels = labels.to(self.device)
             values = eval_on_batch(images, labels, self.model, self.loss_fn, self.optimizer, self.device)
-            metrics = self.compute_evaluation_metrics(noise_presence, *values)
+            metrics = self.compute_evaluation_metrics(*([noise_presence] + list(values) + [labels.cpu().numpy()]))
             self.append_evaluation_metrics(results, metrics)
         for key in results.keys():
-            results[key] = np.mean(results[key])
+            results[key] = np.nanmean(results[key])
+            print('\t{}: {}'.format(key, results[key]))
+        return results
+    
+    def pretrain(self, num_epochs, dataloader):
+        def mean(x):
+            if len(x) == 0:
+                return np.nan
+            return np.nanmean(x)
+        print('Beginning pretraining...')
+        results = self.evaluation_metrics_dict()
+        for epoch in tqdm(range(num_epochs-1)):
+            for batch in dataloader:
+                images, labels = batch
+                images = images.to(self.device)
+                labels = labels.to(self.device)
+                _ = naive_train_on_batch(images, labels, self.model, self.loss_fn, self.optimizer, self.device)
+        for batch in dataloader:
+            images, labels = batch
+            images = images.to(self.device)
+            labels = labels.to(self.device)
+            values = naive_train_on_batch(images, labels, self.model, self.loss_fn, self.optimizer, self.device)
+            metrics = self.compute_evaluation_metrics(*([np.zeros(len(images))] + list(values) + [labels.cpu().numpy()]))
+            self.append_evaluation_metrics(results, metrics)
+        for key in results.keys():
+            results[key] = np.nanmean(results[key])
             print('\t{}: {}'.format(key, results[key]))
         return results
     
     def naive_train_epoch(self, epoch_num):
+        def mean(x):
+            if len(x) == 0:
+                return np.nan
+            return np.nanmean(x)
         print('Beginning training epoch {}...'.format(epoch_num))
         results = self.evaluation_metrics_dict()
         for batch in tqdm(self.train_dataloader):
@@ -702,17 +743,21 @@ class NoisyLabelsDatasetTrial(Dataset):
             images = images.to(self.device)
             labels = labels.to(self.device)
             values = naive_train_on_batch(images, labels, self.model, self.loss_fn, self.optimizer, self.device)
-            metrics = self.compute_evaluation_metrics(noise_presence, *values)
+            metrics = self.compute_evaluation_metrics(*([noise_presence] + list(values) + [labels.cpu().numpy()]))
             self.append_evaluation_metrics(results, metrics)
         for key in results.keys():
-            results[key] = np.mean(results[key])
+            results[key] = mean(results[key])
             print('\t{}: {}'.format(key, results[key]))
         return results
     
     def ltrwe_train_epoch(self, epoch_num):
+        def mean(x):
+            if len(x) == 0:
+                return np.nan
+            return np.nanmean(x)
         print('Beginning training epoch {}...'.format(epoch_num))
         results = self.ltrwe_metrics_dict()
-        for training_batch in tqdm(self.training_dataloader):
+        for training_batch in tqdm(self.train_dataloader):
             training_images, training_labels, noise_presence = training_batch
             training_images = training_images.to(self.device)
             training_labels = training_labels.to(self.device)
@@ -720,21 +765,25 @@ class NoisyLabelsDatasetTrial(Dataset):
             validation_images, validation_labels = validation_batch
             validation_images = validation_images.to(self.device)
             validation_labels = validation_labels.to(self.device)
-            values = ltrwe_train_on_batch(train_images, train_labels, validation_images, validation_labels, self.model, self.loss_fn, self.optimizer, self.device, self.weights_propto_samples, self.coarse_weights)
+            values = ltrwe_train_on_batch(training_images, training_labels, validation_images, validation_labels, self.model, self.loss_fn, self.optimizer, self.device, self.weights_propto_samples, self.coarse_weights)
             metrics = self.compute_ltrwe_metrics(noise_presence, *values)
             self.append_ltrwe_metrics(results, metrics)
         for key in results:
             if key in ['clean_nonzero_samples', 'noisy_nonzero_samples']:
                 results[key] = np.sum(results[key])
             else:
-                results[key] = np.mean(results[key])
+                results[key] = mean(results[key])
             print('\t{}: {}'.format(key, results[key]))
         return results
     
     def smltrwe_train_epoch(self, epoch_num, reweight_model):
+        def mean(x):
+            if len(x) == 0:
+                return np.nan
+            return np.nanmean(x)
         print('Beginning training epoch {}...'.format(epoch_num))
         results = self.ltrwe_metrics_dict()
-        for training_batch in tqdm(self.training_dataloader):
+        for training_batch in tqdm(self.train_dataloader):
             training_images, training_labels, noise_presence = training_batch
             training_images = training_images.to(self.device)
             training_labels = training_labels.to(self.device)
@@ -749,14 +798,19 @@ class NoisyLabelsDatasetTrial(Dataset):
             if key in ['clean_nonzero_samples', 'noisy_nonzero_samples']:
                 results[key] = np.sum(results[key])
             else:
-                results[key] = np.mean(results[key])
+                results[key] = mean(results[key])
             print('\t{}: {}'.format(key, results[key]))
+        assert False
         return results
     
     def sss_train_epoch(self, epoch_num):
+        def mean(x):
+            if len(x) == 0:
+                return np.nan
+            return np.nanmean(x)
         print('Beginning training epoch {}...'.format(epoch_num))
         results = self.ltrwe_metrics_dict()
-        for training_batch in tqdm(self.training_dataloader):
+        for training_batch in tqdm(self.train_dataloader):
             training_images, training_labels, noise_presence = training_batch
             training_images = training_images.to(self.device)
             training_labels = training_labels.to(self.device)
@@ -764,14 +818,14 @@ class NoisyLabelsDatasetTrial(Dataset):
             validation_images, validation_labels = validation_batch
             validation_images = validation_images.to(self.device)
             validation_labels = validation_labels.to(self.device)
-            values = sss_train_on_batch(train_images, train_labels, validation_images, validation_labels, self.model, self.loss_fn, self.optimizer, self.device, self.weights_propto_samples, self.coarse_weights)
+            values = sss_train_on_batch(training_images, training_labels, validation_images, validation_labels, self.model, self.loss_fn, self.optimizer, self.device)
             metrics = self.compute_ltrwe_metrics(noise_presence, *values)
             self.append_ltrwe_metrics(results, metrics)
         for key in results:
             if key in ['clean_nonzero_samples', 'noisy_nonzero_samples']:
                 results[key] = np.sum(results[key])
             else:
-                results[key] = np.mean(results[key])
+                results[key] = mean(results[key])
             print('\t{}: {}'.format(key, results[key]))
         return results
     
@@ -783,6 +837,7 @@ class NoisyLabelsDataset(Dataset):
                  relevant_classes=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]):
         self.data = []
         self.targets = []
+        self.correct_targets = []
         self.noise_presence = []
         self.transform = base_dataset.transform
         self.target_transform = base_dataset.target_transform
@@ -795,13 +850,15 @@ class NoisyLabelsDataset(Dataset):
         for (image, target) in base_dataset:
             if target in relevant_classes:
                 if clean_samples_to_go[target] > 0:
-                    self.data.append(data)
+                    self.data.append(image)
                     self.targets.append(target)
+                    self.correct_targets.append(target)
                     self.noise_presence.append(0)
                     clean_samples_to_go[target] -= 1
                 elif noisy_samples_to_go[target] > 0:
-                    self.data.append(data)
+                    self.data.append(image)
                     self.targets.append(random.choice(self.relevant_classes))
+                    self.correct_targets.append(target)
                     self.noise_presence.append(1)
                     noisy_samples_to_go[target] -= 1
         self.number_of_samples = len(self.data)
@@ -825,7 +882,7 @@ class NoisyLabelsDataset(Dataset):
         number_to_go = {c: samples_per_class for c in self.relevant_classes}
         data = []
         targets = []
-        for (image, target) in zip(self.data, self.targets):
+        for (image, target) in zip(self.data, self.correct_targets):
             if number_to_go[target] > 0:
                 data.append(image)
                 targets.append(target)
@@ -959,7 +1016,7 @@ def sss_train_on_batch(training_images,
                        device):
     model.train()
     
-    ## Compute weight gradients on dataset and self-generated labels in parallel
+    # Compute weight gradients on dataset and self-generated labels in parallel
     model_params_backup = deepcopy(model.state_dict())
     dummy_optimizer = optim.SGD(model.parameters(), lr=.001)
     with higher.innerloop_ctx(model, dummy_optimizer) as (fmodel, diffopt):
@@ -981,8 +1038,8 @@ def sss_train_on_batch(training_images,
     label_options = torch.stack((self_generated_labels, training_labels))
     eg_options = torch.stack((self_generated_labels_eg, dataset_labels_eg))
     max_eg_idx = torch.argmax(-eg_options, dim=0).unsqueeze(0)
-    labels = torch.gather(label_options, 0, max_eg_idx)
-    eps_grad = torch.gather(eg_options, 0, max_eg_idx)
+    labels = torch.gather(label_options, 0, max_eg_idx).squeeze()
+    eps_grad = torch.gather(eg_options, 0, max_eg_idx).squeeze()
     
     # Compute example weights
     weights = nn.functional.relu(-eps_grad)
@@ -999,7 +1056,7 @@ def sss_train_on_batch(training_images,
     
     # Detach results and convert to numpy
     elementwise_loss = elementwise_loss.detach().cpu().numpy()
-    predictions = np.argmax(logits.detach().cpu().numpy())
+    predictions = np.argmax(logits.detach().cpu().numpy(), axis=-1)
     labels = labels.detach().cpu().numpy()
     weights = weights.detach().cpu().numpy()
     return elementwise_loss, predictions, labels, weights
