@@ -97,6 +97,15 @@ def run_trial(config_params):
     classes = get_dataset_classes(dataset)
     if method in ['ltrwe', 'sss']:
         clean_dataset = CleanDataset(train_dataset, classes, clean_dataset_samples_per_class)
+    noisy_labels_dataset = NoisyLabelsDataset(train_dataset, classes, correct_samples_per_class, incorrect_samples_per_class)
+    
+    train_dataloader = DataLoader(train_dataset, **train_dataloader_kwargs)
+    val_dataloader = DataLoader(val_dataset, **eval_dataloader_kwargs)
+    test_dataloader = DataLoader(test_dataset, **eval_dataloader_kwargs)
+    if method in ['ltrwe', 'sss']:
+        clean_dataloader = DataLoader(clean_dataset, **clean_dataloader_kwargs)
+        
+    
 
 class CleanDataset(Dataset):
     def __init__(self,
@@ -178,11 +187,12 @@ class NoisyLabelsDataset(Dataset):
         noisy_target = self.noisy_targets[idx]
         correct_target = self.correct_targets[idx]
         correctness = self.correctness[idx]
+        sample_idx = self.sample_idx[idx]
         if self.transform != None:
             image = self.transform(image)
         if self.target_transform != None:
             noisy_target = self.target_transform(noisy_target)
-        return image, noisy_target, correct_target, correctness
+        return image, noisy_target, correct_target, correctness, idx
     
     def __len__(self):
         return self.number_of_samples
