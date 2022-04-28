@@ -1,6 +1,6 @@
 {
     "seed": 0,
-    "dataset": "MNIST",
+    "dataset": ["MNIST", "FashionMNIST"],
     "trial_type": "NoisyLabelsDataset",
     "trial_kwargs": [
         {
@@ -48,7 +48,7 @@
         "lr": 0.001
     },
     "device": "cuda",
-    "num_epochs": 5,
+    "num_epochs": 160,
     "pretrain_epochs": 0,
     "evaluate_initial_performance": true,
     "coarse_weights": false,
