@@ -1,6 +1,6 @@
 {
     "seed": 0,
-    "dataset": ["MNIST", "FashionMNIST"],
+    "dataset": ["CIFAR10"],
     "trial_type": "NoisyLabelsDataset",
     "trial_kwargs": [
         {
@@ -25,30 +25,31 @@
         }],
     "test_dataset_kwargs":
     {
-        "num_clean_samples": 400,
-        "num_noisy_samples": 400
+        "num_clean_samples": 500,
+        "num_noisy_samples": 500
     },
-    "method": ["semi-self-supervised", "naive", "ltrwe"],
-    "num_validation_samples": 50,
+    "method": ["semi-self-supervised", "ltrwe", "naive"],
+    "num_validation_samples": 100,
     "dataloader_kwargs":
     {
         "batch_size": 100,
         "shuffle": true
     },
-    "model": "LeNet5",
+    "model": "ResNet",
     "model_kwargs": 
     {
+        "blocks": 18,
         "output_classes": 10
     },
     "loss_fn": "CrossEntropyLoss",
     "loss_fn_kwargs": {},
-    "optimizer": "SGD",
+    "optimizer": "Adam",
     "optimizer_kwargs":
     {
         "lr": 0.001
     },
     "device": "cuda",
-    "num_epochs": 160,
+    "num_epochs": 30,
     "pretrain_epochs": 0,
     "evaluate_initial_performance": true,
     "coarse_weights": false,

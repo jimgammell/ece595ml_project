@@ -64,7 +64,16 @@ def run_trial(config_params, results_dir):
                     loss_fn.reduction = 'none'
 
                     optimizer_constructor = getattr(optim, config_params['optimizer'])
+                    if 'scheduler' in config_params['optimizer_kwargs']:
+                        scheduler_constructor = getattr(optim.lr_scheduler, config_params['optimizer_kwargs']['scheduler'])
+                        scheduler_kwargs = config_params['optimizer_kwargs']['scheduler_kwargs']
+                        del config_params['optimizer_kwargs']['scheduler']
+                        del config_params['optimizer_kwargs']['scheduler_kwargs']
+                    else:
+                        scheduler_constructor = None
                     optimizer = optimizer_constructor(model.parameters(), **config_params['optimizer_kwargs'])
+                    if scheduler_constructor != None:
+                        scheduler = scheduler_constructor(optimizer, **scheduler_kwargs)
 
                     trial_constructor = getattr(corrupted_dataset_trial, config_params['trial_type']+'Trial')
                     trial_kwargs = {'method': cp_method,
@@ -96,6 +105,8 @@ def run_trial(config_params, results_dir):
                         trial_kwargs.update({'coarse_weights': config_params['coarse_weights']})
                     if 'weights_propto_samples' in config_params:
                         trial_kwargs.update({'weights_propto_samples': config_params['weights_propto_samples']})
+                    if scheduler_constructor != None:
+                        trial_kwargs.update({'scheduler': scheduler})
                     trial = trial_constructor(**trial_kwargs)
                     results = trial()
 

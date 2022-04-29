@@ -7,16 +7,21 @@ def get_dataset(name):
         os.mkdir(dataset_path)
         
     if name == 'CIFAR10':
-        data_transform = transforms.Compose([transforms.ToTensor(),
-                                             transforms.Normalize((.4914, .4822, .4465),
-                                                                  (247, .243, .261))])
+        train_transform = transforms.Compose([#transforms.RandomCrop(32, padding=4),
+                                              #transforms.RandomHorizontalFlip(),
+                                              transforms.ToTensor(),
+                                              transforms.Normalize((0.4914, 0.4822, 0.4465),
+                                                                   (0.2023, 0.1994, 0.2010))])
+        test_transform = transforms.Compose([transforms.ToTensor(),
+                                             transforms.Normalize((0.4914, 0.4822, 0.4465),
+                                                                  (0.2023, 0.1994, 0.2010))])
         training_dataset = datasets.CIFAR10(root=dataset_path,
                                             train=True,
-                                            transform=data_transform,
+                                            transform=train_transform,
                                             download=True)
         testing_dataset = datasets.CIFAR10(root=dataset_path,
                                            train=False,
-                                           transform=data_transform,
+                                           transform=test_transform,
                                            download=True)
     elif name == 'MNIST':
         data_transform = transforms.Compose([transforms.ToTensor(),

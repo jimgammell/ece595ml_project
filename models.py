@@ -13,7 +13,7 @@ class ResNet(nn.Module):
         model_constructor = getattr(models, attr_name)
         model = model_constructor()
         model.fc = nn.LazyLinear(output_classes)
-        self.model = model()
+        self.model = model
         eg_input = torch.rand(input_shape)
         _ = self.model(eg_input)
     def forward(self, x):
@@ -34,12 +34,14 @@ class LeNet5(nn.Module):
                   nn.ReLU(),
                   nn.MaxPool2d(kernel_size=2, stride=2),
                   nn.Flatten(),
-                  nn.Linear(16*5*5, 120),
+                  #nn.Linear(16*5*5, 120),
+                  nn.LazyLinear(120),
                   nn.ReLU(),
                   nn.Linear(120, 84),
                   nn.ReLU(),
                   nn.Linear(84, output_classes)]
         self.model = nn.Sequential(*layers)
+        print(self.model)
         eg_input = torch.rand(input_shape)
         _ = self.model(eg_input)
     def forward(self, x):

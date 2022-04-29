@@ -558,7 +558,8 @@ class NoisyLabelsDatasetTrial(Dataset):
                  self_reweight_model=False,
                  exaustion_criteria=0,
                  coarse_weights=False,
-                 weights_propto_samples=False):
+                 weights_propto_samples=False,
+                 scheduler=None):
         self.method = method
         self.train_dataloader = train_dataloader
         self.test_dataloader = test_dataloader
@@ -581,6 +582,7 @@ class NoisyLabelsDatasetTrial(Dataset):
         self.results = Results()
         self.coarse_weights = coarse_weights
         self.weights_propto_samples = weights_propto_samples
+        self.scheduler = scheduler
         
         if coarse_weights or weights_propto_samples:
             raise NotImplementedError
@@ -637,6 +639,8 @@ class NoisyLabelsDatasetTrial(Dataset):
                 epochs_without_improvement = 0
             else:
                 epochs_without_improvement += 1
+            if self.scheduler != None:
+                self.scheduler.step()
             epoch += 1
         return self.results
     
@@ -1057,7 +1061,7 @@ def sss_train_on_batch(training_images,
     # Detach results and convert to numpy
     elementwise_loss = elementwise_loss.detach().cpu().numpy()
     predictions = np.argmax(logits.detach().cpu().numpy(), axis=-1)
-    labels = labels.detach().cpu().numpy()
+    labels = training_labels.detach().cpu().numpy()
     weights = weights.detach().cpu().numpy()
     return elementwise_loss, predictions, labels, weights
 
