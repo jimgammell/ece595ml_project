@@ -1,0 +1,165 @@
+Running noisy trial
+	Config file: ./config/finetune_experiments.json
+	Results directory: ./results/finetune_experiments
+Beginning noisy dataset experiment.
+	Method: sss
+	Dataset: FashionMNIST
+	Correct samples per class: 499
+	Incorrect samples per class: 4501
+	Random seed: 0
+	Training dataloader kwargs: {'batch_size': 128, 'shuffle': True}
+	Eval dataloader kwargs: {'batch_size': 128, 'shuffle': False}
+	Clean dataloader kwargs: {'batch_size': 128, 'shuffle': True}
+	Clean samples per class: 10
+	Validation samples per class: 500
+	Model constructor: LeNet5
+	Model constructor kwargs: {}
+	Loss function constructor: CrossEntropyLoss
+	Loss function constructor kwargs: {}
+	Optimizer constructor: Adam
+	Optimizer constructor kwargs: {}
+	Scheduler constructor: ReduceLROnPlateau
+	Scheduler constructor kwargs: {'mode': 'max', 'factor': 0.5, 'patience': 10, 'verbose': True}
+	Number of epochs: 100
+	Pretraining epochs: 0
+	Fine-tuning epochs: 0
+	Device: cuda
+	Conduct initial measurements: True
+
+Setting random seed.
+Initializing and partitioning datasets.
+Initializing dataloaders.
+Initializing model.
+LeNet5(
+  (model): Sequential(
+    (0): Conv2d(1, 6, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+    (1): BatchNorm2d(6, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (2): ReLU()
+    (3): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (4): Conv2d(6, 16, kernel_size=(5, 5), stride=(1, 1))
+    (5): BatchNorm2d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (6): ReLU()
+    (7): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (8): Flatten(start_dim=1, end_dim=-1)
+    (9): Linear(in_features=400, out_features=120, bias=True)
+    (10): ReLU()
+    (11): Linear(in_features=120, out_features=84, bias=True)
+    (12): ReLU()
+    (13): Linear(in_features=84, out_features=10, bias=True)
+  )
+)
+
+Initializing loss function.
+CrossEntropyLoss()
+
+Initializing optimizer.
+Adam (
+Parameter Group 0
+    amsgrad: False
+    betas: (0.9, 0.999)
+    eps: 1e-08
+    lr: 0.001
+    weight_decay: 0
+)
+
+Initializing scheduler.
+<torch.optim.lr_scheduler.ReduceLROnPlateau object at 0x7f8af0eca730>
+
+Measuring initial performance.
+Epoch 0 complete.
+train:
+	loss: 2.3037807941436768
+	accuracy: 0.09813303326138148
+val:
+	loss: 2.3028063774108887
+	accuracy: 0.0994140625
+test:
+	loss: 2.3030507564544678
+	accuracy: 0.10176028481012658
+Training model.
+Beginning epoch 1.
+Epoch 1 complete.
+train:
+	correct_loss: 1.060012698173523
+	incorrect_loss: 1.1238757371902466
+	correct_acc: 0.5706438572173353
+	incorrect_acc: 0.04764885057057363
+	correct_sample_used_orig: 3586
+	correct_sample_used_sss: 634
+	incorrect_sample_used_orig: 8676
+	incorrect_sample_used_sss: 25987
+val:
+	loss: 1.0596225261688232
+	accuracy: 0.6205078125
+test:
+	loss: 1.0864150524139404
+	accuracy: 0.6112539556962026
+Beginning epoch 2.
+Epoch 2 complete.
+train:
+	correct_loss: 0.8265365958213806
+	incorrect_loss: 0.9008672833442688
+	correct_acc: 0.6452034999045122
+	incorrect_acc: 0.04041500621430676
+	correct_sample_used_orig: 3637
+	correct_sample_used_sss: 697
+	incorrect_sample_used_orig: 6702
+	incorrect_sample_used_sss: 29518
+val:
+	loss: 0.9241273999214172
+	accuracy: 0.6658203125
+test:
+	loss: 0.9597437381744385
+	accuracy: 0.6608979430379747
+Beginning epoch 3.
+Epoch 3 complete.
+train:
+	correct_loss: 0.748810887336731
+	incorrect_loss: 0.8242712020874023
+	correct_acc: 0.6954998452335875
+	incorrect_acc: 0.03695875823075203
+	correct_sample_used_orig: 3685
+	correct_sample_used_sss: 616
+	incorrect_sample_used_orig: 6043
+	incorrect_sample_used_sss: 30587
+val:
+	loss: 0.8971489071846008
+	accuracy: 0.693359375
+test:
+	loss: 0.9293083548545837
+	accuracy: 0.6866099683544303
+Beginning epoch 4.
+Epoch 4 complete.
+train:
+	correct_loss: 0.6864817142486572
+	incorrect_loss: 0.7612937092781067
+	correct_acc: 0.703676697160525
+	incorrect_acc: 0.036418608779141756
+	correct_sample_used_orig: 3668
+	correct_sample_used_sss: 688
+	incorrect_sample_used_orig: 5590
+	incorrect_sample_used_sss: 31872
+val:
+	loss: 0.879534900188446
+	accuracy: 0.69375
+test:
+	loss: 0.9131065011024475
+	accuracy: 0.6874011075949367
+Beginning epoch 5.
+Epoch 5 complete.
+train:
+	correct_loss: 0.659527063369751
+	incorrect_loss: 0.727852463722229
+	correct_acc: 0.717358249140078
+	incorrect_acc: 0.03583159000385682
+	correct_sample_used_orig: 3637
+	correct_sample_used_sss: 667
+	incorrect_sample_used_orig: 5296
+	incorrect_sample_used_sss: 31822
+val:
+	loss: 0.9086946249008179
+	accuracy: 0.6998046875
+test:
+	loss: 0.9485605955123901
+	accuracy: 0.6886867088607594
+Beginning epoch 6.

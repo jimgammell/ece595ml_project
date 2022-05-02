@@ -1,0 +1,146 @@
+Running noisy trial
+	Config file: ./config/cifar10_reproduction_trial.json
+	Results directory: ./results/cifar10_reproduction_trial
+Beginning noisy dataset experiment.
+	Method: naive
+	Dataset: MNIST
+	Correct samples per class: 499
+	Incorrect samples per class: 4501
+	Random seed: 0
+	Training dataloader kwargs: {'batch_size': 100, 'shuffle': True}
+	Eval dataloader kwargs: {'batch_size': 100, 'shuffle': False}
+	Clean dataloader kwargs: {'batch_size': 100, 'shuffle': True}
+	Clean samples per class: 100
+	Validation samples per class: 100
+	Model constructor: LeNet5
+	Model constructor kwargs: {}
+	Loss function constructor: CrossEntropyLoss
+	Loss function constructor kwargs: {}
+	Optimizer constructor: SGD
+	Optimizer constructor kwargs: {'lr': 0.001, 'momentum': 0.9}
+	Scheduler constructor: ReduceLROnPlateau
+	Scheduler constructor kwargs: {'mode': 'max', 'factor': 0.5, 'patience': 10}
+	Number of epochs: 100
+	Device: cuda
+	Conduct initial measurements: True
+
+Setting random seed.
+Initializing and partitioning datasets.
+Initializing dataloaders.
+Initializing model.
+LeNet5(
+  (model): Sequential(
+    (0): Conv2d(1, 6, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+    (1): BatchNorm2d(6, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (2): ReLU()
+    (3): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (4): Conv2d(6, 16, kernel_size=(5, 5), stride=(1, 1))
+    (5): BatchNorm2d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (6): ReLU()
+    (7): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (8): Flatten(start_dim=1, end_dim=-1)
+    (9): Linear(in_features=400, out_features=120, bias=True)
+    (10): ReLU()
+    (11): Linear(in_features=120, out_features=84, bias=True)
+    (12): ReLU()
+    (13): Linear(in_features=84, out_features=10, bias=True)
+  )
+)
+
+Initializing loss function.
+CrossEntropyLoss()
+
+Initializing optimizer.
+SGD (
+Parameter Group 0
+    dampening: 0
+    lr: 0.001
+    momentum: 0.9
+    nesterov: False
+    weight_decay: 0
+)
+
+Initializing scheduler.
+<torch.optim.lr_scheduler.ReduceLROnPlateau object at 0x7f226e0c6790>
+
+Measuring initial performance.
+Epoch 0 complete.
+train:
+	loss: 2.3043134212493896
+	accuracy: 0.09805882352941178
+val:
+	loss: 2.3061375617980957
+	accuracy: 0.049
+test:
+	loss: 2.3049073219299316
+	accuracy: 0.041299999999999996
+Training model.
+Beginning epoch 1.
+Epoch 1 complete.
+train:
+	correct_loss: 2.3044347763061523
+	incorrect_loss: 2.3043909072875977
+	correct_acc: 0.09433275951942861
+	incorrect_acc: 0.10078586021797335
+	correct_sample_used_orig: 5990
+	correct_sample_used_sss: 0
+	incorrect_sample_used_orig: 45010
+	incorrect_sample_used_sss: 0
+val:
+	loss: 2.2938756942749023
+	accuracy: 0.121
+test:
+	loss: 2.294628858566284
+	accuracy: 0.12040000000000001
+Beginning epoch 2.
+Epoch 2 complete.
+train:
+	correct_loss: 2.2913079261779785
+	incorrect_loss: 2.3041510581970215
+	correct_acc: 0.14141189620223493
+	incorrect_acc: 0.10039171825825588
+	correct_sample_used_orig: 5990
+	correct_sample_used_sss: 0
+	incorrect_sample_used_orig: 45010
+	incorrect_sample_used_sss: 0
+val:
+	loss: 2.286919116973877
+	accuracy: 0.177
+test:
+	loss: 2.287583351135254
+	accuracy: 0.1602
+Beginning epoch 3.
+Epoch 3 complete.
+train:
+	correct_loss: 2.284069776535034
+	incorrect_loss: 2.304213523864746
+	correct_acc: 0.1877996566419975
+	incorrect_acc: 0.09750988747000795
+	correct_sample_used_orig: 5990
+	correct_sample_used_sss: 0
+	incorrect_sample_used_orig: 45010
+	incorrect_sample_used_sss: 0
+val:
+	loss: 2.279738664627075
+	accuracy: 0.225
+test:
+	loss: 2.280094623565674
+	accuracy: 0.20280000000000004
+Beginning epoch 4.
+Epoch 4 complete.
+train:
+	correct_loss: 2.2776410579681396
+	incorrect_loss: 2.304339647293091
+	correct_acc: 0.2249836980417456
+	incorrect_acc: 0.09517962126846145
+	correct_sample_used_orig: 5990
+	correct_sample_used_sss: 0
+	incorrect_sample_used_orig: 45010
+	incorrect_sample_used_sss: 0
+val:
+	loss: 2.273397207260132
+	accuracy: 0.23900000000000002
+test:
+	loss: 2.2745418548583984
+	accuracy: 0.23190000000000002
+Beginning epoch 5.

@@ -1,0 +1,37 @@
+{
+    "trial_type": "noisy",
+    "method": "sss",
+    "dataset": "FashionMNIST",
+    "val_dataset_size": 10000,
+    "correct_samples_per_class": 2500,
+    "incorrect_samples_per_class": 2500,
+    "seed": [0, 1, 2, 3, 4],
+    "train_dataloader_kwargs":
+    {
+        "batch_size": 128,
+        "shuffle": true
+    },
+    "eval_dataloader_kwargs": 
+    {
+        "batch_size": 128,
+        "shuffle": true
+    },
+    "clean_dataloader_kwargs": 
+    {
+        "batch_size": 128,
+        "shuffle": true
+    },
+    "clean_samples_per_class": [1, 10, 100, 1000],
+    "model_constructor": "LeNet5",
+    "model_constructor_kwargs": {},
+    "loss_fn_constructor": "CategoricalCrossEntropy",
+    "loss_fn_constructor_kwargs": {},
+    "optimizer_constructor": "SGD",
+    "optimizer_constructor_kwargs":
+    {
+        "lr": 0.001
+    },
+    "num_epochs": 5,
+    "device": "cuda",
+    "eval_initial_performance": true
+}

@@ -1,0 +1,94 @@
+Running noisy trial
+	Config file: ./config/debugging_trial.json
+	Results directory: ./results/debugging_trial
+Beginning noisy dataset experiment.
+	Method: naive-val
+	Dataset: MNIST
+	Correct samples per class: 4500
+	Incorrect samples per class: 500
+	Random seed: 0
+	Training dataloader kwargs: {'batch_size': 128, 'shuffle': True}
+	Eval dataloader kwargs: {'batch_size': 128, 'shuffle': False}
+	Clean dataloader kwargs: {'batch_size': 128, 'shuffle': True}
+	Clean samples per class: 100
+	Model constructor: LeNet5
+	Model constructor kwargs: {}
+	Loss function constructor: CrossEntropyLoss
+	Loss function constructor kwargs: {}
+	Optimizer constructor: SGD
+	Optimizer constructor kwargs: {'lr': 0.001}
+	Number of epochs: 5
+	Device: cuda
+	Conduct initial measurements: True
+
+Setting random seed.
+Initializing and partitioning datasets.
+Initializing dataloaders.
+Initializing model.
+LeNet5(
+  (model): Sequential(
+    (0): Conv2d(1, 6, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+    (1): BatchNorm2d(6, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (2): ReLU()
+    (3): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (4): Conv2d(6, 16, kernel_size=(5, 5), stride=(1, 1))
+    (5): BatchNorm2d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (6): ReLU()
+    (7): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (8): Flatten(start_dim=1, end_dim=-1)
+    (9): Linear(in_features=400, out_features=120, bias=True)
+    (10): ReLU()
+    (11): Linear(in_features=120, out_features=84, bias=True)
+    (12): ReLU()
+    (13): Linear(in_features=84, out_features=10, bias=True)
+  )
+)
+
+Initializing loss function.
+CrossEntropyLoss()
+
+Initializing optimizer.
+SGD (
+Parameter Group 0
+    dampening: 0
+    lr: 0.001
+    momentum: 0
+    nesterov: False
+    weight_decay: 0
+)
+
+Measuring initial performance.
+Epoch 0 complete.
+train:
+	loss: 2.3056576251983643
+	accuracy: 0.03698849104859335
+val:
+	loss: 2.294065237045288
+	accuracy: 0.09966856060606061
+test:
+	loss: 2.3048572540283203
+	accuracy: 0.041435917721518986
+Training model.
+Beginning epoch 1.
+Epoch 1 complete.
+train:
+	loss: 2.2804160118103027
+	accuracy: 0.20921115728900255
+val:
+	loss: 2.2020442485809326
+	accuracy: 0.39867424242424243
+test:
+	loss: 2.241478204727173
+	accuracy: 0.36995648734177217
+Beginning epoch 2.
+Epoch 2 complete.
+train:
+	loss: 2.204662322998047
+	accuracy: 0.4456162084398977
+val:
+	loss: 2.11214280128479
+	accuracy: 0.6976799242424242
+test:
+	loss: 2.1589043140411377
+	accuracy: 0.517998417721519
+Beginning epoch 3.

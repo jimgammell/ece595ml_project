@@ -18,12 +18,6 @@ def log_print(*args, **kwargs):
     print(*args, **kwargs)
     print(*args, file=log_file, **kwargs)
 
-# Mean function which returns nan when it encounters empty list, and ignores nan in list.
-def mean(x):
-    if len(x) == 0:
-        return np.nan
-    return np.nanmean(x)
-
 def set_random_seed(seed):
     random.seed(seed)
     np.random.seed(seed)
