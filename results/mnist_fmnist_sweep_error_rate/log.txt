@@ -1,0 +1,80 @@
+Running noisy trial
+	Config file: ./config/mnist_fmnist_sweep_error_rate.json
+	Results directory: ./results/mnist_fmnist_sweep_error_rate
+Beginning noisy dataset experiment.
+	Method: sss
+	Dataset: MNIST
+	Correct samples per class: 499
+	Incorrect samples per class: 4501
+	Random seed: 0
+	Training dataloader kwargs: {'batch_size': 100, 'shuffle': True}
+	Eval dataloader kwargs: {'batch_size': 100, 'shuffle': False}
+	Clean dataloader kwargs: {'batch_size': 100, 'shuffle': True}
+	Clean samples per class: 100
+	Validation samples per class: 100
+	Model constructor: LeNet5
+	Model constructor kwargs: {}
+	Loss function constructor: CrossEntropyLoss
+	Loss function constructor kwargs: {}
+	Optimizer constructor: Adam
+	Optimizer constructor kwargs: {}
+	Scheduler constructor: ReduceLROnPlateau
+	Scheduler constructor kwargs: {'mode': 'max', 'factor': 0.5, 'patience': 10}
+	Number of epochs: 50
+	Pretraining epochs: 0
+	Fine-tuning epochs: 0
+	Device: cuda
+	Conduct initial measurements: True
+
+Setting random seed.
+Initializing and partitioning datasets.
+Initializing dataloaders.
+Initializing model.
+LeNet5(
+  (model): Sequential(
+    (0): Conv2d(1, 6, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+    (1): BatchNorm2d(6, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (2): ReLU()
+    (3): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (4): Conv2d(6, 16, kernel_size=(5, 5), stride=(1, 1))
+    (5): BatchNorm2d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (6): ReLU()
+    (7): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (8): Flatten(start_dim=1, end_dim=-1)
+    (9): Linear(in_features=400, out_features=1024, bias=True)
+    (10): ReLU()
+    (11): Linear(in_features=1024, out_features=256, bias=True)
+    (12): ReLU()
+    (13): Linear(in_features=256, out_features=10, bias=True)
+  )
+)
+
+Initializing loss function.
+CrossEntropyLoss()
+
+Initializing optimizer.
+Adam (
+Parameter Group 0
+    amsgrad: False
+    betas: (0.9, 0.999)
+    eps: 1e-08
+    lr: 0.001
+    weight_decay: 0
+)
+
+Initializing scheduler.
+<torch.optim.lr_scheduler.ReduceLROnPlateau object at 0x7f5d4d9e78b0>
+
+Measuring initial performance.
+Epoch 0 complete.
+train:
+	train_loss: 2.302795886993408
+	train_accuracy: 0.10062
+val:
+	val_loss: 2.3052868843078613
+	val_accuracy: 0.05700000000000001
+test:
+	test_loss: 2.3048150539398193
+	test_accuracy: 0.0773
+Training model.
+Beginning epoch 1.

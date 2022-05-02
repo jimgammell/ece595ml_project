@@ -1,11 +1,13 @@
 {
-    "trial_type": "noisy",
-    "method": ["sss"],
-    "dataset": ["MNIST", "FashionMNIST"],
-    "proportion_incorrect": [0.9],
-    "train_samples_per_class": 5000,
+    "trial_type": "imbalanced",
+    "method": ["naive", "ltrwe", "sss"],
+    "dataset": "MNIST",
+    "total_samples": 5000,
+    "majority_class": 4,
+    "minority_class": 9,
+    "minority_prop_of_majority": [0.5, 0.6, 0.7, 0.8, 0.9, 0.925, 0.95, 0.975, 1.0],
     "seed": 0,
-    "train_dataloader_kwargs":
+    "training_dataloader_kwargs":
     {
         "batch_size": 100,
         "shuffle": true
@@ -23,20 +25,14 @@
     "clean_samples_per_class": 100,
     "val_samples_per_class": 100,
     "model_constructor": "LeNet5",
-    "model_constructor_kwargs": {},
+    "model_constructor_kwargs":
+    {
+        "overparameterize": false
+    },
     "loss_fn_constructor": "CrossEntropyLoss",
     "loss_fn_constructor_kwargs": {},
     "optimizer_constructor": "Adam",
-    "optimizer_constructor_kwargs":
-    {
-    },
-    "scheduler": "ReduceLROnPlateau",
-    "scheduler_kwargs":
-    {
-        "mode": "max",
-        "factor": 0.5,
-        "patience": 10
-    },
+    "optimizer_constructor_kwargs": {},
     "num_epochs": 50,
     "device": "cuda",
     "eval_initial_performance": true,

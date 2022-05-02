@@ -90,10 +90,12 @@ def main():
             print('Running {} trial'.format(config_args['trial_type']))
             print('\tConfig file: {}'.format(os.path.join(config_dir, config_file)))
             print('\tResults directory: {}'.format(results_dir))
-            if config_args['trial_type'] == 'imbalanced':
-                from imbalanced_dataset_experiment import run_trial
+            if config_args['trial_type'] == 'false_positive':
+                from false_positive_experiment import run_trial
             elif config_args['trial_type'] == 'noisy':
                 from noisy_dataset_experiment import run_trial
+            elif config_args['trial_type'] == 'imbalanced':
+                from imbalanced_dataset_experiment import run_trial
             else:
                 assert False
             results, model = run_trial(trial_args)

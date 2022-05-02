@@ -1,8 +1,8 @@
 {
     "trial_type": "noisy",
-    "method": ["sss"],
-    "dataset": ["MNIST", "FashionMNIST"],
-    "proportion_incorrect": [0.9],
+    "method": ["naive", "ltrwe", "sss"],
+    "dataset": ["FashionMNIST"],
+    "proportion_incorrect": 0.5,
     "train_samples_per_class": 5000,
     "seed": 0,
     "train_dataloader_kwargs":
@@ -20,7 +20,7 @@
         "batch_size": 100,
         "shuffle": true
     },
-    "clean_samples_per_class": 100,
+    "clean_samples_per_class": [1, 3, 10, 30, 100, 300, 1000, 3000],
     "val_samples_per_class": 100,
     "model_constructor": "LeNet5",
     "model_constructor_kwargs": {},

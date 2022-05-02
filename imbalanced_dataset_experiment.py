@@ -13,9 +13,9 @@ from torch import nn, optim
 from torch.utils.data import Dataset, DataLoader
 
 from utils import set_random_seed, log_print as print
-from datasets import get_dataset, RepetitiveDataset, extract_random_class_balanced_dataset
+from datasets import get_dataset, RepetitiveDataset, extract_random_class_balanced_dataset, BinaryTargetDataset
 from results import Results, mean
-from train import eval_epoch, sss_train_on_batch, ltrwe_train_on_batch, naive_train_on_batch
+from train import sss_train_on_batch, ltrwe_train_on_batch, naive_train_on_batch
 import models
 
 def run_trial(config_params):
@@ -26,16 +26,10 @@ def run_trial(config_params):
     assert method in ['naive', 'ltrwe', 'sss']
     dataset = config_params['dataset']
     assert dataset in ['CIFAR10', 'MNIST', 'FashionMNIST']
-    if 'proportion_incorrect' in config_params:
-        proportion_incorrect = config_params['proportion_incorrect']
-        train_samples_per_class = config_params['train_samples_per_class']
-        correct_samples_per_class = int((1-proportion_incorrect)*train_samples_per_class)
-        incorrect_samples_per_class = train_samples_per_class-correct_samples_per_class
-    else:
-        correct_samples_per_class = config_params['correct_samples_per_class']
-        assert (type(correct_samples_per_class) == int) and (correct_samples_per_class >= 0)
-        incorrect_samples_per_class = config_params['incorrect_samples_per_class']
-        assert (type(incorrect_samples_per_class) == int) and (incorrect_samples_per_class >= 0)
+    total_samples = config_params['total_samples']
+    majority_class = config_params['majority_class']
+    minority_class = config_params['minority_class']
+    minority_prop_of_majority = config_params['minority_prop_of_majority']
     if 'seed' in config_params:
         seed = config_params['seed']
     else:
@@ -87,11 +81,13 @@ def run_trial(config_params):
     init_meas = config_params['eval_initial_performance']
     assert type(init_meas) == bool
     
-    print('Beginning noisy dataset experiment.')
+    print('Beginning false positive dataset experiment.')
     print('\tMethod: {}'.format(method))
     print('\tDataset: {}'.format(dataset))
-    print('\tCorrect samples per class: {}'.format(correct_samples_per_class))
-    print('\tIncorrect samples per class: {}'.format(incorrect_samples_per_class))
+    print('\tTotal samples: {}'.format(total_samples))
+    print('\tMajority class: {}'.format(majority_class))
+    print('\tMinority class: {}'.format(minority_class))
+    print('\tProportion of minority to majority samples: {}'.format(minority_prop_of_majority))
     print('\tRandom seed: {}'.format(seed))
     print('\tTraining dataloader kwargs: {}'.format(train_dataloader_kwargs))
     print('\tEval dataloader kwargs: {}'.format(eval_dataloader_kwargs))
@@ -119,15 +115,18 @@ def run_trial(config_params):
     
     print('Initializing and partitioning datasets.')
     full_train_dataset, test_dataset = get_dataset(dataset)
+    full_train_dataset = BinaryTargetDataset(full_train_dataset, majority_class, minority_class, total_samples)
+    test_dataset = BinaryTargetDataset(test_dataset, majority_class, minority_class, total_samples)
     classes = np.unique(full_train_dataset.targets)
-    train_dataset, full_train_dataset = extract_random_class_balanced_dataset(full_train_dataset, correct_samples_per_class+incorrect_samples_per_class)
+    train_dataset, full_train_dataset = extract_random_class_balanced_dataset(full_train_dataset, total_samples)
     clean_dataset, full_train_dataset = extract_random_class_balanced_dataset(full_train_dataset, clean_dataset_samples_per_class)
     val_dataset, _ = extract_random_class_balanced_dataset(full_train_dataset, val_samples_per_class)
-    train_dataset = NoisyLabelsDataset(train_dataset, classes, correct_samples_per_class, incorrect_samples_per_class)
+    train_dataset = ImbalancedDataset(train_dataset, 1, 0, total_samples, minority_prop_of_majority)
     if method != 'sss':
         train_dataset.append_clean_dataset(clean_dataset)
     finetune_dataset = RepetitiveDataset(clean_dataset, len(train_dataset)//len(clean_dataset))
-    finetune_dataset = NoisyLabelsDataset(finetune_dataset, classes, len(finetune_dataset)//len(classes), 0)
+    finetune_dataset = ImbalancedDataset(finetune_dataset, 1, 0, len(finetune_dataset), 0.5)
+    train_dataset = RepetitiveDataset(train_dataset, 5)
     
     print('Initializing dataloaders.')
     train_dataloader = DataLoader(train_dataset, **train_dataloader_kwargs)
@@ -224,16 +223,40 @@ def run_trial(config_params):
     
     return results.data, best_model
 
+def eval_epoch(dataloader, model, loss_fn, device):
+    batch_majority_loss = []
+    batch_minority_loss = []
+    batch_majority_acc = []
+    batch_minority_acc = []
+    for batch in tqdm(dataloader):
+        images = batch[0]
+        labels = batch[1]
+        images = images.to(device)
+        labels_d = labels.to(device)
+        elementwise_loss, predictions = eval_on_batch(images, labels_d, model, loss_fn, device)
+        batch_majority_loss.append(mean(elementwise_loss[labels==1]))
+        batch_minority_loss.append(mean(elementwise_loss[labels==0]))
+        batch_majority_acc.append(mean(np.equal(predictions, labels)[labels==1]))
+        batch_minority_acc.append(mean(np.equal(predictions, labels)[labels==0]))
+    epoch_majority_loss = mean(batch_majority_loss)
+    epoch_minority_loss = mean(batch_minority_loss)
+    epoch_majority_acc = mean(batch_majority_acc)
+    epoch_minority_acc = mean(batch_minority_acc)
+    return {'majority_loss': epoch_majority_loss,
+            'minority_loss': epoch_minority_loss,
+            'majority_acc': epoch_majority_acc,
+            'minority_acc': epoch_minority_acc}
+
 def train_epoch(dataloader, model, loss_fn, optimizer, device, method, val_dataloader=None):
     if method in ['ltrwe', 'sss']:
         assert val_dataloader != None
     
-    batch_correct_loss = []
-    batch_incorrect_loss = []
-    batch_correct_acc = []
-    batch_incorrect_acc = []
-    batch_correct_nonzero = []
-    batch_incorrect_nonzero = []
+    batch_majority_loss = []
+    batch_minority_loss = []
+    batch_majority_accuracy = []
+    batch_minority_accuracy = []
+    batch_majority_nonzero = []
+    batch_minority_nonzero = []
     
     for batch in tqdm(dataloader):
         images = batch[0]
@@ -258,100 +281,79 @@ def train_epoch(dataloader, model, loss_fn, optimizer, device, method, val_datal
                 elementwise_loss, predictions, weights, labels = sss_train_on_batch(images, labels_d, val_image, val_label, model, loss_fn, optimizer, device)
         
         correct_labels = batch[2]
-        correctness = np.equal(correct_labels, labels)
-        sample_indices = batch[4]
-        batch_correct_loss.append(mean(elementwise_loss[correctness==1]))
-        batch_incorrect_loss.append(mean(elementwise_loss[correctness==0]))
-        batch_correct_acc.append(mean(np.equal(predictions, labels)[correctness==1]))
-        batch_incorrect_acc.append(mean(np.equal(predictions, labels)[correctness==0]))
-        batch_correct_nonzero.append(np.count_nonzero(weights[correctness==1]))
-        batch_incorrect_nonzero.append(np.count_nonzero(weights[correctness==0]))
+        batch_majority_loss.append(mean(elementwise_loss[label==1]))
+        batch_minority_loss.append(mean(elementwise_loss[label==0]))
+        batch_majority_accuracy.append(mean(np.equal(predictions, labels)[correct_label==1]))
+        batch_minority_accuracy.append(mean(np.equal(predictions, labels)[correct_label==0]))
+        batch_majority_nonzero.append(np.count_nonzero(weights[correct_label==1]))
+        batch_minority_nonzero.append(np.count_nonzero(weights[correct_label==0]))
     
-    epoch_correct_loss = mean(batch_correct_loss)
-    epoch_incorrect_loss = mean(batch_incorrect_loss)
-    epoch_correct_acc = mean(batch_correct_acc)
-    epoch_incorrect_acc = mean(batch_incorrect_acc)
-    epoch_correct_nonzero = np.sum(batch_correct_nonzero)
-    epoch_incorrect_nonzero = np.sum(batch_incorrect_nonzero)
-    return {'correct_loss': epoch_correct_loss,
-            'incorrect_loss': epoch_incorrect_loss,
-            'correct_acc': epoch_correct_acc,
-            'incorrect_acc': epoch_incorrect_acc,
-            'correct_nonzero': epoch_correct_nonzero,
-            'incorrect_nonzero': epoch_incorrect_nonzero}
+    epoch_majority_loss = mean(batch_majority_loss)
+    epoch_minority_loss = mean(batch_minority_loss)
+    epoch_majority_accuracy = mean(batch_majority_accuracy)
+    epoch_minority_accuracy = mean(batch_minority_accuracy)
+    epoch_majority_nonzero = np.sum(batch_majority_nonzero)
+    epoch_minority_nonzero = np.sum(batch_minority_nonzero)
+    return {'majority_loss': epoch_majority_loss,
+            'minority_loss': epoch_minority_loss,
+            'majority_acc': epoch_majority_accuracy,
+            'minority_acc': epoch_minority_accuracy,
+            'majority_nonzero': epoch_majority_nonzero,
+            'minority_nonzero': epoch_minority_nonzero}
 
-class NoisyLabelsDataset(Dataset):
+class ImbalancedDataset(Dataset):
     def __init__(self,
                  base_dataset,
-                 classes,
-                 correct_samples_per_class,
-                 incorrect_samples_per_class):
+                 majority_class,
+                 minority_class,
+                 total_samples,
+                 minority_prop_of_majority):
         super().__init__()
-        self.correct_samples_per_class = correct_samples_per_class
-        self.incorrect_samples_per_class = incorrect_samples_per_class
-        self.classes = classes
+        self.minority_class_samples = int(majority_class_samples*minority_prop_of_majority)
+        self.majority_class_samples = total_samples-self.minority_class_samples
         self.data = []
-        self.noisy_targets = []
-        self.correct_targets = []
-        self.correctness = []
-        self.indices = []
+        self.targets = []
         self.transform = base_dataset.transform
         self.target_transform = base_dataset.target_transform
         base_dataset.transform = None
         base_dataset.target_transform = None
         
-        correct_samples_to_go = {c: correct_samples_per_class for c in classes}
-        incorrect_samples_to_go = {c: incorrect_samples_per_class for c in classes}
+        majority_to_go = self.majority_class_samples
+        minority_to_go = self.minority_class_samples
         indices = [x for x in range(len(base_dataset))]
         random.shuffle(indices)
         for idx in indices:
             image, target = base_dataset[idx]
-            if correct_samples_to_go[target] > 0:
-                correct_samples_to_go[target] -= 1
+            if (target == majority_class) and (majority_to_go > 0):
                 self.data.append(image)
-                self.noisy_targets.append(target)
-                self.correct_targets.append(target)
-                self.correctness.append(1)
-                self.indices.append(np.sum([correct_samples_to_go[c] for c in classes]))
-            elif incorrect_samples_to_go[target] > 0:
-                incorrect_samples_to_go[target] -= 1
+                self.targets.append(1)
+                majority_to_go -= 1
+            elif (target == minority_class) and (minority_to_go > 0):
                 self.data.append(image)
-                incorrect_classes = [c for c in classes if c != target]
-                self.noisy_targets.append(random.choice(incorrect_classes))
-                self.correct_targets.append(target)
-                self.correctness.append(0)
-                self.indices.append(np.sum([incorrect_samples_to_go[c] for c in classes]))
+                self.targets.append(0)
+                minority_to_go -= 1
         self.number_of_samples = len(self.data)
-        assert self.number_of_samples == len(self.noisy_targets)
-        assert self.number_of_samples == len(self.correct_targets)
-        assert self.number_of_samples == len(self.correctness)
-        assert all([correct_samples_to_go[c] == 0 for c in correct_samples_to_go.keys()])
-        assert all([incorrect_samples_to_go[c] == 0 for c in incorrect_samples_to_go.keys()])
+        assert self.number_of_samples == len(self.targets)
+        assert majority_to_go == 0
+        assert minority_to_go == 0
         
         base_dataset.transform = self.transform
         base_dataset.target_transform = self.target_transform
-    
+        
     def append_clean_dataset(self, clean_dataset):
         for data, target in zip(clean_dataset.data, clean_dataset.targets):
             self.number_of_samples += 1
             self.data.append(data)
-            self.noisy_targets.append(target)
-            self.correct_targets.append(target)
-            self.correctness.append(1)
-            self.correct_samples_per_class += 1
-            self.indices.append(self.correct_samples_per_class)
-    
+            self.targets.append(target)
+            
     def __getitem__(self, idx):
         image = self.data[idx]
-        noisy_target = self.noisy_targets[idx]
-        correct_target = self.correct_targets[idx]
-        correctness = self.correctness[idx]
-        sample_idx = self.indices[idx]
+        target = self.targets[idx]
         if self.transform != None:
             image = self.transform(image)
         if self.target_transform != None:
-            noisy_target = self.target_transform(noisy_target)
-        return image, noisy_target, correct_target, correctness, sample_idx
+            target = self.target_transform(target)
+        return image, target
     
     def __len__(self):
         return self.number_of_samples

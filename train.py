@@ -61,9 +61,9 @@ def sss_train_on_batch(training_images, training_labels,
         reduced_validation_loss = torch.mean(validation_elementwise_loss)
     eps_grad = torch.autograd.grad(reduced_validation_loss, eps)[0].detach()
     model.load_state_dict(model_params_backup)
+    self_generated_labels_eps_grad, dataset_labels_eps_grad = torch.tensor_split(eps_grad, 2)
     
     # Find the label/eps_grad pairs which maximize the eps_grads
-    self_generated_labels_eps_grad, dataset_labels_eps_grad = torch.tensor_split(eps_grad, 2)
     label_options = torch.stack((self_generated_labels, training_labels))
     eps_grad_options = torch.stack((self_generated_labels_eps_grad, 10*dataset_labels_eps_grad))
     use_dataset_labels_idx = torch.argmax(-eps_grad_options, dim=0).unsqueeze(0)

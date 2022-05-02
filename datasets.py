@@ -19,6 +19,45 @@ class RepetitiveDataset(Dataset):
         item = self.base_dataset.__getitem__(idx)
         return item
 
+class BinaryTargetDataset(Dataset):
+    def __init__(self, base_dataset,
+                 positive_class,
+                 negative_class,
+                 samples_per_class):
+        super().__init__()
+        self.transform = base_dataset.transform
+        self.target_transform = base_dataset.target_transform
+        self.data = []
+        self.targets = []
+        
+        positive_samples_to_go = samples_per_class
+        negative_samples_to_go = samples_per_class
+        for (image, target) in zip(base_dataset.data, base_dataset.targets):
+            if (target == positive_class) and (positive_samples_to_go > 0):
+                self.data.append(image)
+                self.targets.append(1)
+                positive_samples_to_go -= 1
+            elif (target == negative_class) and (negative_samples_to_go > 0):
+                self.data.append(image)
+                self.targets.append(0)
+                negative_samples_to_go -= 1
+        self.number_of_samples = len(self.data)
+        assert self.number_of_samples == len(self.targets)
+        assert positive_samples_to_go == 0
+        assert negative_samples_to_go == 0
+    
+    def __getitem__(self, idx):
+        data = self.data[idx]
+        target = self.targets[idx]
+        if self.transform != None:
+            data = self.transform(data)
+        if self.target_transform != None:
+            target = self.target_transform(target)
+        return data, target
+    
+    def __len__(self):
+        return self.number_of_samples
+    
 class DatasetFromSubset(Dataset):
     def __init__(self, subset, transform=None, target_transform=None):
         super().__init__()
@@ -102,12 +141,14 @@ def get_dataset(name):
                                         train=True,
                                         transform=training_transform,
                                         download=True)
+    train_dataset.data = np.array(train_dataset.data)
     train_dataset.targets = np.array(train_dataset.targets)
     
     test_dataset = dataset_constructor(root=dataset_path,
                                        train=False,
                                        transform=evaluation_transform,
                                        download=True)
+    test_dataset.data = np.array(test_dataset.data)
     test_dataset.targets = np.array(test_dataset.targets)
     
     return train_dataset, test_dataset

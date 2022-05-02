@@ -13,9 +13,9 @@ from torch import nn, optim
 from torch.utils.data import Dataset, DataLoader
 
 from utils import set_random_seed, log_print as print
-from datasets import get_dataset, RepetitiveDataset, extract_random_class_balanced_dataset
+from datasets import get_dataset, RepetitiveDataset, extract_random_class_balanced_dataset, BinaryTargetDataset
 from results import Results, mean
-from train import eval_epoch, sss_train_on_batch, ltrwe_train_on_batch, naive_train_on_batch
+from train import sss_train_on_batch, ltrwe_train_on_batch, naive_train_on_batch, eval_on_batch
 import models
 
 def run_trial(config_params):
@@ -26,16 +26,10 @@ def run_trial(config_params):
     assert method in ['naive', 'ltrwe', 'sss']
     dataset = config_params['dataset']
     assert dataset in ['CIFAR10', 'MNIST', 'FashionMNIST']
-    if 'proportion_incorrect' in config_params:
-        proportion_incorrect = config_params['proportion_incorrect']
-        train_samples_per_class = config_params['train_samples_per_class']
-        correct_samples_per_class = int((1-proportion_incorrect)*train_samples_per_class)
-        incorrect_samples_per_class = train_samples_per_class-correct_samples_per_class
-    else:
-        correct_samples_per_class = config_params['correct_samples_per_class']
-        assert (type(correct_samples_per_class) == int) and (correct_samples_per_class >= 0)
-        incorrect_samples_per_class = config_params['incorrect_samples_per_class']
-        assert (type(incorrect_samples_per_class) == int) and (incorrect_samples_per_class >= 0)
+    samples_per_class = config_params['samples_per_class']
+    positive_class = config_params['positive_class']
+    negative_class = config_params['negative_class']
+    proportion_false_positive = config_params['proportion_false_positive']
     if 'seed' in config_params:
         seed = config_params['seed']
     else:
@@ -87,11 +81,13 @@ def run_trial(config_params):
     init_meas = config_params['eval_initial_performance']
     assert type(init_meas) == bool
     
-    print('Beginning noisy dataset experiment.')
+    print('Beginning false positive dataset experiment.')
     print('\tMethod: {}'.format(method))
     print('\tDataset: {}'.format(dataset))
-    print('\tCorrect samples per class: {}'.format(correct_samples_per_class))
-    print('\tIncorrect samples per class: {}'.format(incorrect_samples_per_class))
+    print('\tSamples per class: {}'.format(samples_per_class))
+    print('\tPositive class: {}'.format(positive_class))
+    print('\tNegative class: {}'.format(negative_class))
+    print('\tProportion of negative class with false positive label: {}'.format(proportion_false_positive))
     print('\tRandom seed: {}'.format(seed))
     print('\tTraining dataloader kwargs: {}'.format(train_dataloader_kwargs))
     print('\tEval dataloader kwargs: {}'.format(eval_dataloader_kwargs))
@@ -119,15 +115,18 @@ def run_trial(config_params):
     
     print('Initializing and partitioning datasets.')
     full_train_dataset, test_dataset = get_dataset(dataset)
+    full_train_dataset = BinaryTargetDataset(full_train_dataset, positive_class, negative_class, 5000)
+    test_dataset = BinaryTargetDataset(test_dataset, positive_class, negative_class, 800)
     classes = np.unique(full_train_dataset.targets)
-    train_dataset, full_train_dataset = extract_random_class_balanced_dataset(full_train_dataset, correct_samples_per_class+incorrect_samples_per_class)
+    train_dataset, full_train_dataset = extract_random_class_balanced_dataset(full_train_dataset, samples_per_class)
     clean_dataset, full_train_dataset = extract_random_class_balanced_dataset(full_train_dataset, clean_dataset_samples_per_class)
     val_dataset, _ = extract_random_class_balanced_dataset(full_train_dataset, val_samples_per_class)
-    train_dataset = NoisyLabelsDataset(train_dataset, classes, correct_samples_per_class, incorrect_samples_per_class)
+    train_dataset = FalsePositiveDataset(train_dataset, 1, 0, samples_per_class, proportion_false_positive)
     if method != 'sss':
         train_dataset.append_clean_dataset(clean_dataset)
     finetune_dataset = RepetitiveDataset(clean_dataset, len(train_dataset)//len(clean_dataset))
-    finetune_dataset = NoisyLabelsDataset(finetune_dataset, classes, len(finetune_dataset)//len(classes), 0)
+    finetune_dataset = FalsePositiveDataset(finetune_dataset, 1, 0, len(finetune_dataset)//len(classes), 0)
+    train_dataset = RepetitiveDataset(train_dataset, 5)
     
     print('Initializing dataloaders.')
     train_dataloader = DataLoader(train_dataset, **train_dataloader_kwargs)
@@ -199,11 +198,6 @@ def run_trial(config_params):
             val_res = eval_epoch(val_dataloader, model, loss_fn, device)
             test_res = eval_epoch(test_dataloader, model, loss_fn, device)
             results.update(epoch_num, train_res, val_res, test_res)
-            scheduler.step(val_res['accuracy'])
-            if val_res['accuracy'] > best_accuracy:
-                best_accuracy = val_res['accuracy']
-                final_test_accuracy = test_res['accuracy']
-                best_model = deepcopy(model)
         print('\tDone training. Final accuracy: {}'.format(final_test_accuracy))
     
     if finetune_epochs > 0:
@@ -215,7 +209,6 @@ def run_trial(config_params):
             val_res = eval_epoch(val_dataloader, model, loss_fn, device)
             test_res = eval_epoch(test_dataloader, model, loss_fn, device)
             results.update(epoch_num, train_res, val_res, test_res)
-            scheduler.step(val_res['accuracy'])
     
     trial_time = time.time() - trial_start_time
     results.add_single_pair('trial_time', trial_time)
@@ -224,16 +217,46 @@ def run_trial(config_params):
     
     return results.data, best_model
 
+def eval_epoch(dataloader, model, loss_fn, device):
+    batch_positive_loss = []
+    batch_negative_loss = []
+    batch_positive_acc = []
+    batch_negative_acc = []
+    for batch in tqdm(dataloader):
+        images = batch[0]
+        labels = batch[1]
+        images = images.to(device)
+        labels_d = labels.to(device)
+        elementwise_loss, predictions = eval_on_batch(images, labels_d, model, loss_fn, device)
+        batch_positive_loss.append(mean(elementwise_loss[labels==1]))
+        batch_negative_loss.append(mean(elementwise_loss[labels==0]))
+        batch_positive_acc.append(mean(np.equal(predictions, labels)[labels==1]))
+        batch_negative_acc.append(mean(np.equal(predictions, labels)[labels==0]))
+    epoch_positive_loss = mean(batch_positive_loss)
+    epoch_negative_loss = mean(batch_negative_loss)
+    epoch_positive_acc = mean(batch_positive_acc)
+    epoch_negative_acc = mean(batch_negative_acc)
+    return {'positive_loss': epoch_positive_loss,
+            'negative_loss': epoch_negative_loss,
+            'positive_acc': epoch_positive_acc,
+            'negative_acc': epoch_negative_acc}
+
 def train_epoch(dataloader, model, loss_fn, optimizer, device, method, val_dataloader=None):
     if method in ['ltrwe', 'sss']:
         assert val_dataloader != None
     
     batch_correct_loss = []
     batch_incorrect_loss = []
-    batch_correct_acc = []
-    batch_incorrect_acc = []
+    batch_positive_loss = []
+    batch_negative_loss = []
+    batch_correct_accuracy = []
+    batch_incorrect_accuracy = []
+    batch_positive_accuracy = []
+    batch_negative_accuracy = []
     batch_correct_nonzero = []
     batch_incorrect_nonzero = []
+    batch_positive_nonzero = []
+    batch_negative_nonzero = []
     
     for batch in tqdm(dataloader):
         images = batch[0]
@@ -259,74 +282,94 @@ def train_epoch(dataloader, model, loss_fn, optimizer, device, method, val_datal
         
         correct_labels = batch[2]
         correctness = np.equal(correct_labels, labels)
-        sample_indices = batch[4]
         batch_correct_loss.append(mean(elementwise_loss[correctness==1]))
         batch_incorrect_loss.append(mean(elementwise_loss[correctness==0]))
-        batch_correct_acc.append(mean(np.equal(predictions, labels)[correctness==1]))
-        batch_incorrect_acc.append(mean(np.equal(predictions, labels)[correctness==0]))
+        batch_positive_loss.append(mean(elementwise_loss[labels==1]))
+        batch_negative_loss.append(mean(elementwise_loss[labels==0]))
+        batch_correct_accuracy.append(mean(np.equal(predictions, labels)[correctness==1]))
+        batch_incorrect_accuracy.append(mean(np.equal(predictions, labels)[correctness==0]))
+        batch_positive_accuracy.append(mean(np.equal(predictions, labels)[correct_labels==1]))
+        batch_negative_accuracy.append(mean(np.equal(predictions, labels)[correct_labels==0]))
         batch_correct_nonzero.append(np.count_nonzero(weights[correctness==1]))
         batch_incorrect_nonzero.append(np.count_nonzero(weights[correctness==0]))
+        batch_positive_nonzero.append(np.count_nonzero(weights[correct_labels==1]))
+        batch_negative_nonzero.append(np.count_nonzero(weights[correct_labels==0]))
     
     epoch_correct_loss = mean(batch_correct_loss)
     epoch_incorrect_loss = mean(batch_incorrect_loss)
-    epoch_correct_acc = mean(batch_correct_acc)
-    epoch_incorrect_acc = mean(batch_incorrect_acc)
+    epoch_positive_loss = mean(batch_positive_loss)
+    epoch_negative_loss = mean(batch_negative_loss)
+    epoch_correct_accuracy = mean(batch_correct_accuracy)
+    epoch_incorrect_accuracy = mean(batch_incorrect_accuracy)
+    epoch_positive_accuracy = mean(batch_positive_accuracy)
+    epoch_negative_accuracy = mean(batch_negative_accuracy)
     epoch_correct_nonzero = np.sum(batch_correct_nonzero)
     epoch_incorrect_nonzero = np.sum(batch_incorrect_nonzero)
+    epoch_positive_nonzero = np.sum(batch_positive_nonzero)
+    epoch_negative_nonzero = np.sum(batch_negative_nonzero)
     return {'correct_loss': epoch_correct_loss,
             'incorrect_loss': epoch_incorrect_loss,
-            'correct_acc': epoch_correct_acc,
-            'incorrect_acc': epoch_incorrect_acc,
+            'positive_loss': epoch_positive_loss,
+            'negative_loss': epoch_negative_loss,
+            'correct_acc': epoch_correct_accuracy,
+            'incorrect_acc': epoch_incorrect_accuracy,
+            'positive_acc': epoch_positive_accuracy,
+            'negative_acc': epoch_negative_accuracy,
             'correct_nonzero': epoch_correct_nonzero,
-            'incorrect_nonzero': epoch_incorrect_nonzero}
+            'incorrect_nonzero': epoch_incorrect_nonzero,
+            'positive_nonzero': epoch_positive_nonzero,
+            'negative_nonzero': epoch_negative_nonzero}
 
-class NoisyLabelsDataset(Dataset):
+class FalsePositiveDataset(Dataset):
     def __init__(self,
                  base_dataset,
-                 classes,
-                 correct_samples_per_class,
-                 incorrect_samples_per_class):
+                 positive_class,
+                 negative_class,
+                 samples_per_class,
+                 proportion_false_positive):
         super().__init__()
-        self.correct_samples_per_class = correct_samples_per_class
-        self.incorrect_samples_per_class = incorrect_samples_per_class
-        self.classes = classes
+        self.positive_class = positive_class
+        self.negative_class = negative_class
+        self.samples_per_class = samples_per_class
         self.data = []
         self.noisy_targets = []
         self.correct_targets = []
-        self.correctness = []
-        self.indices = []
         self.transform = base_dataset.transform
         self.target_transform = base_dataset.target_transform
         base_dataset.transform = None
         base_dataset.target_transform = None
         
-        correct_samples_to_go = {c: correct_samples_per_class for c in classes}
-        incorrect_samples_to_go = {c: incorrect_samples_per_class for c in classes}
+        false_positives = int(proportion_false_positive*samples_per_class)
+        positive_samples_to_go = samples_per_class
+        false_positive_samples_to_go = false_positives
+        true_negative_samples_to_go = samples_per_class-false_positives
         indices = [x for x in range(len(base_dataset))]
         random.shuffle(indices)
         for idx in indices:
             image, target = base_dataset[idx]
-            if correct_samples_to_go[target] > 0:
-                correct_samples_to_go[target] -= 1
-                self.data.append(image)
-                self.noisy_targets.append(target)
-                self.correct_targets.append(target)
-                self.correctness.append(1)
-                self.indices.append(np.sum([correct_samples_to_go[c] for c in classes]))
-            elif incorrect_samples_to_go[target] > 0:
-                incorrect_samples_to_go[target] -= 1
-                self.data.append(image)
-                incorrect_classes = [c for c in classes if c != target]
-                self.noisy_targets.append(random.choice(incorrect_classes))
-                self.correct_targets.append(target)
-                self.correctness.append(0)
-                self.indices.append(np.sum([incorrect_samples_to_go[c] for c in classes]))
+            if target == positive_class:
+                if positive_samples_to_go > 0:
+                    self.data.append(image)
+                    self.noisy_targets.append(positive_class)
+                    self.correct_targets.append(positive_class)
+                    positive_samples_to_go -= 1
+            elif target == negative_class:
+                if false_positive_samples_to_go > 0:
+                    self.data.append(image)
+                    self.noisy_targets.append(positive_class)
+                    self.correct_targets.append(negative_class)
+                    false_positive_samples_to_go -= 1
+                elif true_negative_samples_to_go > 0:
+                    self.data.append(image)
+                    self.noisy_targets.append(negative_class)
+                    self.correct_targets.append(negative_class)
+                    true_negative_samples_to_go -= 1
         self.number_of_samples = len(self.data)
         assert self.number_of_samples == len(self.noisy_targets)
         assert self.number_of_samples == len(self.correct_targets)
-        assert self.number_of_samples == len(self.correctness)
-        assert all([correct_samples_to_go[c] == 0 for c in correct_samples_to_go.keys()])
-        assert all([incorrect_samples_to_go[c] == 0 for c in incorrect_samples_to_go.keys()])
+        assert positive_samples_to_go == 0
+        assert false_positive_samples_to_go == 0
+        assert true_negative_samples_to_go == 0
         
         base_dataset.transform = self.transform
         base_dataset.target_transform = self.target_transform
@@ -337,21 +380,16 @@ class NoisyLabelsDataset(Dataset):
             self.data.append(data)
             self.noisy_targets.append(target)
             self.correct_targets.append(target)
-            self.correctness.append(1)
-            self.correct_samples_per_class += 1
-            self.indices.append(self.correct_samples_per_class)
     
     def __getitem__(self, idx):
         image = self.data[idx]
         noisy_target = self.noisy_targets[idx]
         correct_target = self.correct_targets[idx]
-        correctness = self.correctness[idx]
-        sample_idx = self.indices[idx]
         if self.transform != None:
             image = self.transform(image)
         if self.target_transform != None:
-            noisy_target = self.target_transform(noisy_target)
-        return image, noisy_target, correct_target, correctness, sample_idx
+            noisy_target = self.transform(noisy_target)
+        return image, noisy_target, correct_target
     
     def __len__(self):
         return self.number_of_samples
