@@ -227,16 +227,12 @@ def train_epoch(dataloader, model, loss_fn, optimizer, device, method, val_datal
     if method in ['ltrwe', 'sss']:
         assert val_dataloader != None
     
-    correct_samples = dataloader.dataset.correct_samples_per_class*len(dataloader.dataset.classes)
-    incorrect_samples = dataloader.dataset.incorrect_samples_per_class*len(dataloader.dataset.classes)
     batch_correct_loss = []
     batch_incorrect_loss = []
     batch_correct_acc = []
     batch_incorrect_acc = []
-    correct_sample_used_orig = [0]*correct_samples
-    correct_sample_used_sss = [0]*correct_samples
-    incorrect_sample_used_orig = [0]*incorrect_samples
-    incorrect_sample_used_sss = [0]*incorrect_samples
+    batch_correct_nonzero = []
+    batch_incorrect_nonzero = []
     
     for batch in tqdm(dataloader):
         images = batch[0]
@@ -260,37 +256,28 @@ def train_epoch(dataloader, model, loss_fn, optimizer, device, method, val_datal
             elif method == 'sss':
                 elementwise_loss, predictions, weights, labels = sss_train_on_batch(images, labels_d, val_image, val_label, model, loss_fn, optimizer, device)
         
-        correctness = batch[3]
+        correct_labels = batch[2]
+        correctness = np.equal(correct_labels, labels)
         sample_indices = batch[4]
         batch_correct_loss.append(mean(elementwise_loss[correctness==1]))
         batch_incorrect_loss.append(mean(elementwise_loss[correctness==0]))
         batch_correct_acc.append(mean(np.equal(predictions, original_labels)[correctness==1]))
         batch_incorrect_acc.append(mean(np.equal(predictions, original_labels)[correctness==0]))
-        for (idx, sidx) in enumerate(sample_indices):
-            if weights[idx] > 0:
-                if correctness[idx]:
-                    if labels[idx] == original_labels[idx]:
-                        correct_sample_used_orig[sidx] += 1
-                    else:
-                        correct_sample_used_sss[sidx] += 1
-                else:
-                    if labels[idx] == original_labels[idx]:
-                        incorrect_sample_used_orig[sidx] += 1
-                    else:
-                        incorrect_sample_used_sss[sidx] += 1
+        batch_correct_nonzero.append(np.count_nonzero(weights[correctness==1]))
+        batch_incorrect_nonzero.append(np.count_nonzero(weights[correctness==0]))
     
     epoch_correct_loss = mean(batch_correct_loss)
     epoch_incorrect_loss = mean(batch_incorrect_loss)
     epoch_correct_acc = mean(batch_correct_acc)
     epoch_incorrect_acc = mean(batch_incorrect_acc)
+    epoch_correct_nonzero = np.sum(batch_correct_nonzero)
+    epoch_incorrect_nonzero = np.sum(batch_incorrect_nonzero)
     return {'correct_loss': epoch_correct_loss,
             'incorrect_loss': epoch_incorrect_loss,
             'correct_acc': epoch_correct_acc,
             'incorrect_acc': epoch_incorrect_acc,
-            'correct_sample_used_orig': correct_sample_used_orig,
-            'correct_sample_used_sss': correct_sample_used_sss,
-            'incorrect_sample_used_orig': incorrect_sample_used_orig,
-            'incorrect_sample_used_sss': incorrect_sample_used_sss}
+            'correct_nonzero': epoch_correct_nonzero,
+            'incorrect_nonzero': epoch_incorrect_nonzero}
     
 class NoisyLabelsDataset(Dataset):
     def __init__(self,

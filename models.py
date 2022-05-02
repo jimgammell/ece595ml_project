@@ -70,11 +70,11 @@ class LeNet5(nn.Module):
                   nn.ReLU(),
                   nn.MaxPool2d(kernel_size=2, stride=2),
                   nn.Flatten(),
-                  nn.Linear(16*5*5, 120),
+                  nn.Linear(16*5*5, 1024),
                   nn.ReLU(),
-                  nn.Linear(120, 84),
+                  nn.Linear(1024, 256),
                   nn.ReLU(),
-                  nn.Linear(84, output_classes)]
+                  nn.Linear(256, output_classes)]
         self.model = nn.Sequential(*layers)
         eg_input = torch.rand(input_shape)
         _ = self.model(eg_input)

@@ -1,0 +1,842 @@
+Running noisy trial
+	Config file: ./config/mnist_fmnist_sweep_error_rate_clean.json
+	Results directory: ./results/mnist_fmnist_sweep_error_rate_clean
+Beginning noisy dataset experiment.
+	Method: naive
+	Dataset: MNIST
+	Correct samples per class: 5000
+	Incorrect samples per class: 0
+	Random seed: 0
+	Training dataloader kwargs: {'batch_size': 100, 'shuffle': True}
+	Eval dataloader kwargs: {'batch_size': 100, 'shuffle': False}
+	Clean dataloader kwargs: {'batch_size': 100, 'shuffle': True}
+	Clean samples per class: 10
+	Validation samples per class: 100
+	Model constructor: LeNet5
+	Model constructor kwargs: {}
+	Loss function constructor: CrossEntropyLoss
+	Loss function constructor kwargs: {}
+	Optimizer constructor: SGD
+	Optimizer constructor kwargs: {'lr': 0.001}
+	Scheduler constructor: ReduceLROnPlateau
+	Scheduler constructor kwargs: {'mode': 'max', 'factor': 0.5, 'patience': 10}
+	Number of epochs: 0
+	Pretraining epochs: 0
+	Fine-tuning epochs: 20
+	Device: cuda
+	Conduct initial measurements: True
+
+Setting random seed.
+Initializing and partitioning datasets.
+Initializing dataloaders.
+Initializing model.
+LeNet5(
+  (model): Sequential(
+    (0): Conv2d(1, 6, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+    (1): BatchNorm2d(6, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (2): ReLU()
+    (3): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (4): Conv2d(6, 16, kernel_size=(5, 5), stride=(1, 1))
+    (5): BatchNorm2d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (6): ReLU()
+    (7): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (8): Flatten(start_dim=1, end_dim=-1)
+    (9): Linear(in_features=400, out_features=120, bias=True)
+    (10): ReLU()
+    (11): Linear(in_features=120, out_features=84, bias=True)
+    (12): ReLU()
+    (13): Linear(in_features=84, out_features=10, bias=True)
+  )
+)
+
+Initializing loss function.
+CrossEntropyLoss()
+
+Initializing optimizer.
+SGD (
+Parameter Group 0
+    dampening: 0
+    lr: 0.001
+    momentum: 0
+    nesterov: False
+    weight_decay: 0
+)
+
+Initializing scheduler.
+<torch.optim.lr_scheduler.ReduceLROnPlateau object at 0x7effd59da790>
+
+Measuring initial performance.
+Epoch 0 complete.
+train:
+	loss: 2.3064136505126953
+	accuracy: 0.041856287425149706
+val:
+	loss: 2.3064992427825928
+	accuracy: 0.033
+test:
+	loss: 2.3049073219299316
+	accuracy: 0.041299999999999996
+Fine-tuning model.
+Beginning epoch 1.
+Epoch 1 complete.
+train:
+	correct_loss: 2.240168571472168
+	incorrect_loss: nan
+	correct_acc: 0.34019960079840317
+	incorrect_acc: nan
+	correct_sample_used_orig: 50100
+	correct_sample_used_sss: 0
+	incorrect_sample_used_orig: 0.0
+	incorrect_sample_used_sss: 0.0
+val:
+	loss: 2.217280626296997
+	accuracy: 0.382
+test:
+	loss: 2.212388038635254
+	accuracy: 0.41450000000000004
+Beginning epoch 2.
+Epoch 2 complete.
+train:
+	correct_loss: 2.058478593826294
+	incorrect_loss: nan
+	correct_acc: 0.6922355289421159
+	incorrect_acc: nan
+	correct_sample_used_orig: 50100
+	correct_sample_used_sss: 0
+	incorrect_sample_used_orig: 0.0
+	incorrect_sample_used_sss: 0.0
+val:
+	loss: 2.0545597076416016
+	accuracy: 0.539
+test:
+	loss: 2.043302536010742
+	accuracy: 0.5772999999999999
+Beginning epoch 3.
+Epoch 3 complete.
+train:
+	correct_loss: 1.73672616481781
+	incorrect_loss: nan
+	correct_acc: 0.8395808383233533
+	incorrect_acc: nan
+	correct_sample_used_orig: 50100
+	correct_sample_used_sss: 0
+	incorrect_sample_used_orig: 0.0
+	incorrect_sample_used_sss: 0.0
+val:
+	loss: 1.7442874908447266
+	accuracy: 0.633
+test:
+	loss: 1.718738079071045
+	accuracy: 0.6790999999999999
+Beginning epoch 4.
+Epoch 4 complete.
+train:
+	correct_loss: 1.2257837057113647
+	incorrect_loss: nan
+	correct_acc: 0.9358682634730539
+	incorrect_acc: nan
+	correct_sample_used_orig: 50100
+	correct_sample_used_sss: 0
+	incorrect_sample_used_orig: 0.0
+	incorrect_sample_used_sss: 0.0
+val:
+	loss: 1.3154988288879395
+	accuracy: 0.733
+test:
+	loss: 1.2756706476211548
+	accuracy: 0.7628
+Beginning epoch 5.
+Epoch 5 complete.
+train:
+	correct_loss: 0.7171266674995422
+	incorrect_loss: nan
+	correct_acc: 0.9705788423153693
+	incorrect_acc: nan
+	correct_sample_used_orig: 50100
+	correct_sample_used_sss: 0
+	incorrect_sample_used_orig: 0.0
+	incorrect_sample_used_sss: 0.0
+val:
+	loss: 0.979150652885437
+	accuracy: 0.78
+test:
+	loss: 0.9347899556159973
+	accuracy: 0.8094
+Beginning epoch 6.
+Epoch 6 complete.
+train:
+	correct_loss: 0.4016442894935608
+	incorrect_loss: nan
+	correct_acc: 0.9894211576846308
+	incorrect_acc: nan
+	correct_sample_used_orig: 50100
+	correct_sample_used_sss: 0
+	incorrect_sample_used_orig: 0.0
+	incorrect_sample_used_sss: 0.0
+val:
+	loss: 0.7865500450134277
+	accuracy: 0.808
+test:
+	loss: 0.7413190603256226
+	accuracy: 0.8292999999999999
+Beginning epoch 7.
+Epoch 7 complete.
+train:
+	correct_loss: 0.23581019043922424
+	incorrect_loss: nan
+	correct_acc: 1.0
+	incorrect_acc: nan
+	correct_sample_used_orig: 50100
+	correct_sample_used_sss: 0
+	incorrect_sample_used_orig: 0.0
+	incorrect_sample_used_sss: 0.0
+val:
+	loss: 0.6803377270698547
+	accuracy: 0.818
+test:
+	loss: 0.6356917023658752
+	accuracy: 0.8389
+Beginning epoch 8.
+Epoch 8 complete.
+train:
+	correct_loss: 0.14766697585582733
+	incorrect_loss: nan
+	correct_acc: 1.0
+	incorrect_acc: nan
+	correct_sample_used_orig: 50100
+	correct_sample_used_sss: 0
+	incorrect_sample_used_orig: 0.0
+	incorrect_sample_used_sss: 0.0
+val:
+	loss: 0.6183315515518188
+	accuracy: 0.827
+test:
+	loss: 0.5752293467521667
+	accuracy: 0.8433999999999999
+Beginning epoch 9.
+Epoch 9 complete.
+train:
+	correct_loss: 0.0985955148935318
+	incorrect_loss: nan
+	correct_acc: 1.0
+	incorrect_acc: nan
+	correct_sample_used_orig: 50100
+	correct_sample_used_sss: 0
+	incorrect_sample_used_orig: 0.0
+	incorrect_sample_used_sss: 0.0
+val:
+	loss: 0.5804684162139893
+	accuracy: 0.829
+test:
+	loss: 0.5384128093719482
+	accuracy: 0.8464000000000002
+Beginning epoch 10.
+Epoch 10 complete.
+train:
+	correct_loss: 0.07003630697727203
+	incorrect_loss: nan
+	correct_acc: 1.0
+	incorrect_acc: nan
+	correct_sample_used_orig: 50100
+	correct_sample_used_sss: 0
+	incorrect_sample_used_orig: 0.0
+	incorrect_sample_used_sss: 0.0
+val:
+	loss: 0.5566110610961914
+	accuracy: 0.8379999999999999
+test:
+	loss: 0.5151095390319824
+	accuracy: 0.8486999999999999
+Beginning epoch 11.
+Epoch 11 complete.
+train:
+	correct_loss: 0.052372969686985016
+	incorrect_loss: nan
+	correct_acc: 1.0
+	incorrect_acc: nan
+	correct_sample_used_orig: 50100
+	correct_sample_used_sss: 0
+	incorrect_sample_used_orig: 0.0
+	incorrect_sample_used_sss: 0.0
+val:
+	loss: 0.5398892164230347
+	accuracy: 0.8379999999999999
+test:
+	loss: 0.49927306175231934
+	accuracy: 0.8505999999999999
+Beginning epoch 12.
+Epoch 12 complete.
+train:
+	correct_loss: 0.040801696479320526
+	incorrect_loss: nan
+	correct_acc: 1.0
+	incorrect_acc: nan
+	correct_sample_used_orig: 50100
+	correct_sample_used_sss: 0
+	incorrect_sample_used_orig: 0.0
+	incorrect_sample_used_sss: 0.0
+val:
+	loss: 0.5301729440689087
+	accuracy: 0.843
+test:
+	loss: 0.4896068572998047
+	accuracy: 0.8511
+Beginning epoch 13.
+Epoch 13 complete.
+train:
+	correct_loss: 0.032838381826877594
+	incorrect_loss: nan
+	correct_acc: 1.0
+	incorrect_acc: nan
+	correct_sample_used_orig: 50100
+	correct_sample_used_sss: 0
+	incorrect_sample_used_orig: 0.0
+	incorrect_sample_used_sss: 0.0
+val:
+	loss: 0.5228244662284851
+	accuracy: 0.843
+test:
+	loss: 0.4825793504714966
+	accuracy: 0.8510000000000001
+Beginning epoch 14.
+Epoch 14 complete.
+train:
+	correct_loss: 0.027145108208060265
+	incorrect_loss: nan
+	correct_acc: 1.0
+	incorrect_acc: nan
+	correct_sample_used_orig: 50100
+	correct_sample_used_sss: 0
+	incorrect_sample_used_orig: 0.0
+	incorrect_sample_used_sss: 0.0
+val:
+	loss: 0.5154314041137695
+	accuracy: 0.842
+test:
+	loss: 0.4759107232093811
+	accuracy: 0.8521999999999998
+Beginning epoch 15.
+Epoch 15 complete.
+train:
+	correct_loss: 0.022913843393325806
+	incorrect_loss: nan
+	correct_acc: 1.0
+	incorrect_acc: nan
+	correct_sample_used_orig: 50100
+	correct_sample_used_sss: 0
+	incorrect_sample_used_orig: 0.0
+	incorrect_sample_used_sss: 0.0
+val:
+	loss: 0.5105262994766235
+	accuracy: 0.844
+test:
+	loss: 0.4713629484176636
+	accuracy: 0.8526000000000002
+Beginning epoch 16.
+Epoch 16 complete.
+train:
+	correct_loss: 0.019658515229821205
+	incorrect_loss: nan
+	correct_acc: 1.0
+	incorrect_acc: nan
+	correct_sample_used_orig: 50100
+	correct_sample_used_sss: 0
+	incorrect_sample_used_orig: 0.0
+	incorrect_sample_used_sss: 0.0
+val:
+	loss: 0.5080746412277222
+	accuracy: 0.844
+test:
+	loss: 0.46891719102859497
+	accuracy: 0.853
+Beginning epoch 17.
+Epoch 17 complete.
+train:
+	correct_loss: 0.01713033951818943
+	incorrect_loss: nan
+	correct_acc: 1.0
+	incorrect_acc: nan
+	correct_sample_used_orig: 50100
+	correct_sample_used_sss: 0
+	incorrect_sample_used_orig: 0.0
+	incorrect_sample_used_sss: 0.0
+val:
+	loss: 0.5039634704589844
+	accuracy: 0.845
+test:
+	loss: 0.46532702445983887
+	accuracy: 0.8536000000000001
+Beginning epoch 18.
+Epoch 18 complete.
+train:
+	correct_loss: 0.015107225626707077
+	incorrect_loss: nan
+	correct_acc: 1.0
+	incorrect_acc: nan
+	correct_sample_used_orig: 50100
+	correct_sample_used_sss: 0
+	incorrect_sample_used_orig: 0.0
+	incorrect_sample_used_sss: 0.0
+val:
+	loss: 0.5025758147239685
+	accuracy: 0.8459999999999999
+test:
+	loss: 0.4637935161590576
+	accuracy: 0.8535
+Beginning epoch 19.
+Epoch 19 complete.
+train:
+	correct_loss: 0.013462613336741924
+	incorrect_loss: nan
+	correct_acc: 1.0
+	incorrect_acc: nan
+	correct_sample_used_orig: 50100
+	correct_sample_used_sss: 0
+	incorrect_sample_used_orig: 0.0
+	incorrect_sample_used_sss: 0.0
+val:
+	loss: 0.501101553440094
+	accuracy: 0.8459999999999999
+test:
+	loss: 0.46246087551116943
+	accuracy: 0.8538
+Beginning epoch 20.
+Epoch 20 complete.
+train:
+	correct_loss: 0.012116286903619766
+	incorrect_loss: nan
+	correct_acc: 1.0
+	incorrect_acc: nan
+	correct_sample_used_orig: 50100
+	correct_sample_used_sss: 0
+	incorrect_sample_used_orig: 0.0
+	incorrect_sample_used_sss: 0.0
+val:
+	loss: 0.49981340765953064
+	accuracy: 0.8470000000000001
+test:
+	loss: 0.46131446957588196
+	accuracy: 0.8537
+Trial complete.
+	Time taken: 85.48664116859436 seconds.
+Running noisy trial
+	Config file: ./config/mnist_fmnist_sweep_error_rate_clean.json
+	Results directory: ./results/mnist_fmnist_sweep_error_rate_clean
+Beginning noisy dataset experiment.
+	Method: naive
+	Dataset: FashionMNIST
+	Correct samples per class: 5000
+	Incorrect samples per class: 0
+	Random seed: 0
+	Training dataloader kwargs: {'batch_size': 100, 'shuffle': True}
+	Eval dataloader kwargs: {'batch_size': 100, 'shuffle': False}
+	Clean dataloader kwargs: {'batch_size': 100, 'shuffle': True}
+	Clean samples per class: 10
+	Validation samples per class: 100
+	Model constructor: LeNet5
+	Model constructor kwargs: {}
+	Loss function constructor: CrossEntropyLoss
+	Loss function constructor kwargs: {}
+	Optimizer constructor: SGD
+	Optimizer constructor kwargs: {'lr': 0.001}
+	Scheduler constructor: ReduceLROnPlateau
+	Scheduler constructor kwargs: {'mode': 'max', 'factor': 0.5, 'patience': 10}
+	Number of epochs: 0
+	Pretraining epochs: 0
+	Fine-tuning epochs: 20
+	Device: cuda
+	Conduct initial measurements: True
+
+Setting random seed.
+Initializing and partitioning datasets.
+Initializing dataloaders.
+Initializing model.
+LeNet5(
+  (model): Sequential(
+    (0): Conv2d(1, 6, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+    (1): BatchNorm2d(6, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (2): ReLU()
+    (3): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (4): Conv2d(6, 16, kernel_size=(5, 5), stride=(1, 1))
+    (5): BatchNorm2d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (6): ReLU()
+    (7): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (8): Flatten(start_dim=1, end_dim=-1)
+    (9): Linear(in_features=400, out_features=120, bias=True)
+    (10): ReLU()
+    (11): Linear(in_features=120, out_features=84, bias=True)
+    (12): ReLU()
+    (13): Linear(in_features=84, out_features=10, bias=True)
+  )
+)
+
+Initializing loss function.
+CrossEntropyLoss()
+
+Initializing optimizer.
+SGD (
+Parameter Group 0
+    dampening: 0
+    lr: 0.001
+    momentum: 0
+    nesterov: False
+    weight_decay: 0
+)
+
+Initializing scheduler.
+<torch.optim.lr_scheduler.ReduceLROnPlateau object at 0x7effd8f67310>
+
+Measuring initial performance.
+Epoch 0 complete.
+train:
+	loss: 2.3029818534851074
+	accuracy: 0.10235528942115771
+val:
+	loss: 2.302525043487549
+	accuracy: 0.10200000000000001
+test:
+	loss: 2.303006887435913
+	accuracy: 0.10220000000000001
+Fine-tuning model.
+Beginning epoch 1.
+Epoch 1 complete.
+train:
+	correct_loss: 2.225461483001709
+	incorrect_loss: nan
+	correct_acc: 0.324810379241517
+	incorrect_acc: nan
+	correct_sample_used_orig: 50100
+	correct_sample_used_sss: 0
+	incorrect_sample_used_orig: 0.0
+	incorrect_sample_used_sss: 0.0
+val:
+	loss: 2.1725070476531982
+	accuracy: 0.366
+test:
+	loss: 2.17397403717041
+	accuracy: 0.3725
+Beginning epoch 2.
+Epoch 2 complete.
+train:
+	correct_loss: 1.9944307804107666
+	incorrect_loss: nan
+	correct_acc: 0.5389021956087825
+	incorrect_acc: nan
+	correct_sample_used_orig: 50100
+	correct_sample_used_sss: 0
+	incorrect_sample_used_orig: 0.0
+	incorrect_sample_used_sss: 0.0
+val:
+	loss: 1.9021921157836914
+	accuracy: 0.465
+test:
+	loss: 1.9060816764831543
+	accuracy: 0.4686
+Beginning epoch 3.
+Epoch 3 complete.
+train:
+	correct_loss: 1.6025675535202026
+	incorrect_loss: nan
+	correct_acc: 0.6469461077844312
+	incorrect_acc: nan
+	correct_sample_used_orig: 50100
+	correct_sample_used_sss: 0
+	incorrect_sample_used_orig: 0.0
+	incorrect_sample_used_sss: 0.0
+val:
+	loss: 1.5136923789978027
+	accuracy: 0.586
+test:
+	loss: 1.519072413444519
+	accuracy: 0.5845999999999999
+Beginning epoch 4.
+Epoch 4 complete.
+train:
+	correct_loss: 1.1928956508636475
+	incorrect_loss: nan
+	correct_acc: 0.7355089820359282
+	incorrect_acc: nan
+	correct_sample_used_orig: 50100
+	correct_sample_used_sss: 0
+	incorrect_sample_used_orig: 0.0
+	incorrect_sample_used_sss: 0.0
+val:
+	loss: 1.2311139106750488
+	accuracy: 0.671
+test:
+	loss: 1.2374792098999023
+	accuracy: 0.6567000000000001
+Beginning epoch 5.
+Epoch 5 complete.
+train:
+	correct_loss: 0.9117085933685303
+	incorrect_loss: nan
+	correct_acc: 0.7947904191616766
+	incorrect_acc: nan
+	correct_sample_used_orig: 50100
+	correct_sample_used_sss: 0
+	incorrect_sample_used_orig: 0.0
+	incorrect_sample_used_sss: 0.0
+val:
+	loss: 1.0815449953079224
+	accuracy: 0.697
+test:
+	loss: 1.0886662006378174
+	accuracy: 0.6788000000000001
+Beginning epoch 6.
+Epoch 6 complete.
+train:
+	correct_loss: 0.7211441397666931
+	incorrect_loss: nan
+	correct_acc: 0.8438522954091817
+	incorrect_acc: nan
+	correct_sample_used_orig: 50100
+	correct_sample_used_sss: 0
+	incorrect_sample_used_orig: 0.0
+	incorrect_sample_used_sss: 0.0
+val:
+	loss: 0.9907668828964233
+	accuracy: 0.7050000000000001
+test:
+	loss: 1.0011194944381714
+	accuracy: 0.6797000000000001
+Beginning epoch 7.
+Epoch 7 complete.
+train:
+	correct_loss: 0.5783156752586365
+	incorrect_loss: nan
+	correct_acc: 0.8864071856287425
+	incorrect_acc: nan
+	correct_sample_used_orig: 50100
+	correct_sample_used_sss: 0
+	incorrect_sample_used_orig: 0.0
+	incorrect_sample_used_sss: 0.0
+val:
+	loss: 0.9342869520187378
+	accuracy: 0.709
+test:
+	loss: 0.9467678070068359
+	accuracy: 0.6858
+Beginning epoch 8.
+Epoch 8 complete.
+train:
+	correct_loss: 0.46517184376716614
+	incorrect_loss: nan
+	correct_acc: 0.91812375249501
+	incorrect_acc: nan
+	correct_sample_used_orig: 50100
+	correct_sample_used_sss: 0
+	incorrect_sample_used_orig: 0.0
+	incorrect_sample_used_sss: 0.0
+val:
+	loss: 0.8976448178291321
+	accuracy: 0.715
+test:
+	loss: 0.9122292995452881
+	accuracy: 0.6869
+Beginning epoch 9.
+Epoch 9 complete.
+train:
+	correct_loss: 0.3728642463684082
+	incorrect_loss: nan
+	correct_acc: 0.930758483033932
+	incorrect_acc: nan
+	correct_sample_used_orig: 50100
+	correct_sample_used_sss: 0
+	incorrect_sample_used_orig: 0.0
+	incorrect_sample_used_sss: 0.0
+val:
+	loss: 0.8798167109489441
+	accuracy: 0.7139999999999999
+test:
+	loss: 0.8955668807029724
+	accuracy: 0.689
+Beginning epoch 10.
+Epoch 10 complete.
+train:
+	correct_loss: 0.2970585227012634
+	incorrect_loss: nan
+	correct_acc: 0.9583033932135726
+	incorrect_acc: nan
+	correct_sample_used_orig: 50100
+	correct_sample_used_sss: 0
+	incorrect_sample_used_orig: 0.0
+	incorrect_sample_used_sss: 0.0
+val:
+	loss: 0.871329128742218
+	accuracy: 0.711
+test:
+	loss: 0.8886899352073669
+	accuracy: 0.6870999999999998
+Beginning epoch 11.
+Epoch 11 complete.
+train:
+	correct_loss: 0.23352743685245514
+	incorrect_loss: nan
+	correct_acc: 0.9845309381237526
+	incorrect_acc: nan
+	correct_sample_used_orig: 50100
+	correct_sample_used_sss: 0
+	incorrect_sample_used_orig: 0.0
+	incorrect_sample_used_sss: 0.0
+val:
+	loss: 0.8728408813476562
+	accuracy: 0.712
+test:
+	loss: 0.8909887075424194
+	accuracy: 0.687
+Beginning epoch 12.
+Epoch 12 complete.
+train:
+	correct_loss: 0.18090219795703888
+	incorrect_loss: nan
+	correct_acc: 0.99
+	incorrect_acc: nan
+	correct_sample_used_orig: 50100
+	correct_sample_used_sss: 0
+	incorrect_sample_used_orig: 0.0
+	incorrect_sample_used_sss: 0.0
+val:
+	loss: 0.878299355506897
+	accuracy: 0.711
+test:
+	loss: 0.8991749286651611
+	accuracy: 0.6866
+Beginning epoch 13.
+Epoch 13 complete.
+train:
+	correct_loss: 0.13792924582958221
+	incorrect_loss: nan
+	correct_acc: 0.99
+	incorrect_acc: nan
+	correct_sample_used_orig: 50100
+	correct_sample_used_sss: 0
+	incorrect_sample_used_orig: 0.0
+	incorrect_sample_used_sss: 0.0
+val:
+	loss: 0.8857936859130859
+	accuracy: 0.71
+test:
+	loss: 0.9098314642906189
+	accuracy: 0.6847999999999999
+Beginning epoch 14.
+Epoch 14 complete.
+train:
+	correct_loss: 0.10492381453514099
+	incorrect_loss: nan
+	correct_acc: 0.9971257485029942
+	incorrect_acc: nan
+	correct_sample_used_orig: 50100
+	correct_sample_used_sss: 0
+	incorrect_sample_used_orig: 0.0
+	incorrect_sample_used_sss: 0.0
+val:
+	loss: 0.897678554058075
+	accuracy: 0.7070000000000001
+test:
+	loss: 0.9247831702232361
+	accuracy: 0.6857
+Beginning epoch 15.
+Epoch 15 complete.
+train:
+	correct_loss: 0.08077146857976913
+	incorrect_loss: nan
+	correct_acc: 1.0
+	incorrect_acc: nan
+	correct_sample_used_orig: 50100
+	correct_sample_used_sss: 0
+	incorrect_sample_used_orig: 0.0
+	incorrect_sample_used_sss: 0.0
+val:
+	loss: 0.9113541841506958
+	accuracy: 0.704
+test:
+	loss: 0.9409621357917786
+	accuracy: 0.6838999999999998
+Beginning epoch 16.
+Epoch 16 complete.
+train:
+	correct_loss: 0.06307857483625412
+	incorrect_loss: nan
+	correct_acc: 1.0
+	incorrect_acc: nan
+	correct_sample_used_orig: 50100
+	correct_sample_used_sss: 0
+	incorrect_sample_used_orig: 0.0
+	incorrect_sample_used_sss: 0.0
+val:
+	loss: 0.9225576519966125
+	accuracy: 0.702
+test:
+	loss: 0.956448495388031
+	accuracy: 0.6835000000000001
+Beginning epoch 17.
+Epoch 17 complete.
+train:
+	correct_loss: 0.050242263823747635
+	incorrect_loss: nan
+	correct_acc: 1.0
+	incorrect_acc: nan
+	correct_sample_used_orig: 50100
+	correct_sample_used_sss: 0
+	incorrect_sample_used_orig: 0.0
+	incorrect_sample_used_sss: 0.0
+val:
+	loss: 0.9344220161437988
+	accuracy: 0.706
+test:
+	loss: 0.9693395495414734
+	accuracy: 0.6855
+Beginning epoch 18.
+Epoch 18 complete.
+train:
+	correct_loss: 0.040870193392038345
+	incorrect_loss: nan
+	correct_acc: 1.0
+	incorrect_acc: nan
+	correct_sample_used_orig: 50100
+	correct_sample_used_sss: 0
+	incorrect_sample_used_orig: 0.0
+	incorrect_sample_used_sss: 0.0
+val:
+	loss: 0.949877917766571
+	accuracy: 0.7030000000000001
+test:
+	loss: 0.9875592589378357
+	accuracy: 0.6835
+Beginning epoch 19.
+Epoch 19 complete.
+train:
+	correct_loss: 0.03388863429427147
+	incorrect_loss: nan
+	correct_acc: 1.0
+	incorrect_acc: nan
+	correct_sample_used_orig: 50100
+	correct_sample_used_sss: 0
+	incorrect_sample_used_orig: 0.0
+	incorrect_sample_used_sss: 0.0
+val:
+	loss: 0.9596401453018188
+	accuracy: 0.701
+test:
+	loss: 1.0004911422729492
+	accuracy: 0.6830999999999997
+Beginning epoch 20.
+Epoch 20 complete.
+train:
+	correct_loss: 0.029774431139230728
+	incorrect_loss: nan
+	correct_acc: 1.0
+	incorrect_acc: nan
+	correct_sample_used_orig: 50100
+	correct_sample_used_sss: 0
+	incorrect_sample_used_orig: 0.0
+	incorrect_sample_used_sss: 0.0
+val:
+	loss: 0.9637449979782104
+	accuracy: 0.698
+test:
+	loss: 1.0051079988479614
+	accuracy: 0.6835999999999999
+Trial complete.
+	Time taken: 76.32005739212036 seconds.

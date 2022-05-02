@@ -21,6 +21,7 @@ class Results:
             if print_res:
                 print('{}:'.format(prefix[:-1]))
             for key, item in d.items():
+                key = prefix + key
                 if not key in self.keys():
                     self.add_keys(key)
                 self.append_value(epoch, key, item)

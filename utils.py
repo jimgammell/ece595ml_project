@@ -7,7 +7,6 @@ log_file = None
 # Print statements will be written to this file, in addition to the terminal.
 def create_log_file(dest):
     global log_file
-    assert log_file == None
     log_file = open(dest, 'w')
 
 # Print statement can be overwritten with this to simultaneously print to terminal

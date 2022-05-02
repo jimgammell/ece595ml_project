@@ -20,17 +20,15 @@
         "batch_size": 100,
         "shuffle": true
     },
-    "clean_samples_per_class": 10,
+    "clean_samples_per_class": 100,
     "val_samples_per_class": 100,
     "model_constructor": "LeNet5",
     "model_constructor_kwargs": {},
     "loss_fn_constructor": "CrossEntropyLoss",
     "loss_fn_constructor_kwargs": {},
-    "optimizer_constructor": "SGD",
+    "optimizer_constructor": "Adam",
     "optimizer_constructor_kwargs":
-    {
-        "lr": 0.001
-    },
+    {},
     "scheduler": "ReduceLROnPlateau",
     "scheduler_kwargs":
     {
@@ -42,5 +40,5 @@
     "device": "cuda",
     "eval_initial_performance": true,
     "pretrain_epochs": 0,
-    "finetune_epochs": 20
+    "finetune_epochs": 50
 }
