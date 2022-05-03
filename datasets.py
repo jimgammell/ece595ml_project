@@ -141,14 +141,16 @@ def get_dataset(name):
                                         train=True,
                                         transform=training_transform,
                                         download=True)
-    train_dataset.data = np.array(train_dataset.data)
+    if name == 'MNIST':
+        train_dataset.data = np.array(train_dataset.data)
     train_dataset.targets = np.array(train_dataset.targets)
     
     test_dataset = dataset_constructor(root=dataset_path,
                                        train=False,
                                        transform=evaluation_transform,
                                        download=True)
-    test_dataset.data = np.array(test_dataset.data)
+    if name == 'MNIST':
+        test_dataset.data = np.array(test_dataset.data)
     test_dataset.targets = np.array(test_dataset.targets)
     
     return train_dataset, test_dataset

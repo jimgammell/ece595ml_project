@@ -122,8 +122,7 @@ def run_trial(config_params):
     clean_dataset, full_train_dataset = extract_random_class_balanced_dataset(full_train_dataset, clean_dataset_samples_per_class)
     val_dataset, _ = extract_random_class_balanced_dataset(full_train_dataset, val_samples_per_class)
     train_dataset = FalsePositiveDataset(train_dataset, 1, 0, samples_per_class, proportion_false_positive)
-    if method != 'sss':
-        train_dataset.append_clean_dataset(clean_dataset)
+    train_dataset.append_clean_dataset(clean_dataset)
     finetune_dataset = RepetitiveDataset(clean_dataset, len(train_dataset)//len(clean_dataset))
     finetune_dataset = FalsePositiveDataset(finetune_dataset, 1, 0, len(finetune_dataset)//len(classes), 0)
     train_dataset = RepetitiveDataset(train_dataset, 5)
@@ -185,7 +184,6 @@ def run_trial(config_params):
             val_res = eval_epoch(val_dataloader, model, loss_fn, device)
             test_res = eval_epoch(test_dataloader, model, loss_fn, device)
             results.update(epoch_num, train_res, val_res, test_res)
-            scheduler.step(val_res['accuracy'])
     
     best_model = deepcopy(model)
     if num_epochs > 0:

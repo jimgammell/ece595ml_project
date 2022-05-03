@@ -15,7 +15,7 @@ from torch.utils.data import Dataset, DataLoader
 from utils import set_random_seed, log_print as print
 from datasets import get_dataset, RepetitiveDataset, extract_random_class_balanced_dataset, BinaryTargetDataset
 from results import Results, mean
-from train import sss_train_on_batch, ltrwe_train_on_batch, naive_train_on_batch
+from train import sss_train_on_batch, ltrwe_train_on_batch, naive_train_on_batch, eval_on_batch
 import models
 
 def run_trial(config_params):
@@ -115,15 +115,14 @@ def run_trial(config_params):
     
     print('Initializing and partitioning datasets.')
     full_train_dataset, test_dataset = get_dataset(dataset)
-    full_train_dataset = BinaryTargetDataset(full_train_dataset, majority_class, minority_class, total_samples)
-    test_dataset = BinaryTargetDataset(test_dataset, majority_class, minority_class, total_samples)
+    full_train_dataset = BinaryTargetDataset(full_train_dataset, majority_class, minority_class, 5000)
+    test_dataset = BinaryTargetDataset(test_dataset, majority_class, minority_class, 800)
     classes = np.unique(full_train_dataset.targets)
     train_dataset, full_train_dataset = extract_random_class_balanced_dataset(full_train_dataset, total_samples)
     clean_dataset, full_train_dataset = extract_random_class_balanced_dataset(full_train_dataset, clean_dataset_samples_per_class)
     val_dataset, _ = extract_random_class_balanced_dataset(full_train_dataset, val_samples_per_class)
     train_dataset = ImbalancedDataset(train_dataset, 1, 0, total_samples, minority_prop_of_majority)
-    if method != 'sss':
-        train_dataset.append_clean_dataset(clean_dataset)
+    train_dataset.append_clean_dataset(clean_dataset)
     finetune_dataset = RepetitiveDataset(clean_dataset, len(train_dataset)//len(clean_dataset))
     finetune_dataset = ImbalancedDataset(finetune_dataset, 1, 0, len(finetune_dataset), 0.5)
     train_dataset = RepetitiveDataset(train_dataset, 5)
@@ -185,7 +184,6 @@ def run_trial(config_params):
             val_res = eval_epoch(val_dataloader, model, loss_fn, device)
             test_res = eval_epoch(test_dataloader, model, loss_fn, device)
             results.update(epoch_num, train_res, val_res, test_res)
-            scheduler.step(val_res['accuracy'])
     
     best_model = deepcopy(model)
     if num_epochs > 0:
@@ -198,11 +196,6 @@ def run_trial(config_params):
             val_res = eval_epoch(val_dataloader, model, loss_fn, device)
             test_res = eval_epoch(test_dataloader, model, loss_fn, device)
             results.update(epoch_num, train_res, val_res, test_res)
-            scheduler.step(val_res['accuracy'])
-            if val_res['accuracy'] > best_accuracy:
-                best_accuracy = val_res['accuracy']
-                final_test_accuracy = test_res['accuracy']
-                best_model = deepcopy(model)
         print('\tDone training. Final accuracy: {}'.format(final_test_accuracy))
     
     if finetune_epochs > 0:
@@ -214,7 +207,6 @@ def run_trial(config_params):
             val_res = eval_epoch(val_dataloader, model, loss_fn, device)
             test_res = eval_epoch(test_dataloader, model, loss_fn, device)
             results.update(epoch_num, train_res, val_res, test_res)
-            scheduler.step(val_res['accuracy'])
     
     trial_time = time.time() - trial_start_time
     results.add_single_pair('trial_time', trial_time)
@@ -280,13 +272,12 @@ def train_epoch(dataloader, model, loss_fn, optimizer, device, method, val_datal
             elif method == 'sss':
                 elementwise_loss, predictions, weights, labels = sss_train_on_batch(images, labels_d, val_image, val_label, model, loss_fn, optimizer, device)
         
-        correct_labels = batch[2]
-        batch_majority_loss.append(mean(elementwise_loss[label==1]))
-        batch_minority_loss.append(mean(elementwise_loss[label==0]))
-        batch_majority_accuracy.append(mean(np.equal(predictions, labels)[correct_label==1]))
-        batch_minority_accuracy.append(mean(np.equal(predictions, labels)[correct_label==0]))
-        batch_majority_nonzero.append(np.count_nonzero(weights[correct_label==1]))
-        batch_minority_nonzero.append(np.count_nonzero(weights[correct_label==0]))
+        batch_majority_loss.append(mean(elementwise_loss[original_labels==1]))
+        batch_minority_loss.append(mean(elementwise_loss[original_labels==0]))
+        batch_majority_accuracy.append(mean(np.equal(predictions, original_labels)[original_labels==1]))
+        batch_minority_accuracy.append(mean(np.equal(predictions, original_labels)[original_labels==0]))
+        batch_majority_nonzero.append(np.count_nonzero(weights[original_labels==1]))
+        batch_minority_nonzero.append(np.count_nonzero(weights[original_labels==0]))
     
     epoch_majority_loss = mean(batch_majority_loss)
     epoch_minority_loss = mean(batch_minority_loss)
@@ -309,7 +300,7 @@ class ImbalancedDataset(Dataset):
                  total_samples,
                  minority_prop_of_majority):
         super().__init__()
-        self.minority_class_samples = int(majority_class_samples*minority_prop_of_majority)
+        self.minority_class_samples = int(total_samples*minority_prop_of_majority)
         self.majority_class_samples = total_samples-self.minority_class_samples
         self.data = []
         self.targets = []
