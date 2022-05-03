@@ -1,0 +1,41 @@
+{
+    "trial_type": "false_positive",
+    "method": ["naive"],
+    "dataset": "MNIST",
+    "samples_per_class": 4000,
+    "positive_class": 4,
+    "negative_class": 9,
+    "proportion_false_positive": [0.0],
+    "seed": 0,
+    "train_dataloader_kwargs":
+    {
+        "batch_size": 100,
+        "shuffle": true
+    },
+    "eval_dataloader_kwargs":
+    {
+        "batch_size": 100,
+        "shuffle": false
+    },
+    "clean_dataloader_kwargs":
+    {
+        "batch_size": 100,
+        "shuffle": true
+    },
+    "clean_samples_per_class": 10,
+    "val_samples_per_class": 100,
+    "model_constructor": "LeNet5",
+    "model_constructor_kwargs":
+    {
+        "overparameterize": false
+    },
+    "loss_fn_constructor": "CrossEntropyLoss",
+    "loss_fn_constructor_kwargs": {},
+    "optimizer_constructor": "Adam",
+    "optimizer_constructor_kwargs": {},
+    "num_epochs": 0,
+    "device": "cuda",
+    "eval_initial_performance": true,
+    "pretrain_epochs": 0,
+    "finetune_epochs": 10
+}

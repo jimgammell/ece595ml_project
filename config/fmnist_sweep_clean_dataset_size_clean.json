@@ -1,0 +1,45 @@
+{
+    "trial_type": "noisy",
+    "method": ["naive"],
+    "dataset": ["FashionMNIST"],
+    "proportion_incorrect": 0.5,
+    "train_samples_per_class": 5000,
+    "seed": 0,
+    "train_dataloader_kwargs":
+    {
+        "batch_size": 100,
+        "shuffle": true
+    },
+    "eval_dataloader_kwargs":
+    {
+        "batch_size": 100,
+        "shuffle": false
+    },
+    "clean_dataloader_kwargs":
+    {
+        "batch_size": 100,
+        "shuffle": true
+    },
+    "clean_samples_per_class": [1, 3, 10, 30, 100, 300, 1000],
+    "val_samples_per_class": 100,
+    "model_constructor": "LeNet5",
+    "model_constructor_kwargs": {},
+    "loss_fn_constructor": "CrossEntropyLoss",
+    "loss_fn_constructor_kwargs": {},
+    "optimizer_constructor": "Adam",
+    "optimizer_constructor_kwargs":
+    {
+    },
+    "scheduler": "ReduceLROnPlateau",
+    "scheduler_kwargs":
+    {
+        "mode": "max",
+        "factor": 0.5,
+        "patience": 10
+    },
+    "num_epochs": 0,
+    "device": "cuda",
+    "eval_initial_performance": true,
+    "pretrain_epochs": 0,
+    "finetune_epochs": 50
+}

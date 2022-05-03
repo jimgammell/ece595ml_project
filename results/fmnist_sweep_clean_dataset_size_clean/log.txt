@@ -1,0 +1,5817 @@
+Running noisy trial
+	Config file: ./config/fmnist_sweep_clean_dataset_size_clean.json
+	Results directory: ./results/fmnist_sweep_clean_dataset_size_clean
+Beginning noisy dataset experiment.
+	Method: naive
+	Dataset: FashionMNIST
+	Correct samples per class: 2500
+	Incorrect samples per class: 2500
+	Random seed: 0
+	Training dataloader kwargs: {'batch_size': 100, 'shuffle': True}
+	Eval dataloader kwargs: {'batch_size': 100, 'shuffle': False}
+	Clean dataloader kwargs: {'batch_size': 100, 'shuffle': True}
+	Clean samples per class: 1
+	Validation samples per class: 100
+	Model constructor: LeNet5
+	Model constructor kwargs: {}
+	Loss function constructor: CrossEntropyLoss
+	Loss function constructor kwargs: {}
+	Optimizer constructor: Adam
+	Optimizer constructor kwargs: {}
+	Scheduler constructor: ReduceLROnPlateau
+	Scheduler constructor kwargs: {'mode': 'max', 'factor': 0.5, 'patience': 10}
+	Number of epochs: 0
+	Pretraining epochs: 0
+	Fine-tuning epochs: 50
+	Device: cuda
+	Conduct initial measurements: True
+
+Setting random seed.
+Initializing and partitioning datasets.
+Initializing dataloaders.
+Initializing model.
+LeNet5(
+  (model): Sequential(
+    (0): Conv2d(1, 6, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+    (1): BatchNorm2d(6, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (2): ReLU()
+    (3): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (4): Conv2d(6, 16, kernel_size=(5, 5), stride=(1, 1))
+    (5): BatchNorm2d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (6): ReLU()
+    (7): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (8): Flatten(start_dim=1, end_dim=-1)
+    (9): Linear(in_features=400, out_features=1024, bias=True)
+    (10): ReLU()
+    (11): Linear(in_features=1024, out_features=256, bias=True)
+    (12): ReLU()
+    (13): Linear(in_features=256, out_features=10, bias=True)
+  )
+)
+
+Initializing loss function.
+CrossEntropyLoss()
+
+Initializing optimizer.
+Adam (
+Parameter Group 0
+    amsgrad: False
+    betas: (0.9, 0.999)
+    eps: 1e-08
+    lr: 0.001
+    weight_decay: 0
+)
+
+Initializing scheduler.
+<torch.optim.lr_scheduler.ReduceLROnPlateau object at 0x7fc1d94a8880>
+
+Measuring initial performance.
+Epoch 0 complete.
+train:
+	train_loss: 2.302733898162842
+	train_accuracy: 0.09984031936127746
+val:
+	val_loss: 2.3024966716766357
+	val_accuracy: 0.097
+test:
+	test_loss: 2.302504539489746
+	test_accuracy: 0.09910000000000001
+Fine-tuning model.
+Beginning epoch 1.
+Epoch 1 complete.
+train:
+	train_correct_loss: 0.016876311972737312
+	train_incorrect_loss: nan
+	train_correct_acc: 0.997744510978044
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 3.1557955741882324
+	val_accuracy: 0.417
+test:
+	test_loss: 3.127474069595337
+	test_accuracy: 0.42590000000000006
+Beginning epoch 2.
+Epoch 2 complete.
+train:
+	train_correct_loss: 0.0670337826013565
+	train_incorrect_loss: nan
+	train_correct_acc: 0.9936526946107784
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 13.433972358703613
+	val_accuracy: 0.38100000000000006
+test:
+	test_loss: 13.430466651916504
+	test_accuracy: 0.36890000000000006
+Beginning epoch 3.
+Epoch 3 complete.
+train:
+	train_correct_loss: 1.7384092387828787e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 13.287986755371094
+	val_accuracy: 0.383
+test:
+	test_loss: 13.31477165222168
+	test_accuracy: 0.3685
+Beginning epoch 4.
+Epoch 4 complete.
+train:
+	train_correct_loss: 3.6833527339297234e-09
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 13.050748825073242
+	val_accuracy: 0.382
+test:
+	test_loss: 13.053524017333984
+	test_accuracy: 0.3728
+Beginning epoch 5.
+Epoch 5 complete.
+train:
+	train_correct_loss: 9.541499812470988e-10
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 13.152284622192383
+	val_accuracy: 0.381
+test:
+	test_loss: 13.177362442016602
+	test_accuracy: 0.3704
+Beginning epoch 6.
+Epoch 6 complete.
+train:
+	train_correct_loss: 1.832158591508204e-10
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 13.205558776855469
+	val_accuracy: 0.381
+test:
+	test_loss: 13.227688789367676
+	test_accuracy: 0.37160000000000004
+Beginning epoch 7.
+Epoch 7 complete.
+train:
+	train_correct_loss: 1.0707420367017662e-10
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 13.03857707977295
+	val_accuracy: 0.382
+test:
+	test_loss: 13.062187194824219
+	test_accuracy: 0.3722000000000001
+Beginning epoch 8.
+Epoch 8 complete.
+train:
+	train_correct_loss: 2.617369515567347e-11
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 12.91662883758545
+	val_accuracy: 0.384
+test:
+	test_loss: 12.931302070617676
+	test_accuracy: 0.37370000000000014
+Beginning epoch 9.
+Epoch 9 complete.
+train:
+	train_correct_loss: 7.852108546702041e-11
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 13.046984672546387
+	val_accuracy: 0.38099999999999995
+test:
+	test_loss: 13.072909355163574
+	test_accuracy: 0.37320000000000014
+Beginning epoch 10.
+Epoch 10 complete.
+train:
+	train_correct_loss: 0.0
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 13.12316608428955
+	val_accuracy: 0.382
+test:
+	test_loss: 13.138043403625488
+	test_accuracy: 0.3734
+Beginning epoch 11.
+Epoch 11 complete.
+train:
+	train_correct_loss: 4.7588537277487575e-11
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 13.017338752746582
+	val_accuracy: 0.38499999999999995
+test:
+	test_loss: 13.035152435302734
+	test_accuracy: 0.37420000000000003
+Beginning epoch 12.
+Epoch 12 complete.
+train:
+	train_correct_loss: 0.0
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 12.841962814331055
+	val_accuracy: 0.38499999999999995
+test:
+	test_loss: 12.8579740524292
+	test_accuracy: 0.37520000000000003
+Beginning epoch 13.
+Epoch 13 complete.
+train:
+	train_correct_loss: 0.0
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 12.92168140411377
+	val_accuracy: 0.38499999999999995
+test:
+	test_loss: 12.930188179016113
+	test_accuracy: 0.37499999999999994
+Beginning epoch 14.
+Epoch 14 complete.
+train:
+	train_correct_loss: 0.0
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 12.985725402832031
+	val_accuracy: 0.38499999999999995
+test:
+	test_loss: 12.992506980895996
+	test_accuracy: 0.3746
+Beginning epoch 15.
+Epoch 15 complete.
+train:
+	train_correct_loss: 0.0
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 12.900964736938477
+	val_accuracy: 0.38799999999999996
+test:
+	test_loss: 12.911831855773926
+	test_accuracy: 0.3763
+Beginning epoch 16.
+Epoch 16 complete.
+train:
+	train_correct_loss: 0.0
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 12.859853744506836
+	val_accuracy: 0.38699999999999996
+test:
+	test_loss: 12.855769157409668
+	test_accuracy: 0.37690000000000007
+Beginning epoch 17.
+Epoch 17 complete.
+train:
+	train_correct_loss: 0.0
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 12.936238288879395
+	val_accuracy: 0.388
+test:
+	test_loss: 12.933176040649414
+	test_accuracy: 0.37690000000000007
+Beginning epoch 18.
+Epoch 18 complete.
+train:
+	train_correct_loss: 0.0
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 12.949549674987793
+	val_accuracy: 0.387
+test:
+	test_loss: 12.940159797668457
+	test_accuracy: 0.3765
+Beginning epoch 19.
+Epoch 19 complete.
+train:
+	train_correct_loss: 0.0
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 12.966527938842773
+	val_accuracy: 0.38799999999999996
+test:
+	test_loss: 12.964698791503906
+	test_accuracy: 0.377
+Beginning epoch 20.
+Epoch 20 complete.
+train:
+	train_correct_loss: 0.0
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 12.853208541870117
+	val_accuracy: 0.38899999999999996
+test:
+	test_loss: 12.851578712463379
+	test_accuracy: 0.37800000000000006
+Beginning epoch 21.
+Epoch 21 complete.
+train:
+	train_correct_loss: 0.0
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 12.890461921691895
+	val_accuracy: 0.38799999999999996
+test:
+	test_loss: 12.901345252990723
+	test_accuracy: 0.37699999999999995
+Beginning epoch 22.
+Epoch 22 complete.
+train:
+	train_correct_loss: 0.0
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 12.919717788696289
+	val_accuracy: 0.38899999999999996
+test:
+	test_loss: 12.91465950012207
+	test_accuracy: 0.3775
+Beginning epoch 23.
+Epoch 23 complete.
+train:
+	train_correct_loss: 0.0
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 12.712389945983887
+	val_accuracy: 0.392
+test:
+	test_loss: 12.699962615966797
+	test_accuracy: 0.3808
+Beginning epoch 24.
+Epoch 24 complete.
+train:
+	train_correct_loss: 0.0
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 12.851901054382324
+	val_accuracy: 0.388
+test:
+	test_loss: 12.840397834777832
+	test_accuracy: 0.37980000000000014
+Beginning epoch 25.
+Epoch 25 complete.
+train:
+	train_correct_loss: 0.0
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 12.798215866088867
+	val_accuracy: 0.38699999999999996
+test:
+	test_loss: 12.790077209472656
+	test_accuracy: 0.3796
+Beginning epoch 26.
+Epoch 26 complete.
+train:
+	train_correct_loss: 0.0
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 12.730438232421875
+	val_accuracy: 0.39099999999999996
+test:
+	test_loss: 12.71718978881836
+	test_accuracy: 0.3814
+Beginning epoch 27.
+Epoch 27 complete.
+train:
+	train_correct_loss: 0.0
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 12.814229965209961
+	val_accuracy: 0.38699999999999996
+test:
+	test_loss: 12.813672065734863
+	test_accuracy: 0.379
+Beginning epoch 28.
+Epoch 28 complete.
+train:
+	train_correct_loss: 0.0
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 12.779430389404297
+	val_accuracy: 0.39
+test:
+	test_loss: 12.776874542236328
+	test_accuracy: 0.3801
+Beginning epoch 29.
+Epoch 29 complete.
+train:
+	train_correct_loss: 0.0
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 12.803729057312012
+	val_accuracy: 0.38899999999999996
+test:
+	test_loss: 12.805168151855469
+	test_accuracy: 0.3798
+Beginning epoch 30.
+Epoch 30 complete.
+train:
+	train_correct_loss: 0.0
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 12.673815727233887
+	val_accuracy: 0.391
+test:
+	test_loss: 12.669183731079102
+	test_accuracy: 0.38199999999999995
+Beginning epoch 31.
+Epoch 31 complete.
+train:
+	train_correct_loss: 0.0
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 12.686846733093262
+	val_accuracy: 0.38999999999999996
+test:
+	test_loss: 12.675450325012207
+	test_accuracy: 0.38339999999999996
+Beginning epoch 32.
+Epoch 32 complete.
+train:
+	train_correct_loss: 0.0
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 12.71926498413086
+	val_accuracy: 0.38899999999999996
+test:
+	test_loss: 12.71789264678955
+	test_accuracy: 0.3822
+Beginning epoch 33.
+Epoch 33 complete.
+train:
+	train_correct_loss: 0.0
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 12.56148910522461
+	val_accuracy: 0.391
+test:
+	test_loss: 12.566611289978027
+	test_accuracy: 0.38199999999999995
+Beginning epoch 34.
+Epoch 34 complete.
+train:
+	train_correct_loss: 0.0
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 12.613068580627441
+	val_accuracy: 0.39399999999999996
+test:
+	test_loss: 12.594675064086914
+	test_accuracy: 0.38270000000000004
+Beginning epoch 35.
+Epoch 35 complete.
+train:
+	train_correct_loss: 0.0
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 12.660787582397461
+	val_accuracy: 0.38999999999999996
+test:
+	test_loss: 12.649888038635254
+	test_accuracy: 0.38299999999999995
+Beginning epoch 36.
+Epoch 36 complete.
+train:
+	train_correct_loss: 0.0
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 12.623631477355957
+	val_accuracy: 0.394
+test:
+	test_loss: 12.622323036193848
+	test_accuracy: 0.38109999999999994
+Beginning epoch 37.
+Epoch 37 complete.
+train:
+	train_correct_loss: 0.0
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 12.513425827026367
+	val_accuracy: 0.39099999999999996
+test:
+	test_loss: 12.499137878417969
+	test_accuracy: 0.3846
+Beginning epoch 38.
+Epoch 38 complete.
+train:
+	train_correct_loss: 0.0
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 12.656696319580078
+	val_accuracy: 0.39199999999999996
+test:
+	test_loss: 12.657033920288086
+	test_accuracy: 0.38139999999999996
+Beginning epoch 39.
+Epoch 39 complete.
+train:
+	train_correct_loss: 0.0
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 12.396739959716797
+	val_accuracy: 0.396
+test:
+	test_loss: 12.36944580078125
+	test_accuracy: 0.38789999999999997
+Beginning epoch 40.
+Epoch 40 complete.
+train:
+	train_correct_loss: 0.0
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 12.479296684265137
+	val_accuracy: 0.392
+test:
+	test_loss: 12.473546981811523
+	test_accuracy: 0.38520000000000004
+Beginning epoch 41.
+Epoch 41 complete.
+train:
+	train_correct_loss: 0.0
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 12.42402458190918
+	val_accuracy: 0.393
+test:
+	test_loss: 12.397518157958984
+	test_accuracy: 0.38630000000000003
+Beginning epoch 42.
+Epoch 42 complete.
+train:
+	train_correct_loss: 0.0
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 12.447339057922363
+	val_accuracy: 0.39099999999999996
+test:
+	test_loss: 12.435691833496094
+	test_accuracy: 0.38580000000000003
+Beginning epoch 43.
+Epoch 43 complete.
+train:
+	train_correct_loss: 0.0
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 12.394746780395508
+	val_accuracy: 0.396
+test:
+	test_loss: 12.379766464233398
+	test_accuracy: 0.3874
+Beginning epoch 44.
+Epoch 44 complete.
+train:
+	train_correct_loss: 0.0
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 12.354928016662598
+	val_accuracy: 0.397
+test:
+	test_loss: 12.344557762145996
+	test_accuracy: 0.3868
+Beginning epoch 45.
+Epoch 45 complete.
+train:
+	train_correct_loss: 0.0
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 12.377781867980957
+	val_accuracy: 0.396
+test:
+	test_loss: 12.359801292419434
+	test_accuracy: 0.38749999999999996
+Beginning epoch 46.
+Epoch 46 complete.
+train:
+	train_correct_loss: 0.0
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 12.47959041595459
+	val_accuracy: 0.39499999999999996
+test:
+	test_loss: 12.476634979248047
+	test_accuracy: 0.3845
+Beginning epoch 47.
+Epoch 47 complete.
+train:
+	train_correct_loss: 0.0
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 12.406088829040527
+	val_accuracy: 0.39599999999999996
+test:
+	test_loss: 12.402767181396484
+	test_accuracy: 0.386
+Beginning epoch 48.
+Epoch 48 complete.
+train:
+	train_correct_loss: 0.0
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 12.36027717590332
+	val_accuracy: 0.39699999999999996
+test:
+	test_loss: 12.343029975891113
+	test_accuracy: 0.38659999999999994
+Beginning epoch 49.
+Epoch 49 complete.
+train:
+	train_correct_loss: 0.0
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 12.321870803833008
+	val_accuracy: 0.39699999999999996
+test:
+	test_loss: 12.305838584899902
+	test_accuracy: 0.3882
+Beginning epoch 50.
+Epoch 50 complete.
+train:
+	train_correct_loss: 0.0
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 12.27285385131836
+	val_accuracy: 0.396
+test:
+	test_loss: 12.263117790222168
+	test_accuracy: 0.38770000000000004
+Trial complete.
+	Time taken: 164.93300008773804 seconds.
+Running noisy trial
+	Config file: ./config/fmnist_sweep_clean_dataset_size_clean.json
+	Results directory: ./results/fmnist_sweep_clean_dataset_size_clean
+Beginning noisy dataset experiment.
+	Method: naive
+	Dataset: FashionMNIST
+	Correct samples per class: 2500
+	Incorrect samples per class: 2500
+	Random seed: 0
+	Training dataloader kwargs: {'batch_size': 100, 'shuffle': True}
+	Eval dataloader kwargs: {'batch_size': 100, 'shuffle': False}
+	Clean dataloader kwargs: {'batch_size': 100, 'shuffle': True}
+	Clean samples per class: 3
+	Validation samples per class: 100
+	Model constructor: LeNet5
+	Model constructor kwargs: {}
+	Loss function constructor: CrossEntropyLoss
+	Loss function constructor kwargs: {}
+	Optimizer constructor: Adam
+	Optimizer constructor kwargs: {}
+	Scheduler constructor: ReduceLROnPlateau
+	Scheduler constructor kwargs: {'mode': 'max', 'factor': 0.5, 'patience': 10}
+	Number of epochs: 0
+	Pretraining epochs: 0
+	Fine-tuning epochs: 50
+	Device: cuda
+	Conduct initial measurements: True
+
+Setting random seed.
+Initializing and partitioning datasets.
+Initializing dataloaders.
+Initializing model.
+LeNet5(
+  (model): Sequential(
+    (0): Conv2d(1, 6, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+    (1): BatchNorm2d(6, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (2): ReLU()
+    (3): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (4): Conv2d(6, 16, kernel_size=(5, 5), stride=(1, 1))
+    (5): BatchNorm2d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (6): ReLU()
+    (7): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (8): Flatten(start_dim=1, end_dim=-1)
+    (9): Linear(in_features=400, out_features=1024, bias=True)
+    (10): ReLU()
+    (11): Linear(in_features=1024, out_features=256, bias=True)
+    (12): ReLU()
+    (13): Linear(in_features=256, out_features=10, bias=True)
+  )
+)
+
+Initializing loss function.
+CrossEntropyLoss()
+
+Initializing optimizer.
+Adam (
+Parameter Group 0
+    amsgrad: False
+    betas: (0.9, 0.999)
+    eps: 1e-08
+    lr: 0.001
+    weight_decay: 0
+)
+
+Initializing scheduler.
+<torch.optim.lr_scheduler.ReduceLROnPlateau object at 0x7fc1d70a2430>
+
+Measuring initial performance.
+Epoch 0 complete.
+train:
+	train_loss: 2.302748441696167
+	train_accuracy: 0.09994677312042582
+val:
+	val_loss: 2.3020248413085938
+	val_accuracy: 0.099
+test:
+	test_loss: 2.302504539489746
+	test_accuracy: 0.09910000000000001
+Fine-tuning model.
+Beginning epoch 1.
+Epoch 1 complete.
+train:
+	train_correct_loss: 0.023057177662849426
+	train_incorrect_loss: nan
+	train_correct_acc: 0.9956087824351297
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 3.623685359954834
+	val_accuracy: 0.52
+test:
+	test_loss: 3.5636610984802246
+	test_accuracy: 0.5256000000000001
+Beginning epoch 2.
+Epoch 2 complete.
+train:
+	train_correct_loss: 1.750805438405223e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 4.0804877281188965
+	val_accuracy: 0.503
+test:
+	test_loss: 3.9919474124908447
+	test_accuracy: 0.5181000000000001
+Beginning epoch 3.
+Epoch 3 complete.
+train:
+	train_correct_loss: 6.600529189881854e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 4.292521953582764
+	val_accuracy: 0.49399999999999994
+test:
+	test_loss: 4.190514087677002
+	test_accuracy: 0.5097999999999999
+Beginning epoch 4.
+Epoch 4 complete.
+train:
+	train_correct_loss: 4.1256875249473524e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 4.4047346115112305
+	val_accuracy: 0.48999999999999994
+test:
+	test_loss: 4.304620265960693
+	test_accuracy: 0.5077
+Beginning epoch 5.
+Epoch 5 complete.
+train:
+	train_correct_loss: 4.9456378548029534e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 4.343859672546387
+	val_accuracy: 0.49300000000000005
+test:
+	test_loss: 4.244840145111084
+	test_accuracy: 0.507
+Beginning epoch 6.
+Epoch 6 complete.
+train:
+	train_correct_loss: 0.3047215938568115
+	train_incorrect_loss: nan
+	train_correct_acc: 0.9816966067864271
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 4.212672710418701
+	val_accuracy: 0.5389999999999999
+test:
+	test_loss: 4.4019269943237305
+	test_accuracy: 0.5351
+Beginning epoch 7.
+Epoch 7 complete.
+train:
+	train_correct_loss: 8.343987246917095e-06
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 5.053629398345947
+	val_accuracy: 0.5449999999999999
+test:
+	test_loss: 5.190432548522949
+	test_accuracy: 0.5386000000000001
+Beginning epoch 8.
+Epoch 8 complete.
+train:
+	train_correct_loss: 7.132391601771815e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 5.275484085083008
+	val_accuracy: 0.5469999999999999
+test:
+	test_loss: 5.447342395782471
+	test_accuracy: 0.5389
+Beginning epoch 9.
+Epoch 9 complete.
+train:
+	train_correct_loss: 3.42660996466293e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 5.4146728515625
+	val_accuracy: 0.5519999999999999
+test:
+	test_loss: 5.556764602661133
+	test_accuracy: 0.5412
+Beginning epoch 10.
+Epoch 10 complete.
+train:
+	train_correct_loss: 2.0929419974891061e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 5.508553504943848
+	val_accuracy: 0.5549999999999999
+test:
+	test_loss: 5.645040512084961
+	test_accuracy: 0.5426
+Beginning epoch 11.
+Epoch 11 complete.
+train:
+	train_correct_loss: 1.8264361756337166e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 5.476223468780518
+	val_accuracy: 0.554
+test:
+	test_loss: 5.5761895179748535
+	test_accuracy: 0.5439
+Beginning epoch 12.
+Epoch 12 complete.
+train:
+	train_correct_loss: 1.1451692927266777e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 5.627962112426758
+	val_accuracy: 0.5459999999999999
+test:
+	test_loss: 5.750903129577637
+	test_accuracy: 0.5399
+Beginning epoch 13.
+Epoch 13 complete.
+train:
+	train_correct_loss: 6.251467254969612e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 5.64478063583374
+	val_accuracy: 0.5449999999999999
+test:
+	test_loss: 5.7472028732299805
+	test_accuracy: 0.5406
+Beginning epoch 14.
+Epoch 14 complete.
+train:
+	train_correct_loss: 4.763849759115146e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 5.497773170471191
+	val_accuracy: 0.5509999999999999
+test:
+	test_loss: 5.588255405426025
+	test_accuracy: 0.5419000000000002
+Beginning epoch 15.
+Epoch 15 complete.
+train:
+	train_correct_loss: 3.648374402587251e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 5.661487579345703
+	val_accuracy: 0.5530000000000002
+test:
+	test_loss: 5.747394561767578
+	test_accuracy: 0.5423999999999999
+Beginning epoch 16.
+Epoch 16 complete.
+train:
+	train_correct_loss: 2.5859606012090808e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 5.635986328125
+	val_accuracy: 0.5509999999999999
+test:
+	test_loss: 5.716574668884277
+	test_accuracy: 0.5413
+Beginning epoch 17.
+Epoch 17 complete.
+train:
+	train_correct_loss: 1.7215151970617626e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 5.599978446960449
+	val_accuracy: 0.548
+test:
+	test_loss: 5.660512924194336
+	test_accuracy: 0.5396
+Beginning epoch 18.
+Epoch 18 complete.
+train:
+	train_correct_loss: 1.322961118432886e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 5.697630405426025
+	val_accuracy: 0.5439999999999999
+test:
+	test_loss: 5.741722583770752
+	test_accuracy: 0.5408000000000001
+Beginning epoch 19.
+Epoch 19 complete.
+train:
+	train_correct_loss: 1.1635392205278094e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 5.6520538330078125
+	val_accuracy: 0.554
+test:
+	test_loss: 5.646759510040283
+	test_accuracy: 0.542
+Beginning epoch 20.
+Epoch 20 complete.
+train:
+	train_correct_loss: 1.3648390861931148e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 5.761166572570801
+	val_accuracy: 0.549
+test:
+	test_loss: 5.713357925415039
+	test_accuracy: 0.5430999999999999
+Beginning epoch 21.
+Epoch 21 complete.
+train:
+	train_correct_loss: 1.8442925409090094e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 5.994956016540527
+	val_accuracy: 0.547
+test:
+	test_loss: 5.88336181640625
+	test_accuracy: 0.5436
+Beginning epoch 22.
+Epoch 22 complete.
+train:
+	train_correct_loss: 1.6018299575648598e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 5.865377902984619
+	val_accuracy: 0.5519999999999999
+test:
+	test_loss: 5.739121913909912
+	test_accuracy: 0.5449
+Beginning epoch 23.
+Epoch 23 complete.
+train:
+	train_correct_loss: 0.020804384723305702
+	train_incorrect_loss: nan
+	train_correct_acc: 0.9978243512974051
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 13.39001178741455
+	val_accuracy: 0.488
+test:
+	test_loss: 13.227145195007324
+	test_accuracy: 0.48169999999999996
+Beginning epoch 24.
+Epoch 24 complete.
+train:
+	train_correct_loss: 1.2002698213109397e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 13.071557998657227
+	val_accuracy: 0.49400000000000005
+test:
+	test_loss: 12.836165428161621
+	test_accuracy: 0.49400000000000005
+Beginning epoch 25.
+Epoch 25 complete.
+train:
+	train_correct_loss: 4.429990241305859e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 12.972429275512695
+	val_accuracy: 0.49099999999999994
+test:
+	test_loss: 12.771493911743164
+	test_accuracy: 0.49459999999999993
+Beginning epoch 26.
+Epoch 26 complete.
+train:
+	train_correct_loss: 2.992116776567855e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 12.941461563110352
+	val_accuracy: 0.492
+test:
+	test_loss: 12.757637977600098
+	test_accuracy: 0.4954999999999999
+Beginning epoch 27.
+Epoch 27 complete.
+train:
+	train_correct_loss: 1.6665497426515685e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 12.586797714233398
+	val_accuracy: 0.499
+test:
+	test_loss: 12.321305274963379
+	test_accuracy: 0.5010000000000001
+Beginning epoch 28.
+Epoch 28 complete.
+train:
+	train_correct_loss: 1.1949475187122971e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 12.594820022583008
+	val_accuracy: 0.5
+test:
+	test_loss: 12.36812973022461
+	test_accuracy: 0.5032
+Beginning epoch 29.
+Epoch 29 complete.
+train:
+	train_correct_loss: 8.06625166660524e-09
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 12.821222305297852
+	val_accuracy: 0.499
+test:
+	test_loss: 12.64847183227539
+	test_accuracy: 0.49810000000000004
+Beginning epoch 30.
+Epoch 30 complete.
+train:
+	train_correct_loss: 1.2529276283146373e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 12.452387809753418
+	val_accuracy: 0.502
+test:
+	test_loss: 12.245092391967773
+	test_accuracy: 0.5029999999999999
+Beginning epoch 31.
+Epoch 31 complete.
+train:
+	train_correct_loss: 2.6149900023142436e-09
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 12.09893798828125
+	val_accuracy: 0.5129999999999999
+test:
+	test_loss: 11.811039924621582
+	test_accuracy: 0.5129
+Beginning epoch 32.
+Epoch 32 complete.
+train:
+	train_correct_loss: 1.2848901942419388e-09
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 11.912664413452148
+	val_accuracy: 0.512
+test:
+	test_loss: 11.66145133972168
+	test_accuracy: 0.5157
+Beginning epoch 33.
+Epoch 33 complete.
+train:
+	train_correct_loss: 9.232174469353538e-10
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 12.125944137573242
+	val_accuracy: 0.521
+test:
+	test_loss: 11.89632797241211
+	test_accuracy: 0.5196999999999999
+Beginning epoch 34.
+Epoch 34 complete.
+train:
+	train_correct_loss: 8.565935738502617e-10
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 12.229269027709961
+	val_accuracy: 0.5149999999999999
+test:
+	test_loss: 12.008122444152832
+	test_accuracy: 0.5198000000000002
+Beginning epoch 35.
+Epoch 35 complete.
+train:
+	train_correct_loss: 7.019309022915365e-10
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 12.151060104370117
+	val_accuracy: 0.525
+test:
+	test_loss: 11.913414001464844
+	test_accuracy: 0.5215000000000001
+Beginning epoch 36.
+Epoch 36 complete.
+train:
+	train_correct_loss: 6.472040126048739e-10
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 12.140642166137695
+	val_accuracy: 0.5209999999999999
+test:
+	test_loss: 11.873661994934082
+	test_accuracy: 0.5233000000000001
+Beginning epoch 37.
+Epoch 37 complete.
+train:
+	train_correct_loss: 6.472039570937227e-10
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 12.122546195983887
+	val_accuracy: 0.526
+test:
+	test_loss: 11.897299766540527
+	test_accuracy: 0.5216000000000001
+Beginning epoch 38.
+Epoch 38 complete.
+train:
+	train_correct_loss: 4.877825365845467e-10
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 11.8626070022583
+	val_accuracy: 0.524
+test:
+	test_loss: 11.62797737121582
+	test_accuracy: 0.5235000000000001
+Beginning epoch 39.
+Epoch 39 complete.
+train:
+	train_correct_loss: 5.829595695061585e-10
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 11.53541374206543
+	val_accuracy: 0.525
+test:
+	test_loss: 11.266796112060547
+	test_accuracy: 0.5234000000000001
+Beginning epoch 40.
+Epoch 40 complete.
+train:
+	train_correct_loss: 5.401297187290766e-10
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 11.314398765563965
+	val_accuracy: 0.525
+test:
+	test_loss: 10.992486953735352
+	test_accuracy: 0.5257000000000001
+Beginning epoch 41.
+Epoch 41 complete.
+train:
+	train_correct_loss: 3.473962784106277e-10
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 11.123778343200684
+	val_accuracy: 0.5239999999999999
+test:
+	test_loss: 10.82271957397461
+	test_accuracy: 0.5266000000000001
+Beginning epoch 42.
+Epoch 42 complete.
+train:
+	train_correct_loss: 3.5691399835613424e-10
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 10.86033821105957
+	val_accuracy: 0.519
+test:
+	test_loss: 10.60094928741455
+	test_accuracy: 0.5241
+Beginning epoch 43.
+Epoch 43 complete.
+train:
+	train_correct_loss: 7.090691367395152e-10
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 10.320096969604492
+	val_accuracy: 0.5279999999999999
+test:
+	test_loss: 9.967571258544922
+	test_accuracy: 0.5278
+Beginning epoch 44.
+Epoch 44 complete.
+train:
+	train_correct_loss: 2.4983950464019244e-09
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 9.888216972351074
+	val_accuracy: 0.526
+test:
+	test_loss: 9.48575210571289
+	test_accuracy: 0.5334
+Beginning epoch 45.
+Epoch 45 complete.
+train:
+	train_correct_loss: 2.5150515003957707e-09
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 9.324474334716797
+	val_accuracy: 0.532
+test:
+	test_loss: 8.853409767150879
+	test_accuracy: 0.5451
+Beginning epoch 46.
+Epoch 46 complete.
+train:
+	train_correct_loss: 7.090691367395152e-10
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 8.951682090759277
+	val_accuracy: 0.53
+test:
+	test_loss: 8.519495010375977
+	test_accuracy: 0.5473999999999999
+Beginning epoch 47.
+Epoch 47 complete.
+train:
+	train_correct_loss: 3.307403240171425e-10
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 8.999117851257324
+	val_accuracy: 0.536
+test:
+	test_loss: 8.565864562988281
+	test_accuracy: 0.5488
+Beginning epoch 48.
+Epoch 48 complete.
+train:
+	train_correct_loss: 1.8797471912357366e-10
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 8.913236618041992
+	val_accuracy: 0.5349999999999999
+test:
+	test_loss: 8.473062515258789
+	test_accuracy: 0.5498
+Beginning epoch 49.
+Epoch 49 complete.
+train:
+	train_correct_loss: 2.260455433944486e-10
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 8.735058784484863
+	val_accuracy: 0.5369999999999999
+test:
+	test_loss: 8.326982498168945
+	test_accuracy: 0.5498999999999999
+Beginning epoch 50.
+Epoch 50 complete.
+train:
+	train_correct_loss: 1.3124505926498387e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50010
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 8.509369850158691
+	val_accuracy: 0.5309999999999999
+test:
+	test_loss: 8.087994575500488
+	test_accuracy: 0.5499
+Trial complete.
+	Time taken: 169.63252544403076 seconds.
+Running noisy trial
+	Config file: ./config/fmnist_sweep_clean_dataset_size_clean.json
+	Results directory: ./results/fmnist_sweep_clean_dataset_size_clean
+Beginning noisy dataset experiment.
+	Method: naive
+	Dataset: FashionMNIST
+	Correct samples per class: 2500
+	Incorrect samples per class: 2500
+	Random seed: 0
+	Training dataloader kwargs: {'batch_size': 100, 'shuffle': True}
+	Eval dataloader kwargs: {'batch_size': 100, 'shuffle': False}
+	Clean dataloader kwargs: {'batch_size': 100, 'shuffle': True}
+	Clean samples per class: 10
+	Validation samples per class: 100
+	Model constructor: LeNet5
+	Model constructor kwargs: {}
+	Loss function constructor: CrossEntropyLoss
+	Loss function constructor kwargs: {}
+	Optimizer constructor: Adam
+	Optimizer constructor kwargs: {}
+	Scheduler constructor: ReduceLROnPlateau
+	Scheduler constructor kwargs: {'mode': 'max', 'factor': 0.5, 'patience': 10}
+	Number of epochs: 0
+	Pretraining epochs: 0
+	Fine-tuning epochs: 50
+	Device: cuda
+	Conduct initial measurements: True
+
+Setting random seed.
+Initializing and partitioning datasets.
+Initializing dataloaders.
+Initializing model.
+LeNet5(
+  (model): Sequential(
+    (0): Conv2d(1, 6, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+    (1): BatchNorm2d(6, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (2): ReLU()
+    (3): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (4): Conv2d(6, 16, kernel_size=(5, 5), stride=(1, 1))
+    (5): BatchNorm2d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (6): ReLU()
+    (7): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (8): Flatten(start_dim=1, end_dim=-1)
+    (9): Linear(in_features=400, out_features=1024, bias=True)
+    (10): ReLU()
+    (11): Linear(in_features=1024, out_features=256, bias=True)
+    (12): ReLU()
+    (13): Linear(in_features=256, out_features=10, bias=True)
+  )
+)
+
+Initializing loss function.
+CrossEntropyLoss()
+
+Initializing optimizer.
+Adam (
+Parameter Group 0
+    amsgrad: False
+    betas: (0.9, 0.999)
+    eps: 1e-08
+    lr: 0.001
+    weight_decay: 0
+)
+
+Initializing scheduler.
+<torch.optim.lr_scheduler.ReduceLROnPlateau object at 0x7fc1d7f5e490>
+
+Measuring initial performance.
+Epoch 0 complete.
+train:
+	train_loss: 2.302746057510376
+	train_accuracy: 0.10003992015968065
+val:
+	val_loss: 2.302912950515747
+	val_accuracy: 0.10700000000000001
+test:
+	test_loss: 2.302504539489746
+	test_accuracy: 0.09910000000000001
+Fine-tuning model.
+Beginning epoch 1.
+Epoch 1 complete.
+train:
+	train_correct_loss: 0.03913431242108345
+	train_incorrect_loss: nan
+	train_correct_acc: 0.988063872255489
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.6202806234359741
+	val_accuracy: 0.7169999999999999
+test:
+	test_loss: 1.7034274339675903
+	test_accuracy: 0.7009000000000001
+Beginning epoch 2.
+Epoch 2 complete.
+train:
+	train_correct_loss: 1.9374367184354924e-05
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.8567466735839844
+	val_accuracy: 0.7110000000000001
+test:
+	test_loss: 1.929396629333496
+	test_accuracy: 0.7005
+Beginning epoch 3.
+Epoch 3 complete.
+train:
+	train_correct_loss: 4.9267637223238125e-06
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.994367241859436
+	val_accuracy: 0.705
+test:
+	test_loss: 2.062317371368408
+	test_accuracy: 0.6988000000000001
+Beginning epoch 4.
+Epoch 4 complete.
+train:
+	train_correct_loss: 2.2138406166050117e-06
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.1262047290802
+	val_accuracy: 0.698
+test:
+	test_loss: 2.1914398670196533
+	test_accuracy: 0.6968
+Beginning epoch 5.
+Epoch 5 complete.
+train:
+	train_correct_loss: 1.2028411902065272e-06
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.192885637283325
+	val_accuracy: 0.6969999999999998
+test:
+	test_loss: 2.2507731914520264
+	test_accuracy: 0.6959000000000001
+Beginning epoch 6.
+Epoch 6 complete.
+train:
+	train_correct_loss: 7.367198691099475e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.277005434036255
+	val_accuracy: 0.699
+test:
+	test_loss: 2.336531162261963
+	test_accuracy: 0.6929
+Beginning epoch 7.
+Epoch 7 complete.
+train:
+	train_correct_loss: 4.821286552214588e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.3369505405426025
+	val_accuracy: 0.695
+test:
+	test_loss: 2.392678737640381
+	test_accuracy: 0.6927000000000001
+Beginning epoch 8.
+Epoch 8 complete.
+train:
+	train_correct_loss: 3.259099230490392e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.4105403423309326
+	val_accuracy: 0.695
+test:
+	test_loss: 2.4648122787475586
+	test_accuracy: 0.6913999999999999
+Beginning epoch 9.
+Epoch 9 complete.
+train:
+	train_correct_loss: 2.2425851398111263e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.46323299407959
+	val_accuracy: 0.693
+test:
+	test_loss: 2.5239357948303223
+	test_accuracy: 0.6886
+Beginning epoch 10.
+Epoch 10 complete.
+train:
+	train_correct_loss: 1.5800581820712978e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.4984018802642822
+	val_accuracy: 0.695
+test:
+	test_loss: 2.554630756378174
+	test_accuracy: 0.6894
+Beginning epoch 11.
+Epoch 11 complete.
+train:
+	train_correct_loss: 1.1280147305114951e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.570600986480713
+	val_accuracy: 0.696
+test:
+	test_loss: 2.629117012023926
+	test_accuracy: 0.6896
+Beginning epoch 12.
+Epoch 12 complete.
+train:
+	train_correct_loss: 8.094333026065215e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.590573787689209
+	val_accuracy: 0.695
+test:
+	test_loss: 2.647806167602539
+	test_accuracy: 0.6883
+Beginning epoch 13.
+Epoch 13 complete.
+train:
+	train_correct_loss: 6.32213641438284e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.608003854751587
+	val_accuracy: 0.692
+test:
+	test_loss: 2.6631128787994385
+	test_accuracy: 0.688
+Beginning epoch 14.
+Epoch 14 complete.
+train:
+	train_correct_loss: 5.107201062060085e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.642760753631592
+	val_accuracy: 0.693
+test:
+	test_loss: 2.6992111206054688
+	test_accuracy: 0.6868
+Beginning epoch 15.
+Epoch 15 complete.
+train:
+	train_correct_loss: 4.130922803824433e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.6606853008270264
+	val_accuracy: 0.695
+test:
+	test_loss: 2.7110602855682373
+	test_accuracy: 0.6877
+Beginning epoch 16.
+Epoch 16 complete.
+train:
+	train_correct_loss: 3.5567669698366444e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.6832966804504395
+	val_accuracy: 0.695
+test:
+	test_loss: 2.7326958179473877
+	test_accuracy: 0.6868000000000001
+Beginning epoch 17.
+Epoch 17 complete.
+train:
+	train_correct_loss: 2.9749971375281348e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.7098753452301025
+	val_accuracy: 0.695
+test:
+	test_loss: 2.756009817123413
+	test_accuracy: 0.6864999999999999
+Beginning epoch 18.
+Epoch 18 complete.
+train:
+	train_correct_loss: 2.945016319699789e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.7359890937805176
+	val_accuracy: 0.69
+test:
+	test_loss: 2.7806179523468018
+	test_accuracy: 0.6853
+Beginning epoch 19.
+Epoch 19 complete.
+train:
+	train_correct_loss: 3.069698095714557e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.7009963989257812
+	val_accuracy: 0.695
+test:
+	test_loss: 2.7420787811279297
+	test_accuracy: 0.6848000000000001
+Beginning epoch 20.
+Epoch 20 complete.
+train:
+	train_correct_loss: 3.653371649647852e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.711038112640381
+	val_accuracy: 0.6900000000000001
+test:
+	test_loss: 2.7416019439697266
+	test_accuracy: 0.6846999999999999
+Beginning epoch 21.
+Epoch 21 complete.
+train:
+	train_correct_loss: 3.938189152563609e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.6694836616516113
+	val_accuracy: 0.69
+test:
+	test_loss: 2.705812692642212
+	test_accuracy: 0.6843
+Beginning epoch 22.
+Epoch 22 complete.
+train:
+	train_correct_loss: 0.09126384556293488
+	train_incorrect_loss: nan
+	train_correct_acc: 0.990678642714571
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 3.2728867530822754
+	val_accuracy: 0.675
+test:
+	test_loss: 3.4224817752838135
+	test_accuracy: 0.6788
+Beginning epoch 23.
+Epoch 23 complete.
+train:
+	train_correct_loss: 6.611055596295046e-06
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 3.1259772777557373
+	val_accuracy: 0.7010000000000001
+test:
+	test_loss: 3.3524844646453857
+	test_accuracy: 0.6916000000000001
+Beginning epoch 24.
+Epoch 24 complete.
+train:
+	train_correct_loss: 3.972159447585e-06
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 3.115732431411743
+	val_accuracy: 0.709
+test:
+	test_loss: 3.353464126586914
+	test_accuracy: 0.6938
+Beginning epoch 25.
+Epoch 25 complete.
+train:
+	train_correct_loss: 3.3976461963902693e-06
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 3.0833849906921387
+	val_accuracy: 0.708
+test:
+	test_loss: 3.330974817276001
+	test_accuracy: 0.6920000000000002
+Beginning epoch 26.
+Epoch 26 complete.
+train:
+	train_correct_loss: 3.030065499842749e-06
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 3.080277919769287
+	val_accuracy: 0.7140000000000001
+test:
+	test_loss: 3.3307507038116455
+	test_accuracy: 0.6931999999999999
+Beginning epoch 27.
+Epoch 27 complete.
+train:
+	train_correct_loss: 2.6332415927754482e-06
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 3.0941414833068848
+	val_accuracy: 0.712
+test:
+	test_loss: 3.3459222316741943
+	test_accuracy: 0.6939999999999997
+Beginning epoch 28.
+Epoch 28 complete.
+train:
+	train_correct_loss: 2.2368330974131823e-06
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 3.1020445823669434
+	val_accuracy: 0.712
+test:
+	test_loss: 3.3557937145233154
+	test_accuracy: 0.6944999999999999
+Beginning epoch 29.
+Epoch 29 complete.
+train:
+	train_correct_loss: 1.9768358470173553e-06
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 3.091081142425537
+	val_accuracy: 0.7120000000000001
+test:
+	test_loss: 3.3451545238494873
+	test_accuracy: 0.6949
+Beginning epoch 30.
+Epoch 30 complete.
+train:
+	train_correct_loss: 1.716980023047654e-06
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 3.1041643619537354
+	val_accuracy: 0.709
+test:
+	test_loss: 3.356332302093506
+	test_accuracy: 0.6952999999999999
+Beginning epoch 31.
+Epoch 31 complete.
+train:
+	train_correct_loss: 1.4230620308808284e-06
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 3.0966877937316895
+	val_accuracy: 0.709
+test:
+	test_loss: 3.353800058364868
+	test_accuracy: 0.6955999999999999
+Beginning epoch 32.
+Epoch 32 complete.
+train:
+	train_correct_loss: 1.207779064316128e-06
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 3.092994213104248
+	val_accuracy: 0.708
+test:
+	test_loss: 3.351141929626465
+	test_accuracy: 0.6952000000000002
+Beginning epoch 33.
+Epoch 33 complete.
+train:
+	train_correct_loss: 1.035923105519032e-06
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 3.0854926109313965
+	val_accuracy: 0.704
+test:
+	test_loss: 3.345327854156494
+	test_accuracy: 0.6948999999999999
+Beginning epoch 34.
+Epoch 34 complete.
+train:
+	train_correct_loss: 8.469951353617944e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 3.118833065032959
+	val_accuracy: 0.7030000000000001
+test:
+	test_loss: 3.3797848224639893
+	test_accuracy: 0.6953
+Beginning epoch 35.
+Epoch 35 complete.
+train:
+	train_correct_loss: 7.314665140256693e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 3.107470750808716
+	val_accuracy: 0.702
+test:
+	test_loss: 3.3713953495025635
+	test_accuracy: 0.6941999999999999
+Beginning epoch 36.
+Epoch 36 complete.
+train:
+	train_correct_loss: 6.536317300742667e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 3.1126840114593506
+	val_accuracy: 0.6980000000000001
+test:
+	test_loss: 3.3722193241119385
+	test_accuracy: 0.6946000000000001
+Beginning epoch 37.
+Epoch 37 complete.
+train:
+	train_correct_loss: 5.604832722383435e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 3.118849515914917
+	val_accuracy: 0.701
+test:
+	test_loss: 3.3803229331970215
+	test_accuracy: 0.6955999999999999
+Beginning epoch 38.
+Epoch 38 complete.
+train:
+	train_correct_loss: 4.963176820638182e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 3.1198813915252686
+	val_accuracy: 0.6980000000000001
+test:
+	test_loss: 3.384347915649414
+	test_accuracy: 0.6944
+Beginning epoch 39.
+Epoch 39 complete.
+train:
+	train_correct_loss: 4.3810555894197023e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 3.126115322113037
+	val_accuracy: 0.6980000000000001
+test:
+	test_loss: 3.386749267578125
+	test_accuracy: 0.6947999999999999
+Beginning epoch 40.
+Epoch 40 complete.
+train:
+	train_correct_loss: 3.7055139046060503e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 3.169476270675659
+	val_accuracy: 0.7010000000000001
+test:
+	test_loss: 3.4301514625549316
+	test_accuracy: 0.6961999999999999
+Beginning epoch 41.
+Epoch 41 complete.
+train:
+	train_correct_loss: 3.1034309699862206e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 3.160889148712158
+	val_accuracy: 0.7020000000000001
+test:
+	test_loss: 3.424785852432251
+	test_accuracy: 0.6949999999999998
+Beginning epoch 42.
+Epoch 42 complete.
+train:
+	train_correct_loss: 2.652340924669261e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 3.1469247341156006
+	val_accuracy: 0.7
+test:
+	test_loss: 3.410695791244507
+	test_accuracy: 0.6941999999999999
+Beginning epoch 43.
+Epoch 43 complete.
+train:
+	train_correct_loss: 2.0582250215284148e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 3.1915879249572754
+	val_accuracy: 0.6990000000000001
+test:
+	test_loss: 3.457627296447754
+	test_accuracy: 0.6954999999999998
+Beginning epoch 44.
+Epoch 44 complete.
+train:
+	train_correct_loss: 1.722203393228483e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 3.1986424922943115
+	val_accuracy: 0.698
+test:
+	test_loss: 3.4656982421875
+	test_accuracy: 0.6946999999999999
+Beginning epoch 45.
+Epoch 45 complete.
+train:
+	train_correct_loss: 1.4153769711811037e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 3.2060317993164062
+	val_accuracy: 0.6970000000000001
+test:
+	test_loss: 3.475856304168701
+	test_accuracy: 0.6942999999999999
+Beginning epoch 46.
+Epoch 46 complete.
+train:
+	train_correct_loss: 1.2351118527931249e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 3.2134499549865723
+	val_accuracy: 0.697
+test:
+	test_loss: 3.4788451194763184
+	test_accuracy: 0.6946000000000001
+Beginning epoch 47.
+Epoch 47 complete.
+train:
+	train_correct_loss: 1.0655066517983869e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 3.209529399871826
+	val_accuracy: 0.6980000000000001
+test:
+	test_loss: 3.4768173694610596
+	test_accuracy: 0.6945
+Beginning epoch 48.
+Epoch 48 complete.
+train:
+	train_correct_loss: 9.493907526803014e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 3.2352356910705566
+	val_accuracy: 0.6950000000000001
+test:
+	test_loss: 3.5002691745758057
+	test_accuracy: 0.6962999999999999
+Beginning epoch 49.
+Epoch 49 complete.
+train:
+	train_correct_loss: 8.002722751143665e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 3.2602009773254395
+	val_accuracy: 0.6950000000000001
+test:
+	test_loss: 3.530276298522949
+	test_accuracy: 0.6955
+Beginning epoch 50.
+Epoch 50 complete.
+train:
+	train_correct_loss: 6.65311290504178e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 3.2723777294158936
+	val_accuracy: 0.6940000000000001
+test:
+	test_loss: 3.544081687927246
+	test_accuracy: 0.6957
+Trial complete.
+	Time taken: 171.06783819198608 seconds.
+Running noisy trial
+	Config file: ./config/fmnist_sweep_clean_dataset_size_clean.json
+	Results directory: ./results/fmnist_sweep_clean_dataset_size_clean
+Beginning noisy dataset experiment.
+	Method: naive
+	Dataset: FashionMNIST
+	Correct samples per class: 2500
+	Incorrect samples per class: 2500
+	Random seed: 0
+	Training dataloader kwargs: {'batch_size': 100, 'shuffle': True}
+	Eval dataloader kwargs: {'batch_size': 100, 'shuffle': False}
+	Clean dataloader kwargs: {'batch_size': 100, 'shuffle': True}
+	Clean samples per class: 30
+	Validation samples per class: 100
+	Model constructor: LeNet5
+	Model constructor kwargs: {}
+	Loss function constructor: CrossEntropyLoss
+	Loss function constructor kwargs: {}
+	Optimizer constructor: Adam
+	Optimizer constructor kwargs: {}
+	Scheduler constructor: ReduceLROnPlateau
+	Scheduler constructor kwargs: {'mode': 'max', 'factor': 0.5, 'patience': 10}
+	Number of epochs: 0
+	Pretraining epochs: 0
+	Fine-tuning epochs: 50
+	Device: cuda
+	Conduct initial measurements: True
+
+Setting random seed.
+Initializing and partitioning datasets.
+Initializing dataloaders.
+Initializing model.
+LeNet5(
+  (model): Sequential(
+    (0): Conv2d(1, 6, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+    (1): BatchNorm2d(6, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (2): ReLU()
+    (3): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (4): Conv2d(6, 16, kernel_size=(5, 5), stride=(1, 1))
+    (5): BatchNorm2d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (6): ReLU()
+    (7): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (8): Flatten(start_dim=1, end_dim=-1)
+    (9): Linear(in_features=400, out_features=1024, bias=True)
+    (10): ReLU()
+    (11): Linear(in_features=1024, out_features=256, bias=True)
+    (12): ReLU()
+    (13): Linear(in_features=256, out_features=10, bias=True)
+  )
+)
+
+Initializing loss function.
+CrossEntropyLoss()
+
+Initializing optimizer.
+Adam (
+Parameter Group 0
+    amsgrad: False
+    betas: (0.9, 0.999)
+    eps: 1e-08
+    lr: 0.001
+    weight_decay: 0
+)
+
+Initializing scheduler.
+<torch.optim.lr_scheduler.ReduceLROnPlateau object at 0x7fc1d78d64c0>
+
+Measuring initial performance.
+Epoch 0 complete.
+train:
+	train_loss: 2.302746534347534
+	train_accuracy: 0.09998011928429425
+val:
+	val_loss: 2.3031861782073975
+	val_accuracy: 0.101
+test:
+	test_loss: 2.302504539489746
+	test_accuracy: 0.09910000000000001
+Fine-tuning model.
+Beginning epoch 1.
+Epoch 1 complete.
+train:
+	train_correct_loss: 0.0719040036201477
+	train_incorrect_loss: nan
+	train_correct_acc: 0.9764471057884231
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.1399145126342773
+	val_accuracy: 0.7870000000000001
+test:
+	test_loss: 1.1815764904022217
+	test_accuracy: 0.7789999999999999
+Beginning epoch 2.
+Epoch 2 complete.
+train:
+	train_correct_loss: 9.116750152315944e-05
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.2605723142623901
+	val_accuracy: 0.79
+test:
+	test_loss: 1.3134762048721313
+	test_accuracy: 0.7809
+Beginning epoch 3.
+Epoch 3 complete.
+train:
+	train_correct_loss: 2.5484068828518502e-05
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.3424522876739502
+	val_accuracy: 0.786
+test:
+	test_loss: 1.4001100063323975
+	test_accuracy: 0.7811
+Beginning epoch 4.
+Epoch 4 complete.
+train:
+	train_correct_loss: 1.1792921213782392e-05
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.4105603694915771
+	val_accuracy: 0.783
+test:
+	test_loss: 1.4702688455581665
+	test_accuracy: 0.7797
+Beginning epoch 5.
+Epoch 5 complete.
+train:
+	train_correct_loss: 6.692086572002154e-06
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.4513577222824097
+	val_accuracy: 0.783
+test:
+	test_loss: 1.5161551237106323
+	test_accuracy: 0.7789999999999998
+Beginning epoch 6.
+Epoch 6 complete.
+train:
+	train_correct_loss: 4.168395207670983e-06
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.519496202468872
+	val_accuracy: 0.781
+test:
+	test_loss: 1.5866447687149048
+	test_accuracy: 0.7781999999999999
+Beginning epoch 7.
+Epoch 7 complete.
+train:
+	train_correct_loss: 2.7237297217652667e-06
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.5506365299224854
+	val_accuracy: 0.78
+test:
+	test_loss: 1.6199809312820435
+	test_accuracy: 0.7784000000000002
+Beginning epoch 8.
+Epoch 8 complete.
+train:
+	train_correct_loss: 1.8544161548561533e-06
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.5937385559082031
+	val_accuracy: 0.782
+test:
+	test_loss: 1.6616384983062744
+	test_accuracy: 0.7779
+Beginning epoch 9.
+Epoch 9 complete.
+train:
+	train_correct_loss: 1.3143823025529855e-06
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.641607642173767
+	val_accuracy: 0.785
+test:
+	test_loss: 1.7130895853042603
+	test_accuracy: 0.7770999999999999
+Beginning epoch 10.
+Epoch 10 complete.
+train:
+	train_correct_loss: 9.243079830412171e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.680539846420288
+	val_accuracy: 0.781
+test:
+	test_loss: 1.7533291578292847
+	test_accuracy: 0.7772
+Beginning epoch 11.
+Epoch 11 complete.
+train:
+	train_correct_loss: 6.766651949874358e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.7026193141937256
+	val_accuracy: 0.781
+test:
+	test_loss: 1.7771525382995605
+	test_accuracy: 0.777
+Beginning epoch 12.
+Epoch 12 complete.
+train:
+	train_correct_loss: 4.824045731766091e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.747995138168335
+	val_accuracy: 0.78
+test:
+	test_loss: 1.8242257833480835
+	test_accuracy: 0.7782000000000001
+Beginning epoch 13.
+Epoch 13 complete.
+train:
+	train_correct_loss: 3.5004438814212335e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.775158166885376
+	val_accuracy: 0.7830000000000001
+test:
+	test_loss: 1.850437045097351
+	test_accuracy: 0.7781
+Beginning epoch 14.
+Epoch 14 complete.
+train:
+	train_correct_loss: 2.7959916337749746e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.799276351928711
+	val_accuracy: 0.7830000000000001
+test:
+	test_loss: 1.8768551349639893
+	test_accuracy: 0.7779
+Beginning epoch 15.
+Epoch 15 complete.
+train:
+	train_correct_loss: 2.355679100674024e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.8124536275863647
+	val_accuracy: 0.782
+test:
+	test_loss: 1.8910343647003174
+	test_accuracy: 0.7786000000000002
+Beginning epoch 16.
+Epoch 16 complete.
+train:
+	train_correct_loss: 1.9542225970781146e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.8504279851913452
+	val_accuracy: 0.7830000000000001
+test:
+	test_loss: 1.9310896396636963
+	test_accuracy: 0.7776000000000001
+Beginning epoch 17.
+Epoch 17 complete.
+train:
+	train_correct_loss: 1.559785260951685e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.8488798141479492
+	val_accuracy: 0.782
+test:
+	test_loss: 1.9280846118927002
+	test_accuracy: 0.7773
+Beginning epoch 18.
+Epoch 18 complete.
+train:
+	train_correct_loss: 1.2848664709963487e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.8858749866485596
+	val_accuracy: 0.782
+test:
+	test_loss: 1.9653280973434448
+	test_accuracy: 0.7768999999999999
+Beginning epoch 19.
+Epoch 19 complete.
+train:
+	train_correct_loss: 9.895082087041374e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.8927040100097656
+	val_accuracy: 0.7850000000000001
+test:
+	test_loss: 1.973667025566101
+	test_accuracy: 0.7772000000000001
+Beginning epoch 20.
+Epoch 20 complete.
+train:
+	train_correct_loss: 7.827836867591031e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.9314050674438477
+	val_accuracy: 0.782
+test:
+	test_loss: 2.014256715774536
+	test_accuracy: 0.7772
+Beginning epoch 21.
+Epoch 21 complete.
+train:
+	train_correct_loss: 5.998058583145394e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.9549251794815063
+	val_accuracy: 0.782
+test:
+	test_loss: 2.0396430492401123
+	test_accuracy: 0.777
+Beginning epoch 22.
+Epoch 22 complete.
+train:
+	train_correct_loss: 4.488312299599784e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.98895263671875
+	val_accuracy: 0.783
+test:
+	test_loss: 2.0742533206939697
+	test_accuracy: 0.7768999999999999
+Beginning epoch 23.
+Epoch 23 complete.
+train:
+	train_correct_loss: 3.365461154203331e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.0059797763824463
+	val_accuracy: 0.784
+test:
+	test_loss: 2.092958927154541
+	test_accuracy: 0.7772
+Beginning epoch 24.
+Epoch 24 complete.
+train:
+	train_correct_loss: 2.5707326045676382e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.011439085006714
+	val_accuracy: 0.783
+test:
+	test_loss: 2.10274338722229
+	test_accuracy: 0.7771000000000001
+Beginning epoch 25.
+Epoch 25 complete.
+train:
+	train_correct_loss: 1.9913422022455052e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.0352892875671387
+	val_accuracy: 0.784
+test:
+	test_loss: 2.1282153129577637
+	test_accuracy: 0.7770999999999999
+Beginning epoch 26.
+Epoch 26 complete.
+train:
+	train_correct_loss: 1.6779715394932282e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.0281789302825928
+	val_accuracy: 0.784
+test:
+	test_loss: 2.119572639465332
+	test_accuracy: 0.7765
+Beginning epoch 27.
+Epoch 27 complete.
+train:
+	train_correct_loss: 1.3415208499623077e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.037996292114258
+	val_accuracy: 0.783
+test:
+	test_loss: 2.130258083343506
+	test_accuracy: 0.7765000000000001
+Beginning epoch 28.
+Epoch 28 complete.
+train:
+	train_correct_loss: 1.0436164821214788e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.0419139862060547
+	val_accuracy: 0.78
+test:
+	test_loss: 2.138084650039673
+	test_accuracy: 0.7764000000000002
+Beginning epoch 29.
+Epoch 29 complete.
+train:
+	train_correct_loss: 8.601626966253662e-09
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.0395925045013428
+	val_accuracy: 0.7769999999999999
+test:
+	test_loss: 2.139434576034546
+	test_accuracy: 0.7761
+Beginning epoch 30.
+Epoch 30 complete.
+train:
+	train_correct_loss: 7.064518303678824e-09
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.0714704990386963
+	val_accuracy: 0.776
+test:
+	test_loss: 2.1728665828704834
+	test_accuracy: 0.7762
+Beginning epoch 31.
+Epoch 31 complete.
+train:
+	train_correct_loss: 5.6535180981143185e-09
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.0455257892608643
+	val_accuracy: 0.7790000000000001
+test:
+	test_loss: 2.1479194164276123
+	test_accuracy: 0.7767999999999999
+Beginning epoch 32.
+Epoch 32 complete.
+train:
+	train_correct_loss: 5.315639040048836e-09
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.0733585357666016
+	val_accuracy: 0.7780000000000001
+test:
+	test_loss: 2.1789026260375977
+	test_accuracy: 0.7760000000000001
+Beginning epoch 33.
+Epoch 33 complete.
+train:
+	train_correct_loss: 5.4774402791224475e-09
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.071284532546997
+	val_accuracy: 0.773
+test:
+	test_loss: 2.175995349884033
+	test_accuracy: 0.7757000000000001
+Beginning epoch 34.
+Epoch 34 complete.
+train:
+	train_correct_loss: 6.153197507074992e-09
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.1347806453704834
+	val_accuracy: 0.7750000000000001
+test:
+	test_loss: 2.2459805011749268
+	test_accuracy: 0.7738
+Beginning epoch 35.
+Epoch 35 complete.
+train:
+	train_correct_loss: 8.746772195422636e-09
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.0839221477508545
+	val_accuracy: 0.7769999999999999
+test:
+	test_loss: 2.2072479724884033
+	test_accuracy: 0.7722999999999999
+Beginning epoch 36.
+Epoch 36 complete.
+train:
+	train_correct_loss: 1.692962037225243e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.046175003051758
+	val_accuracy: 0.779
+test:
+	test_loss: 2.1637487411499023
+	test_accuracy: 0.7709000000000001
+Beginning epoch 37.
+Epoch 37 complete.
+train:
+	train_correct_loss: 2.331124271393037e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.1239702701568604
+	val_accuracy: 0.772
+test:
+	test_loss: 2.2319884300231934
+	test_accuracy: 0.7674000000000001
+Beginning epoch 38.
+Epoch 38 complete.
+train:
+	train_correct_loss: 0.029792940244078636
+	train_incorrect_loss: nan
+	train_correct_acc: 0.997185628742515
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 5.9903459548950195
+	val_accuracy: 0.6519999999999999
+test:
+	test_loss: 6.069842338562012
+	test_accuracy: 0.6566
+Beginning epoch 39.
+Epoch 39 complete.
+train:
+	train_correct_loss: 0.011945703998208046
+	train_incorrect_loss: nan
+	train_correct_acc: 0.9979640718562874
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.517838716506958
+	val_accuracy: 0.772
+test:
+	test_loss: 2.688960313796997
+	test_accuracy: 0.7626
+Beginning epoch 40.
+Epoch 40 complete.
+train:
+	train_correct_loss: 4.579424512485275e-06
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.535547971725464
+	val_accuracy: 0.7740000000000001
+test:
+	test_loss: 2.6886484622955322
+	test_accuracy: 0.7629
+Beginning epoch 41.
+Epoch 41 complete.
+train:
+	train_correct_loss: 3.1268884868040914e-06
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.511364698410034
+	val_accuracy: 0.775
+test:
+	test_loss: 2.6566765308380127
+	test_accuracy: 0.7642
+Beginning epoch 42.
+Epoch 42 complete.
+train:
+	train_correct_loss: 2.1607258986477973e-06
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.511090040206909
+	val_accuracy: 0.7780000000000001
+test:
+	test_loss: 2.6500487327575684
+	test_accuracy: 0.7649000000000001
+Beginning epoch 43.
+Epoch 43 complete.
+train:
+	train_correct_loss: 1.6906973314689822e-06
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.516848087310791
+	val_accuracy: 0.777
+test:
+	test_loss: 2.643439292907715
+	test_accuracy: 0.7657000000000003
+Beginning epoch 44.
+Epoch 44 complete.
+train:
+	train_correct_loss: 1.36036908315873e-06
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.4981963634490967
+	val_accuracy: 0.7780000000000001
+test:
+	test_loss: 2.6232974529266357
+	test_accuracy: 0.7666
+Beginning epoch 45.
+Epoch 45 complete.
+train:
+	train_correct_loss: 1.123229367294698e-06
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.479677677154541
+	val_accuracy: 0.7790000000000001
+test:
+	test_loss: 2.6027209758758545
+	test_accuracy: 0.7680999999999998
+Beginning epoch 46.
+Epoch 46 complete.
+train:
+	train_correct_loss: 9.856768201643717e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.4946532249450684
+	val_accuracy: 0.777
+test:
+	test_loss: 2.6142730712890625
+	test_accuracy: 0.768
+Beginning epoch 47.
+Epoch 47 complete.
+train:
+	train_correct_loss: 7.474876042579126e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.4917731285095215
+	val_accuracy: 0.7790000000000001
+test:
+	test_loss: 2.603304862976074
+	test_accuracy: 0.7685999999999998
+Beginning epoch 48.
+Epoch 48 complete.
+train:
+	train_correct_loss: 7.447301868523937e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.474923610687256
+	val_accuracy: 0.7780000000000001
+test:
+	test_loss: 2.588113307952881
+	test_accuracy: 0.7683999999999999
+Beginning epoch 49.
+Epoch 49 complete.
+train:
+	train_correct_loss: 6.494279887192533e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.461057186126709
+	val_accuracy: 0.78
+test:
+	test_loss: 2.5742886066436768
+	test_accuracy: 0.7695000000000001
+Beginning epoch 50.
+Epoch 50 complete.
+train:
+	train_correct_loss: 5.565211154134886e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 50100
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.4780075550079346
+	val_accuracy: 0.782
+test:
+	test_loss: 2.58425235748291
+	test_accuracy: 0.7691
+Trial complete.
+	Time taken: 165.80096530914307 seconds.
+Running noisy trial
+	Config file: ./config/fmnist_sweep_clean_dataset_size_clean.json
+	Results directory: ./results/fmnist_sweep_clean_dataset_size_clean
+Beginning noisy dataset experiment.
+	Method: naive
+	Dataset: FashionMNIST
+	Correct samples per class: 2500
+	Incorrect samples per class: 2500
+	Random seed: 0
+	Training dataloader kwargs: {'batch_size': 100, 'shuffle': True}
+	Eval dataloader kwargs: {'batch_size': 100, 'shuffle': False}
+	Clean dataloader kwargs: {'batch_size': 100, 'shuffle': True}
+	Clean samples per class: 100
+	Validation samples per class: 100
+	Model constructor: LeNet5
+	Model constructor kwargs: {}
+	Loss function constructor: CrossEntropyLoss
+	Loss function constructor kwargs: {}
+	Optimizer constructor: Adam
+	Optimizer constructor kwargs: {}
+	Scheduler constructor: ReduceLROnPlateau
+	Scheduler constructor kwargs: {'mode': 'max', 'factor': 0.5, 'patience': 10}
+	Number of epochs: 0
+	Pretraining epochs: 0
+	Fine-tuning epochs: 50
+	Device: cuda
+	Conduct initial measurements: True
+
+Setting random seed.
+Initializing and partitioning datasets.
+Initializing dataloaders.
+Initializing model.
+LeNet5(
+  (model): Sequential(
+    (0): Conv2d(1, 6, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+    (1): BatchNorm2d(6, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (2): ReLU()
+    (3): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (4): Conv2d(6, 16, kernel_size=(5, 5), stride=(1, 1))
+    (5): BatchNorm2d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (6): ReLU()
+    (7): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (8): Flatten(start_dim=1, end_dim=-1)
+    (9): Linear(in_features=400, out_features=1024, bias=True)
+    (10): ReLU()
+    (11): Linear(in_features=1024, out_features=256, bias=True)
+    (12): ReLU()
+    (13): Linear(in_features=256, out_features=10, bias=True)
+  )
+)
+
+Initializing loss function.
+CrossEntropyLoss()
+
+Initializing optimizer.
+Adam (
+Parameter Group 0
+    amsgrad: False
+    betas: (0.9, 0.999)
+    eps: 1e-08
+    lr: 0.001
+    weight_decay: 0
+)
+
+Initializing scheduler.
+<torch.optim.lr_scheduler.ReduceLROnPlateau object at 0x7fc1dca2e4c0>
+
+Measuring initial performance.
+Epoch 0 complete.
+train:
+	train_loss: 2.3027467727661133
+	train_accuracy: 0.10001960784313726
+val:
+	val_loss: 2.302518129348755
+	val_accuracy: 0.098
+test:
+	test_loss: 2.302504539489746
+	test_accuracy: 0.09910000000000001
+Fine-tuning model.
+Beginning epoch 1.
+Epoch 1 complete.
+train:
+	train_correct_loss: 0.11986951529979706
+	train_incorrect_loss: nan
+	train_correct_acc: 0.9609607843137256
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 0.8830893635749817
+	val_accuracy: 0.8210000000000001
+test:
+	test_loss: 0.9902023077011108
+	test_accuracy: 0.8155
+Beginning epoch 2.
+Epoch 2 complete.
+train:
+	train_correct_loss: 0.0003305543796159327
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.0032929182052612
+	val_accuracy: 0.8220000000000001
+test:
+	test_loss: 1.1278871297836304
+	test_accuracy: 0.815
+Beginning epoch 3.
+Epoch 3 complete.
+train:
+	train_correct_loss: 9.737698565004393e-05
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.0741735696792603
+	val_accuracy: 0.821
+test:
+	test_loss: 1.2079449892044067
+	test_accuracy: 0.8140000000000001
+Beginning epoch 4.
+Epoch 4 complete.
+train:
+	train_correct_loss: 4.353708936832845e-05
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.1433019638061523
+	val_accuracy: 0.82
+test:
+	test_loss: 1.2879620790481567
+	test_accuracy: 0.8138000000000001
+Beginning epoch 5.
+Epoch 5 complete.
+train:
+	train_correct_loss: 2.343960659345612e-05
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.1893750429153442
+	val_accuracy: 0.825
+test:
+	test_loss: 1.3414497375488281
+	test_accuracy: 0.8148000000000002
+Beginning epoch 6.
+Epoch 6 complete.
+train:
+	train_correct_loss: 1.4197334166965447e-05
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.2360808849334717
+	val_accuracy: 0.8219999999999998
+test:
+	test_loss: 1.3967947959899902
+	test_accuracy: 0.8134
+Beginning epoch 7.
+Epoch 7 complete.
+train:
+	train_correct_loss: 8.97835889190901e-06
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.2721779346466064
+	val_accuracy: 0.821
+test:
+	test_loss: 1.4319666624069214
+	test_accuracy: 0.8136000000000001
+Beginning epoch 8.
+Epoch 8 complete.
+train:
+	train_correct_loss: 6.103040504967794e-06
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.3077800273895264
+	val_accuracy: 0.819
+test:
+	test_loss: 1.479660153388977
+	test_accuracy: 0.8144
+Beginning epoch 9.
+Epoch 9 complete.
+train:
+	train_correct_loss: 4.138421445532003e-06
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.3354508876800537
+	val_accuracy: 0.8240000000000001
+test:
+	test_loss: 1.5092597007751465
+	test_accuracy: 0.8134000000000001
+Beginning epoch 10.
+Epoch 10 complete.
+train:
+	train_correct_loss: 2.919746975749149e-06
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.3586610555648804
+	val_accuracy: 0.821
+test:
+	test_loss: 1.538466215133667
+	test_accuracy: 0.8142
+Beginning epoch 11.
+Epoch 11 complete.
+train:
+	train_correct_loss: 2.0724091882584617e-06
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.395054817199707
+	val_accuracy: 0.82
+test:
+	test_loss: 1.5791490077972412
+	test_accuracy: 0.8142
+Beginning epoch 12.
+Epoch 12 complete.
+train:
+	train_correct_loss: 1.4837779644949478e-06
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.440529227256775
+	val_accuracy: 0.821
+test:
+	test_loss: 1.636196255683899
+	test_accuracy: 0.8140999999999999
+Beginning epoch 13.
+Epoch 13 complete.
+train:
+	train_correct_loss: 1.0750845831353217e-06
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.4539902210235596
+	val_accuracy: 0.825
+test:
+	test_loss: 1.6552473306655884
+	test_accuracy: 0.814
+Beginning epoch 14.
+Epoch 14 complete.
+train:
+	train_correct_loss: 7.91433365066041e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.4810415506362915
+	val_accuracy: 0.8240000000000001
+test:
+	test_loss: 1.6784722805023193
+	test_accuracy: 0.8129000000000001
+Beginning epoch 15.
+Epoch 15 complete.
+train:
+	train_correct_loss: 5.748495937041298e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.5180552005767822
+	val_accuracy: 0.8240000000000001
+test:
+	test_loss: 1.730042576789856
+	test_accuracy: 0.8133999999999999
+Beginning epoch 16.
+Epoch 16 complete.
+train:
+	train_correct_loss: 4.1792620208980225e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.5391132831573486
+	val_accuracy: 0.825
+test:
+	test_loss: 1.7596893310546875
+	test_accuracy: 0.8139
+Beginning epoch 17.
+Epoch 17 complete.
+train:
+	train_correct_loss: 3.328787840928271e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.5657198429107666
+	val_accuracy: 0.8240000000000001
+test:
+	test_loss: 1.786210060119629
+	test_accuracy: 0.8133
+Beginning epoch 18.
+Epoch 18 complete.
+train:
+	train_correct_loss: 2.724070213844243e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.5711971521377563
+	val_accuracy: 0.8229999999999998
+test:
+	test_loss: 1.8055336475372314
+	test_accuracy: 0.8133999999999999
+Beginning epoch 19.
+Epoch 19 complete.
+train:
+	train_correct_loss: 2.2891909168265556e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.5858138799667358
+	val_accuracy: 0.828
+test:
+	test_loss: 1.8102508783340454
+	test_accuracy: 0.8129
+Beginning epoch 20.
+Epoch 20 complete.
+train:
+	train_correct_loss: 1.864712828592019e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.600136399269104
+	val_accuracy: 0.827
+test:
+	test_loss: 1.82917058467865
+	test_accuracy: 0.8120999999999999
+Beginning epoch 21.
+Epoch 21 complete.
+train:
+	train_correct_loss: 1.4922657953775342e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.6363855600357056
+	val_accuracy: 0.825
+test:
+	test_loss: 1.8734790086746216
+	test_accuracy: 0.812
+Beginning epoch 22.
+Epoch 22 complete.
+train:
+	train_correct_loss: 1.1917652642523535e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.652948021888733
+	val_accuracy: 0.828
+test:
+	test_loss: 1.8894494771957397
+	test_accuracy: 0.8127000000000001
+Beginning epoch 23.
+Epoch 23 complete.
+train:
+	train_correct_loss: 9.042372539624921e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.6658579111099243
+	val_accuracy: 0.828
+test:
+	test_loss: 1.910197138786316
+	test_accuracy: 0.8121999999999998
+Beginning epoch 24.
+Epoch 24 complete.
+train:
+	train_correct_loss: 6.955509945782978e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.694647192955017
+	val_accuracy: 0.829
+test:
+	test_loss: 1.942924976348877
+	test_accuracy: 0.8117
+Beginning epoch 25.
+Epoch 25 complete.
+train:
+	train_correct_loss: 5.490638699257033e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.7023420333862305
+	val_accuracy: 0.827
+test:
+	test_loss: 1.9501490592956543
+	test_accuracy: 0.8114
+Beginning epoch 26.
+Epoch 26 complete.
+train:
+	train_correct_loss: 4.0921506183622114e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.7281520366668701
+	val_accuracy: 0.827
+test:
+	test_loss: 1.986402988433838
+	test_accuracy: 0.8119999999999998
+Beginning epoch 27.
+Epoch 27 complete.
+train:
+	train_correct_loss: 3.0989738775133446e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.7556806802749634
+	val_accuracy: 0.828
+test:
+	test_loss: 2.013795852661133
+	test_accuracy: 0.8119
+Beginning epoch 28.
+Epoch 28 complete.
+train:
+	train_correct_loss: 2.3250482428238683e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.7667207717895508
+	val_accuracy: 0.827
+test:
+	test_loss: 2.027785301208496
+	test_accuracy: 0.8114999999999999
+Beginning epoch 29.
+Epoch 29 complete.
+train:
+	train_correct_loss: 1.6958102477815373e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.7881534099578857
+	val_accuracy: 0.826
+test:
+	test_loss: 2.056736946105957
+	test_accuracy: 0.8106
+Beginning epoch 30.
+Epoch 30 complete.
+train:
+	train_correct_loss: 1.2206094801570089e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.796588659286499
+	val_accuracy: 0.826
+test:
+	test_loss: 2.0613722801208496
+	test_accuracy: 0.811
+Beginning epoch 31.
+Epoch 31 complete.
+train:
+	train_correct_loss: 8.835510989513295e-09
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.8250772953033447
+	val_accuracy: 0.8240000000000001
+test:
+	test_loss: 2.0987915992736816
+	test_accuracy: 0.8096999999999999
+Beginning epoch 32.
+Epoch 32 complete.
+train:
+	train_correct_loss: 6.949199438111009e-09
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.8371059894561768
+	val_accuracy: 0.827
+test:
+	test_loss: 2.1072537899017334
+	test_accuracy: 0.8104999999999998
+Beginning epoch 33.
+Epoch 33 complete.
+train:
+	train_correct_loss: 5.507001077376117e-09
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.8439327478408813
+	val_accuracy: 0.826
+test:
+	test_loss: 2.109431266784668
+	test_accuracy: 0.8102999999999999
+Beginning epoch 34.
+Epoch 34 complete.
+train:
+	train_correct_loss: 4.894592731119474e-09
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.857787847518921
+	val_accuracy: 0.826
+test:
+	test_loss: 2.1312296390533447
+	test_accuracy: 0.8091999999999999
+Beginning epoch 35.
+Epoch 35 complete.
+train:
+	train_correct_loss: 4.473854176012537e-09
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.8869564533233643
+	val_accuracy: 0.825
+test:
+	test_loss: 2.156710147857666
+	test_accuracy: 0.8079999999999998
+Beginning epoch 36.
+Epoch 36 complete.
+train:
+	train_correct_loss: 4.1162269148742325e-09
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.9052226543426514
+	val_accuracy: 0.826
+test:
+	test_loss: 2.177607774734497
+	test_accuracy: 0.8083999999999999
+Beginning epoch 37.
+Epoch 37 complete.
+train:
+	train_correct_loss: 4.62578775284328e-09
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.9182043075561523
+	val_accuracy: 0.826
+test:
+	test_loss: 2.192892551422119
+	test_accuracy: 0.8064999999999999
+Beginning epoch 38.
+Epoch 38 complete.
+train:
+	train_correct_loss: 5.827230253885318e-09
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.9747607707977295
+	val_accuracy: 0.8230000000000001
+test:
+	test_loss: 2.2485907077789307
+	test_accuracy: 0.8064999999999999
+Beginning epoch 39.
+Epoch 39 complete.
+train:
+	train_correct_loss: 7.454086237146385e-09
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.029900312423706
+	val_accuracy: 0.819
+test:
+	test_loss: 2.3235816955566406
+	test_accuracy: 0.8042999999999999
+Beginning epoch 40.
+Epoch 40 complete.
+train:
+	train_correct_loss: 0.0550423189997673
+	train_incorrect_loss: nan
+	train_correct_acc: 0.9940588235294118
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.8740127086639404
+	val_accuracy: 0.8230000000000001
+test:
+	test_loss: 2.0575082302093506
+	test_accuracy: 0.8082
+Beginning epoch 41.
+Epoch 41 complete.
+train:
+	train_correct_loss: 2.1436131646623835e-05
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.8525480031967163
+	val_accuracy: 0.826
+test:
+	test_loss: 2.0510120391845703
+	test_accuracy: 0.8112999999999999
+Beginning epoch 42.
+Epoch 42 complete.
+train:
+	train_correct_loss: 1.1141623872390483e-05
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.8346869945526123
+	val_accuracy: 0.827
+test:
+	test_loss: 2.0529563426971436
+	test_accuracy: 0.8126000000000001
+Beginning epoch 43.
+Epoch 43 complete.
+train:
+	train_correct_loss: 7.3773858275671955e-06
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.8298412561416626
+	val_accuracy: 0.8310000000000001
+test:
+	test_loss: 2.0602800846099854
+	test_accuracy: 0.8128
+Beginning epoch 44.
+Epoch 44 complete.
+train:
+	train_correct_loss: 5.269545454211766e-06
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.8511947393417358
+	val_accuracy: 0.8320000000000001
+test:
+	test_loss: 2.0844335556030273
+	test_accuracy: 0.8126000000000002
+Beginning epoch 45.
+Epoch 45 complete.
+train:
+	train_correct_loss: 3.983389888162492e-06
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.8731132745742798
+	val_accuracy: 0.827
+test:
+	test_loss: 2.1168150901794434
+	test_accuracy: 0.8126000000000002
+Beginning epoch 46.
+Epoch 46 complete.
+train:
+	train_correct_loss: 2.956050366265117e-06
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.9011828899383545
+	val_accuracy: 0.828
+test:
+	test_loss: 2.1478395462036133
+	test_accuracy: 0.8124000000000001
+Beginning epoch 47.
+Epoch 47 complete.
+train:
+	train_correct_loss: 2.16602143154887e-06
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.915036916732788
+	val_accuracy: 0.829
+test:
+	test_loss: 2.164634943008423
+	test_accuracy: 0.8121
+Beginning epoch 48.
+Epoch 48 complete.
+train:
+	train_correct_loss: 1.8359669411438517e-06
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.9087289571762085
+	val_accuracy: 0.827
+test:
+	test_loss: 2.1529040336608887
+	test_accuracy: 0.8124000000000001
+Beginning epoch 49.
+Epoch 49 complete.
+train:
+	train_correct_loss: 1.5807536328793503e-06
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.9068899154663086
+	val_accuracy: 0.826
+test:
+	test_loss: 2.1564416885375977
+	test_accuracy: 0.8125
+Beginning epoch 50.
+Epoch 50 complete.
+train:
+	train_correct_loss: 1.2298481806283235e-06
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.9136394262313843
+	val_accuracy: 0.827
+test:
+	test_loss: 2.1623525619506836
+	test_accuracy: 0.8133
+Trial complete.
+	Time taken: 168.1583549976349 seconds.
+Running noisy trial
+	Config file: ./config/fmnist_sweep_clean_dataset_size_clean.json
+	Results directory: ./results/fmnist_sweep_clean_dataset_size_clean
+Beginning noisy dataset experiment.
+	Method: naive
+	Dataset: FashionMNIST
+	Correct samples per class: 2500
+	Incorrect samples per class: 2500
+	Random seed: 0
+	Training dataloader kwargs: {'batch_size': 100, 'shuffle': True}
+	Eval dataloader kwargs: {'batch_size': 100, 'shuffle': False}
+	Clean dataloader kwargs: {'batch_size': 100, 'shuffle': True}
+	Clean samples per class: 300
+	Validation samples per class: 100
+	Model constructor: LeNet5
+	Model constructor kwargs: {}
+	Loss function constructor: CrossEntropyLoss
+	Loss function constructor kwargs: {}
+	Optimizer constructor: Adam
+	Optimizer constructor kwargs: {}
+	Scheduler constructor: ReduceLROnPlateau
+	Scheduler constructor kwargs: {'mode': 'max', 'factor': 0.5, 'patience': 10}
+	Number of epochs: 0
+	Pretraining epochs: 0
+	Fine-tuning epochs: 50
+	Device: cuda
+	Conduct initial measurements: True
+
+Setting random seed.
+Initializing and partitioning datasets.
+Initializing dataloaders.
+Initializing model.
+LeNet5(
+  (model): Sequential(
+    (0): Conv2d(1, 6, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+    (1): BatchNorm2d(6, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (2): ReLU()
+    (3): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (4): Conv2d(6, 16, kernel_size=(5, 5), stride=(1, 1))
+    (5): BatchNorm2d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (6): ReLU()
+    (7): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (8): Flatten(start_dim=1, end_dim=-1)
+    (9): Linear(in_features=400, out_features=1024, bias=True)
+    (10): ReLU()
+    (11): Linear(in_features=1024, out_features=256, bias=True)
+    (12): ReLU()
+    (13): Linear(in_features=256, out_features=10, bias=True)
+  )
+)
+
+Initializing loss function.
+CrossEntropyLoss()
+
+Initializing optimizer.
+Adam (
+Parameter Group 0
+    amsgrad: False
+    betas: (0.9, 0.999)
+    eps: 1e-08
+    lr: 0.001
+    weight_decay: 0
+)
+
+Initializing scheduler.
+<torch.optim.lr_scheduler.ReduceLROnPlateau object at 0x7fc1d75584c0>
+
+Measuring initial performance.
+Epoch 0 complete.
+train:
+	train_loss: 2.3027453422546387
+	train_accuracy: 0.09983018867924529
+val:
+	val_loss: 2.30254864692688
+	val_accuracy: 0.10899999999999999
+test:
+	test_loss: 2.302504539489746
+	test_accuracy: 0.09910000000000001
+Fine-tuning model.
+Beginning epoch 1.
+Epoch 1 complete.
+train:
+	train_correct_loss: 0.28479501605033875
+	train_incorrect_loss: nan
+	train_correct_acc: 0.8986666666666665
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 0.6485052108764648
+	val_accuracy: 0.8400000000000001
+test:
+	test_loss: 0.6529941558837891
+	test_accuracy: 0.8441999999999998
+Beginning epoch 2.
+Epoch 2 complete.
+train:
+	train_correct_loss: 0.024490393698215485
+	train_incorrect_loss: nan
+	train_correct_acc: 0.9924705882352942
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 0.9192158579826355
+	val_accuracy: 0.844
+test:
+	test_loss: 0.9584246873855591
+	test_accuracy: 0.8456
+Beginning epoch 3.
+Epoch 3 complete.
+train:
+	train_correct_loss: 0.0004073161690030247
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.030884027481079
+	val_accuracy: 0.844
+test:
+	test_loss: 1.0671839714050293
+	test_accuracy: 0.8442999999999999
+Beginning epoch 4.
+Epoch 4 complete.
+train:
+	train_correct_loss: 0.00018092815298587084
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.0953741073608398
+	val_accuracy: 0.8400000000000001
+test:
+	test_loss: 1.13270103931427
+	test_accuracy: 0.845
+Beginning epoch 5.
+Epoch 5 complete.
+train:
+	train_correct_loss: 0.00010162830585613847
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.1575491428375244
+	val_accuracy: 0.842
+test:
+	test_loss: 1.1980245113372803
+	test_accuracy: 0.8446000000000001
+Beginning epoch 6.
+Epoch 6 complete.
+train:
+	train_correct_loss: 6.458129064412788e-05
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.2071869373321533
+	val_accuracy: 0.8400000000000001
+test:
+	test_loss: 1.2434669733047485
+	test_accuracy: 0.8444999999999999
+Beginning epoch 7.
+Epoch 7 complete.
+train:
+	train_correct_loss: 4.074461685377173e-05
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.2516034841537476
+	val_accuracy: 0.843
+test:
+	test_loss: 1.2882598638534546
+	test_accuracy: 0.8440000000000002
+Beginning epoch 8.
+Epoch 8 complete.
+train:
+	train_correct_loss: 2.755482455540914e-05
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.3097751140594482
+	val_accuracy: 0.844
+test:
+	test_loss: 1.343928575515747
+	test_accuracy: 0.8428
+Beginning epoch 9.
+Epoch 9 complete.
+train:
+	train_correct_loss: 1.8513323084334843e-05
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.3467001914978027
+	val_accuracy: 0.845
+test:
+	test_loss: 1.3819047212600708
+	test_accuracy: 0.843
+Beginning epoch 10.
+Epoch 10 complete.
+train:
+	train_correct_loss: 1.2817890819860622e-05
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.3874197006225586
+	val_accuracy: 0.845
+test:
+	test_loss: 1.4202930927276611
+	test_accuracy: 0.8439
+Beginning epoch 11.
+Epoch 11 complete.
+train:
+	train_correct_loss: 9.051484084920958e-06
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.4435703754425049
+	val_accuracy: 0.842
+test:
+	test_loss: 1.4640913009643555
+	test_accuracy: 0.8438
+Beginning epoch 12.
+Epoch 12 complete.
+train:
+	train_correct_loss: 6.562208909599576e-06
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.473353624343872
+	val_accuracy: 0.841
+test:
+	test_loss: 1.5011143684387207
+	test_accuracy: 0.8428
+Beginning epoch 13.
+Epoch 13 complete.
+train:
+	train_correct_loss: 4.584898306347895e-06
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.5318666696548462
+	val_accuracy: 0.841
+test:
+	test_loss: 1.5500413179397583
+	test_accuracy: 0.8439
+Beginning epoch 14.
+Epoch 14 complete.
+train:
+	train_correct_loss: 3.2847221973497653e-06
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.556117296218872
+	val_accuracy: 0.843
+test:
+	test_loss: 1.5754518508911133
+	test_accuracy: 0.8424
+Beginning epoch 15.
+Epoch 15 complete.
+train:
+	train_correct_loss: 2.456260972394375e-06
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.6077079772949219
+	val_accuracy: 0.842
+test:
+	test_loss: 1.6244462728500366
+	test_accuracy: 0.843
+Beginning epoch 16.
+Epoch 16 complete.
+train:
+	train_correct_loss: 1.768729248396994e-06
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.6457631587982178
+	val_accuracy: 0.8389999999999999
+test:
+	test_loss: 1.6614130735397339
+	test_accuracy: 0.8425999999999999
+Beginning epoch 17.
+Epoch 17 complete.
+train:
+	train_correct_loss: 1.2929212971357629e-06
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.6821367740631104
+	val_accuracy: 0.842
+test:
+	test_loss: 1.695167899131775
+	test_accuracy: 0.8428999999999999
+Beginning epoch 18.
+Epoch 18 complete.
+train:
+	train_correct_loss: 9.435453307560238e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.720749855041504
+	val_accuracy: 0.842
+test:
+	test_loss: 1.7342355251312256
+	test_accuracy: 0.8427999999999999
+Beginning epoch 19.
+Epoch 19 complete.
+train:
+	train_correct_loss: 6.957399136808817e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.7757434844970703
+	val_accuracy: 0.8389999999999999
+test:
+	test_loss: 1.782597541809082
+	test_accuracy: 0.8425
+Beginning epoch 20.
+Epoch 20 complete.
+train:
+	train_correct_loss: 5.409532946032414e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.8036930561065674
+	val_accuracy: 0.842
+test:
+	test_loss: 1.8127213716506958
+	test_accuracy: 0.8427000000000001
+Beginning epoch 21.
+Epoch 21 complete.
+train:
+	train_correct_loss: 4.1235551861973363e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.8285719156265259
+	val_accuracy: 0.8400000000000001
+test:
+	test_loss: 1.8282209634780884
+	test_accuracy: 0.8424
+Beginning epoch 22.
+Epoch 22 complete.
+train:
+	train_correct_loss: 3.6916901535732904e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.8515233993530273
+	val_accuracy: 0.842
+test:
+	test_loss: 1.8581533432006836
+	test_accuracy: 0.8419000000000001
+Beginning epoch 23.
+Epoch 23 complete.
+train:
+	train_correct_loss: 2.857043739368237e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.8830549716949463
+	val_accuracy: 0.8400000000000001
+test:
+	test_loss: 1.8869540691375732
+	test_accuracy: 0.8417999999999999
+Beginning epoch 24.
+Epoch 24 complete.
+train:
+	train_correct_loss: 2.400987852979597e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.8855329751968384
+	val_accuracy: 0.841
+test:
+	test_loss: 1.8884886503219604
+	test_accuracy: 0.8414000000000001
+Beginning epoch 25.
+Epoch 25 complete.
+train:
+	train_correct_loss: 1.960288784630393e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.916176199913025
+	val_accuracy: 0.841
+test:
+	test_loss: 1.9191169738769531
+	test_accuracy: 0.8412000000000001
+Beginning epoch 26.
+Epoch 26 complete.
+train:
+	train_correct_loss: 1.6022408999560867e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.9507734775543213
+	val_accuracy: 0.841
+test:
+	test_loss: 1.9517863988876343
+	test_accuracy: 0.8426
+Beginning epoch 27.
+Epoch 27 complete.
+train:
+	train_correct_loss: 1.2572127161547542e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 1.985487937927246
+	val_accuracy: 0.8400000000000001
+test:
+	test_loss: 1.9855210781097412
+	test_accuracy: 0.8418000000000001
+Beginning epoch 28.
+Epoch 28 complete.
+train:
+	train_correct_loss: 9.730977268418428e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.008629322052002
+	val_accuracy: 0.8400000000000001
+test:
+	test_loss: 2.008488416671753
+	test_accuracy: 0.8412000000000001
+Beginning epoch 29.
+Epoch 29 complete.
+train:
+	train_correct_loss: 7.56230562615201e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.0438969135284424
+	val_accuracy: 0.8400000000000001
+test:
+	test_loss: 2.0444507598876953
+	test_accuracy: 0.8416000000000001
+Beginning epoch 30.
+Epoch 30 complete.
+train:
+	train_correct_loss: 5.597458496708896e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.0731892585754395
+	val_accuracy: 0.842
+test:
+	test_loss: 2.0779597759246826
+	test_accuracy: 0.8416
+Beginning epoch 31.
+Epoch 31 complete.
+train:
+	train_correct_loss: 4.414014753706397e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.088911533355713
+	val_accuracy: 0.8400000000000001
+test:
+	test_loss: 2.0878114700317383
+	test_accuracy: 0.8412000000000001
+Beginning epoch 32.
+Epoch 32 complete.
+train:
+	train_correct_loss: 3.527425107563431e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.1142656803131104
+	val_accuracy: 0.8390000000000001
+test:
+	test_loss: 2.1071419715881348
+	test_accuracy: 0.8412999999999999
+Beginning epoch 33.
+Epoch 33 complete.
+train:
+	train_correct_loss: 3.1557725321818e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.119582414627075
+	val_accuracy: 0.8400000000000001
+test:
+	test_loss: 2.1194918155670166
+	test_accuracy: 0.8419
+Beginning epoch 34.
+Epoch 34 complete.
+train:
+	train_correct_loss: 2.5319113916566494e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.1303067207336426
+	val_accuracy: 0.8400000000000001
+test:
+	test_loss: 2.1249616146087646
+	test_accuracy: 0.8412
+Beginning epoch 35.
+Epoch 35 complete.
+train:
+	train_correct_loss: 2.1534804162115506e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.147958278656006
+	val_accuracy: 0.842
+test:
+	test_loss: 2.1439757347106934
+	test_accuracy: 0.8403999999999999
+Beginning epoch 36.
+Epoch 36 complete.
+train:
+	train_correct_loss: 1.8236681498251528e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.1878998279571533
+	val_accuracy: 0.841
+test:
+	test_loss: 2.172614574432373
+	test_accuracy: 0.8403
+Beginning epoch 37.
+Epoch 37 complete.
+train:
+	train_correct_loss: 1.4062018216520755e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.180816173553467
+	val_accuracy: 0.841
+test:
+	test_loss: 2.179054021835327
+	test_accuracy: 0.8406999999999999
+Beginning epoch 38.
+Epoch 38 complete.
+train:
+	train_correct_loss: 1.1172947900206509e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.196075439453125
+	val_accuracy: 0.841
+test:
+	test_loss: 2.193866491317749
+	test_accuracy: 0.8405
+Beginning epoch 39.
+Epoch 39 complete.
+train:
+	train_correct_loss: 8.753700875274717e-09
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.2346320152282715
+	val_accuracy: 0.8400000000000001
+test:
+	test_loss: 2.227963447570801
+	test_accuracy: 0.8404999999999998
+Beginning epoch 40.
+Epoch 40 complete.
+train:
+	train_correct_loss: 6.839339761199881e-09
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.242295265197754
+	val_accuracy: 0.842
+test:
+	test_loss: 2.233978033065796
+	test_accuracy: 0.8401
+Beginning epoch 41.
+Epoch 41 complete.
+train:
+	train_correct_loss: 5.873978636827815e-09
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.275395631790161
+	val_accuracy: 0.843
+test:
+	test_loss: 2.270585536956787
+	test_accuracy: 0.8394999999999999
+Beginning epoch 42.
+Epoch 42 complete.
+train:
+	train_correct_loss: 4.422430421868739e-09
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.2850465774536133
+	val_accuracy: 0.8400000000000001
+test:
+	test_loss: 2.273061752319336
+	test_accuracy: 0.8405999999999998
+Beginning epoch 43.
+Epoch 43 complete.
+train:
+	train_correct_loss: 3.6557514793145174e-09
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.2711639404296875
+	val_accuracy: 0.8400000000000001
+test:
+	test_loss: 2.269190549850464
+	test_accuracy: 0.8397
+Beginning epoch 44.
+Epoch 44 complete.
+train:
+	train_correct_loss: 3.47576856185583e-09
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.308881998062134
+	val_accuracy: 0.843
+test:
+	test_loss: 2.3079190254211426
+	test_accuracy: 0.8398999999999998
+Beginning epoch 45.
+Epoch 45 complete.
+train:
+	train_correct_loss: 3.7211991266161704e-09
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.3042337894439697
+	val_accuracy: 0.844
+test:
+	test_loss: 2.306966781616211
+	test_accuracy: 0.8393999999999998
+Beginning epoch 46.
+Epoch 46 complete.
+train:
+	train_correct_loss: 3.171901852283554e-09
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.3371529579162598
+	val_accuracy: 0.843
+test:
+	test_loss: 2.343151330947876
+	test_accuracy: 0.8388
+Beginning epoch 47.
+Epoch 47 complete.
+train:
+	train_correct_loss: 2.7675250979797283e-09
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.3866820335388184
+	val_accuracy: 0.8400000000000001
+test:
+	test_loss: 2.391998767852783
+	test_accuracy: 0.8379999999999999
+Beginning epoch 48.
+Epoch 48 complete.
+train:
+	train_correct_loss: 3.69081232243218e-09
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.417187213897705
+	val_accuracy: 0.8370000000000001
+test:
+	test_loss: 2.4189248085021973
+	test_accuracy: 0.8369
+Beginning epoch 49.
+Epoch 49 complete.
+train:
+	train_correct_loss: 3.174239093794995e-09
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.4957480430603027
+	val_accuracy: 0.8379999999999999
+test:
+	test_loss: 2.49594783782959
+	test_accuracy: 0.8358999999999999
+Beginning epoch 50.
+Epoch 50 complete.
+train:
+	train_correct_loss: 0.01231570728123188
+	train_incorrect_loss: nan
+	train_correct_acc: 0.997764705882353
+	train_incorrect_acc: nan
+	train_correct_nonzero: 51000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: 2.272338628768921
+	val_accuracy: 0.843
+test:
+	test_loss: 2.299814224243164
+	test_accuracy: 0.8389000000000002
+Trial complete.
+	Time taken: 167.66428518295288 seconds.
+Running noisy trial
+	Config file: ./config/fmnist_sweep_clean_dataset_size_clean.json
+	Results directory: ./results/fmnist_sweep_clean_dataset_size_clean
+Beginning noisy dataset experiment.
+	Method: naive
+	Dataset: FashionMNIST
+	Correct samples per class: 2500
+	Incorrect samples per class: 2500
+	Random seed: 0
+	Training dataloader kwargs: {'batch_size': 100, 'shuffle': True}
+	Eval dataloader kwargs: {'batch_size': 100, 'shuffle': False}
+	Clean dataloader kwargs: {'batch_size': 100, 'shuffle': True}
+	Clean samples per class: 1000
+	Validation samples per class: 100
+	Model constructor: LeNet5
+	Model constructor kwargs: {}
+	Loss function constructor: CrossEntropyLoss
+	Loss function constructor kwargs: {}
+	Optimizer constructor: Adam
+	Optimizer constructor kwargs: {}
+	Scheduler constructor: ReduceLROnPlateau
+	Scheduler constructor kwargs: {'mode': 'max', 'factor': 0.5, 'patience': 10}
+	Number of epochs: 0
+	Pretraining epochs: 0
+	Fine-tuning epochs: 50
+	Device: cuda
+	Conduct initial measurements: True
+
+Setting random seed.
+Initializing and partitioning datasets.
+Initializing dataloaders.
+Initializing model.
+LeNet5(
+  (model): Sequential(
+    (0): Conv2d(1, 6, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+    (1): BatchNorm2d(6, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (2): ReLU()
+    (3): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (4): Conv2d(6, 16, kernel_size=(5, 5), stride=(1, 1))
+    (5): BatchNorm2d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (6): ReLU()
+    (7): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (8): Flatten(start_dim=1, end_dim=-1)
+    (9): Linear(in_features=400, out_features=1024, bias=True)
+    (10): ReLU()
+    (11): Linear(in_features=1024, out_features=256, bias=True)
+    (12): ReLU()
+    (13): Linear(in_features=256, out_features=10, bias=True)
+  )
+)
+
+Initializing loss function.
+CrossEntropyLoss()
+
+Initializing optimizer.
+Adam (
+Parameter Group 0
+    amsgrad: False
+    betas: (0.9, 0.999)
+    eps: 1e-08
+    lr: 0.001
+    weight_decay: 0
+)
+
+Initializing scheduler.
+<torch.optim.lr_scheduler.ReduceLROnPlateau object at 0x7fc1dca28460>
+
+Measuring initial performance.
+Epoch 0 complete.
+train:
+	train_loss: 2.302708625793457
+	train_accuracy: 0.10003333333333332
+val:
+	val_loss: nan
+	val_accuracy: nan
+test:
+	test_loss: 2.302504539489746
+	test_accuracy: 0.09910000000000001
+Fine-tuning model.
+Beginning epoch 1.
+Epoch 1 complete.
+train:
+	train_correct_loss: 0.38058361411094666
+	train_incorrect_loss: nan
+	train_correct_acc: 0.8596166666666666
+	train_incorrect_acc: nan
+	train_correct_nonzero: 60000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: nan
+	val_accuracy: nan
+test:
+	test_loss: 0.3837043344974518
+	test_accuracy: 0.862
+Beginning epoch 2.
+Epoch 2 complete.
+train:
+	train_correct_loss: 0.17883330583572388
+	train_incorrect_loss: nan
+	train_correct_acc: 0.9331333333333334
+	train_incorrect_acc: nan
+	train_correct_nonzero: 60000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: nan
+	val_accuracy: nan
+test:
+	test_loss: 0.4220602810382843
+	test_accuracy: 0.8710000000000001
+Beginning epoch 3.
+Epoch 3 complete.
+train:
+	train_correct_loss: 0.09173236787319183
+	train_incorrect_loss: nan
+	train_correct_acc: 0.9661333333333334
+	train_incorrect_acc: nan
+	train_correct_nonzero: 60000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: nan
+	val_accuracy: nan
+test:
+	test_loss: 0.5686588287353516
+	test_accuracy: 0.8649999999999999
+Beginning epoch 4.
+Epoch 4 complete.
+train:
+	train_correct_loss: 0.05610179901123047
+	train_incorrect_loss: nan
+	train_correct_acc: 0.9794333333333335
+	train_incorrect_acc: nan
+	train_correct_nonzero: 60000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: nan
+	val_accuracy: nan
+test:
+	test_loss: 0.6605303287506104
+	test_accuracy: 0.8695000000000003
+Beginning epoch 5.
+Epoch 5 complete.
+train:
+	train_correct_loss: 0.03339026868343353
+	train_incorrect_loss: nan
+	train_correct_acc: 0.9882166666666667
+	train_incorrect_acc: nan
+	train_correct_nonzero: 60000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: nan
+	val_accuracy: nan
+test:
+	test_loss: 0.7506006360054016
+	test_accuracy: 0.8581999999999997
+Beginning epoch 6.
+Epoch 6 complete.
+train:
+	train_correct_loss: 0.02474997565150261
+	train_incorrect_loss: nan
+	train_correct_acc: 0.99145
+	train_incorrect_acc: nan
+	train_correct_nonzero: 60000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: nan
+	val_accuracy: nan
+test:
+	test_loss: 0.799062967300415
+	test_accuracy: 0.8581000000000002
+Beginning epoch 7.
+Epoch 7 complete.
+train:
+	train_correct_loss: 0.024939347058534622
+	train_incorrect_loss: nan
+	train_correct_acc: 0.9917999999999999
+	train_incorrect_acc: nan
+	train_correct_nonzero: 60000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: nan
+	val_accuracy: nan
+test:
+	test_loss: 0.8760356307029724
+	test_accuracy: 0.8681000000000002
+Beginning epoch 8.
+Epoch 8 complete.
+train:
+	train_correct_loss: 0.021331705152988434
+	train_incorrect_loss: nan
+	train_correct_acc: 0.9931500000000002
+	train_incorrect_acc: nan
+	train_correct_nonzero: 60000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: nan
+	val_accuracy: nan
+test:
+	test_loss: 0.8379775285720825
+	test_accuracy: 0.868
+Beginning epoch 9.
+Epoch 9 complete.
+train:
+	train_correct_loss: 0.018479639664292336
+	train_incorrect_loss: nan
+	train_correct_acc: 0.9938666666666666
+	train_incorrect_acc: nan
+	train_correct_nonzero: 60000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: nan
+	val_accuracy: nan
+test:
+	test_loss: 0.8775192499160767
+	test_accuracy: 0.8643999999999998
+Beginning epoch 10.
+Epoch 10 complete.
+train:
+	train_correct_loss: 0.011806823313236237
+	train_incorrect_loss: nan
+	train_correct_acc: 0.9958833333333333
+	train_incorrect_acc: nan
+	train_correct_nonzero: 60000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: nan
+	val_accuracy: nan
+test:
+	test_loss: 0.9120924472808838
+	test_accuracy: 0.8671999999999999
+Beginning epoch 11.
+Epoch 11 complete.
+train:
+	train_correct_loss: 0.016787296161055565
+	train_incorrect_loss: nan
+	train_correct_acc: 0.9946500000000001
+	train_incorrect_acc: nan
+	train_correct_nonzero: 60000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: nan
+	val_accuracy: nan
+test:
+	test_loss: 0.8352665901184082
+	test_accuracy: 0.8659000000000002
+Beginning epoch 12.
+Epoch 12 complete.
+train:
+	train_correct_loss: 0.0008684115600772202
+	train_incorrect_loss: nan
+	train_correct_acc: 0.9998499999999999
+	train_incorrect_acc: nan
+	train_correct_nonzero: 60000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: nan
+	val_accuracy: nan
+test:
+	test_loss: 0.9434422850608826
+	test_accuracy: 0.8740000000000001
+Beginning epoch 13.
+Epoch 13 complete.
+train:
+	train_correct_loss: 9.017079719342291e-05
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 60000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: nan
+	val_accuracy: nan
+test:
+	test_loss: 1.0124701261520386
+	test_accuracy: 0.8730999999999999
+Beginning epoch 14.
+Epoch 14 complete.
+train:
+	train_correct_loss: 4.098122371942736e-05
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 60000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: nan
+	val_accuracy: nan
+test:
+	test_loss: 1.0612455606460571
+	test_accuracy: 0.8730000000000001
+Beginning epoch 15.
+Epoch 15 complete.
+train:
+	train_correct_loss: 2.104830855387263e-05
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 60000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: nan
+	val_accuracy: nan
+test:
+	test_loss: 1.1202242374420166
+	test_accuracy: 0.8732999999999999
+Beginning epoch 16.
+Epoch 16 complete.
+train:
+	train_correct_loss: 1.1983937838522252e-05
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 60000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: nan
+	val_accuracy: nan
+test:
+	test_loss: 1.1826575994491577
+	test_accuracy: 0.8728999999999999
+Beginning epoch 17.
+Epoch 17 complete.
+train:
+	train_correct_loss: 7.632730557816103e-06
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 60000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: nan
+	val_accuracy: nan
+test:
+	test_loss: 1.2085124254226685
+	test_accuracy: 0.8725
+Beginning epoch 18.
+Epoch 18 complete.
+train:
+	train_correct_loss: 4.84269367007073e-06
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 60000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: nan
+	val_accuracy: nan
+test:
+	test_loss: 1.259905219078064
+	test_accuracy: 0.8732
+Beginning epoch 19.
+Epoch 19 complete.
+train:
+	train_correct_loss: 3.3032365536200814e-06
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 60000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: nan
+	val_accuracy: nan
+test:
+	test_loss: 1.2867958545684814
+	test_accuracy: 0.8734000000000001
+Beginning epoch 20.
+Epoch 20 complete.
+train:
+	train_correct_loss: 2.3235536446009064e-06
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 60000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: nan
+	val_accuracy: nan
+test:
+	test_loss: 1.3362321853637695
+	test_accuracy: 0.8738999999999999
+Beginning epoch 21.
+Epoch 21 complete.
+train:
+	train_correct_loss: 1.590964529896155e-06
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 60000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: nan
+	val_accuracy: nan
+test:
+	test_loss: 1.3728113174438477
+	test_accuracy: 0.8737
+Beginning epoch 22.
+Epoch 22 complete.
+train:
+	train_correct_loss: 1.0572306337053305e-06
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 60000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: nan
+	val_accuracy: nan
+test:
+	test_loss: 1.4058642387390137
+	test_accuracy: 0.8741
+Beginning epoch 23.
+Epoch 23 complete.
+train:
+	train_correct_loss: 7.962605081957008e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 60000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: nan
+	val_accuracy: nan
+test:
+	test_loss: 1.4207209348678589
+	test_accuracy: 0.8735
+Beginning epoch 24.
+Epoch 24 complete.
+train:
+	train_correct_loss: 6.882698926347075e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 60000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: nan
+	val_accuracy: nan
+test:
+	test_loss: 1.4422680139541626
+	test_accuracy: 0.8745999999999999
+Beginning epoch 25.
+Epoch 25 complete.
+train:
+	train_correct_loss: 5.691595106327441e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 60000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: nan
+	val_accuracy: nan
+test:
+	test_loss: 1.4600964784622192
+	test_accuracy: 0.8738000000000001
+Beginning epoch 26.
+Epoch 26 complete.
+train:
+	train_correct_loss: 4.428421505053848e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 60000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: nan
+	val_accuracy: nan
+test:
+	test_loss: 1.4878360033035278
+	test_accuracy: 0.8751000000000001
+Beginning epoch 27.
+Epoch 27 complete.
+train:
+	train_correct_loss: 3.4362406609034224e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 60000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: nan
+	val_accuracy: nan
+test:
+	test_loss: 1.513595700263977
+	test_accuracy: 0.8748
+Beginning epoch 28.
+Epoch 28 complete.
+train:
+	train_correct_loss: 2.7536094648894505e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 60000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: nan
+	val_accuracy: nan
+test:
+	test_loss: 1.5519468784332275
+	test_accuracy: 0.8743
+Beginning epoch 29.
+Epoch 29 complete.
+train:
+	train_correct_loss: 2.094037370170554e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 60000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: nan
+	val_accuracy: nan
+test:
+	test_loss: 1.5767910480499268
+	test_accuracy: 0.8747
+Beginning epoch 30.
+Epoch 30 complete.
+train:
+	train_correct_loss: 1.54661492501873e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 60000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: nan
+	val_accuracy: nan
+test:
+	test_loss: 1.5945931673049927
+	test_accuracy: 0.8755
+Beginning epoch 31.
+Epoch 31 complete.
+train:
+	train_correct_loss: 1.1901819618742593e-07
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 60000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: nan
+	val_accuracy: nan
+test:
+	test_loss: 1.629254937171936
+	test_accuracy: 0.8736
+Beginning epoch 32.
+Epoch 32 complete.
+train:
+	train_correct_loss: 9.10835922240949e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 60000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: nan
+	val_accuracy: nan
+test:
+	test_loss: 1.651658296585083
+	test_accuracy: 0.8743
+Beginning epoch 33.
+Epoch 33 complete.
+train:
+	train_correct_loss: 7.208163310679083e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 60000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: nan
+	val_accuracy: nan
+test:
+	test_loss: 1.6817115545272827
+	test_accuracy: 0.8747
+Beginning epoch 34.
+Epoch 34 complete.
+train:
+	train_correct_loss: 5.5231502926744724e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 60000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: nan
+	val_accuracy: nan
+test:
+	test_loss: 1.7184267044067383
+	test_accuracy: 0.8747999999999999
+Beginning epoch 35.
+Epoch 35 complete.
+train:
+	train_correct_loss: 4.4812701105456654e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 60000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: nan
+	val_accuracy: nan
+test:
+	test_loss: 1.7143954038619995
+	test_accuracy: 0.8752
+Beginning epoch 36.
+Epoch 36 complete.
+train:
+	train_correct_loss: 4.4367475027229375e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 60000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: nan
+	val_accuracy: nan
+test:
+	test_loss: 1.7572107315063477
+	test_accuracy: 0.8746999999999998
+Beginning epoch 37.
+Epoch 37 complete.
+train:
+	train_correct_loss: 2.9782432520164548e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 60000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: nan
+	val_accuracy: nan
+test:
+	test_loss: 1.7549967765808105
+	test_accuracy: 0.8754999999999998
+Beginning epoch 38.
+Epoch 38 complete.
+train:
+	train_correct_loss: 2.742009463929662e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 60000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: nan
+	val_accuracy: nan
+test:
+	test_loss: 1.7859981060028076
+	test_accuracy: 0.8753
+Beginning epoch 39.
+Epoch 39 complete.
+train:
+	train_correct_loss: 2.100663820669979e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 60000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: nan
+	val_accuracy: nan
+test:
+	test_loss: 1.8111003637313843
+	test_accuracy: 0.8745999999999999
+Beginning epoch 40.
+Epoch 40 complete.
+train:
+	train_correct_loss: 1.6931675617115616e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 60000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: nan
+	val_accuracy: nan
+test:
+	test_loss: 1.82143235206604
+	test_accuracy: 0.8749999999999999
+Beginning epoch 41.
+Epoch 41 complete.
+train:
+	train_correct_loss: 1.290638795836685e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 60000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: nan
+	val_accuracy: nan
+test:
+	test_loss: 1.8511948585510254
+	test_accuracy: 0.8752
+Beginning epoch 42.
+Epoch 42 complete.
+train:
+	train_correct_loss: 1.04486899132894e-08
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 60000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: nan
+	val_accuracy: nan
+test:
+	test_loss: 1.8850120306015015
+	test_accuracy: 0.8748999999999998
+Beginning epoch 43.
+Epoch 43 complete.
+train:
+	train_correct_loss: 8.666510176169595e-09
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 60000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: nan
+	val_accuracy: nan
+test:
+	test_loss: 1.8848724365234375
+	test_accuracy: 0.8748999999999999
+Beginning epoch 44.
+Epoch 44 complete.
+train:
+	train_correct_loss: 7.349246100574192e-09
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 60000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: nan
+	val_accuracy: nan
+test:
+	test_loss: 1.8920795917510986
+	test_accuracy: 0.8741
+Beginning epoch 45.
+Epoch 45 complete.
+train:
+	train_correct_loss: 8.523421968220646e-09
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 60000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: nan
+	val_accuracy: nan
+test:
+	test_loss: 1.9105726480484009
+	test_accuracy: 0.8753
+Beginning epoch 46.
+Epoch 46 complete.
+train:
+	train_correct_loss: 5.783634016154338e-09
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 60000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: nan
+	val_accuracy: nan
+test:
+	test_loss: 1.929009199142456
+	test_accuracy: 0.8748999999999999
+Beginning epoch 47.
+Epoch 47 complete.
+train:
+	train_correct_loss: 3.949800486680033e-09
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 60000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: nan
+	val_accuracy: nan
+test:
+	test_loss: 1.9272820949554443
+	test_accuracy: 0.8748
+Beginning epoch 48.
+Epoch 48 complete.
+train:
+	train_correct_loss: 3.431239292694954e-09
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 60000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: nan
+	val_accuracy: nan
+test:
+	test_loss: 1.9341295957565308
+	test_accuracy: 0.8749999999999999
+Beginning epoch 49.
+Epoch 49 complete.
+train:
+	train_correct_loss: 3.0457969479869007e-09
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 60000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: nan
+	val_accuracy: nan
+test:
+	test_loss: 1.971825361251831
+	test_accuracy: 0.8756999999999999
+Beginning epoch 50.
+Epoch 50 complete.
+train:
+	train_correct_loss: 2.3623305533959638e-09
+	train_incorrect_loss: nan
+	train_correct_acc: 1.0
+	train_incorrect_acc: nan
+	train_correct_nonzero: 60000
+	train_incorrect_nonzero: 0
+val:
+	val_loss: nan
+	val_accuracy: nan
+test:
+	test_loss: 1.9793254137039185
+	test_accuracy: 0.8752
+Trial complete.
+	Time taken: 185.90952682495117 seconds.

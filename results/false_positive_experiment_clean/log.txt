@@ -1,0 +1,33 @@
+Running false_positive trial
+	Config file: ./config/false_positive_experiment_clean.json
+	Results directory: ./results/false_positive_experiment_clean
+Beginning false positive dataset experiment.
+	Method: naive
+	Dataset: MNIST
+	Samples per class: 4000
+	Positive class: 4
+	Negative class: 9
+	Proportion of negative class with false positive label: 0.0
+	Random seed: 0
+	Training dataloader kwargs: {'batch_size': 100, 'shuffle': True}
+	Eval dataloader kwargs: {'batch_size': 100, 'shuffle': False}
+	Clean dataloader kwargs: {'batch_size': 100, 'shuffle': True}
+	Clean samples per class: 10
+	Validation samples per class: 100
+	Model constructor: LeNet5
+	Model constructor kwargs: {'overparameterize': False}
+	Loss function constructor: CrossEntropyLoss
+	Loss function constructor kwargs: {}
+	Optimizer constructor: Adam
+	Optimizer constructor kwargs: {}
+	Number of epochs: 0
+	Pretraining epochs: 0
+	Fine-tuning epochs: 10
+	Device: cuda
+	Conduct initial measurements: True
+
+Setting random seed.
+Initializing and partitioning datasets.
+[0 1]
+[4010 4010]
+0
